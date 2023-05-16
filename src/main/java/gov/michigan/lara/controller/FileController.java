@@ -164,7 +164,7 @@ public class FileController {
 
                 Double percent = Double.valueOf(this.count) / Double.valueOf(this.size) * 100;
                 this.percent = percent;
-                log.info("Total rows processed: " + this.count + "/" + this.size + " = " + percent + "%");
+                log.info("Total rows processed: " + this.count + "/" + this.size + " = " + this.percent + "%");
 
                 data.add(rowData);
             }
@@ -175,9 +175,9 @@ public class FileController {
 
             if (count == this.size) {
                 System.out.println("file process completed");
-                this.count = 0;
-                this.size = 0;
-                this.percent = 0.0;
+                // this.count = 0;
+                // this.size = 0;
+                // this.percent = 0.0;
                 workbook.close();
             }
 

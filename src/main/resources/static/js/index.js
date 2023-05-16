@@ -103,7 +103,6 @@ $(function() {
 
 function getProgress() {
     var progress = 0;
-    firstRun = true;
 
     $.ajax({
         url: '/workhorse/getProgress',
@@ -118,38 +117,23 @@ function getProgress() {
         }
     });
 
-/*
-well, at least it stops now...
-gotta get the progress bar to finish off cleanly
-& also the timeout at the end doesn't seem to fire...
----
-i think we've actually got 3 stages here...
-progress < 100 && isNan >>> first time it's run through to kickoff
-progress < 100 && !isNan >>> regular % processing
-progress somehow still < 100 && isNaN >>> all done now?
-*/
-
-
-    if (progress <= 100) {
+    if ((Number(progress) != 100)) {
         setTimeout(function() {
-            if (isNaN(progress) && firstRun) {
-                firstRun = false;
+            if (Number(progress) != 100) {
+                console.log(":: " + Number(progress));
                 getProgress();
-            } else if (!isNaN(progress)) {
-                console.info("getProgress() timeout -- " + progress + " -- " + isNaN(progress));
-                getProgress();
+            } else {
+                console.warn("should be all done");
+                $("#progressbar").text("100%").attr("aria-valuenow", 100).css("width", "100%");
+                setTimeout(function() {
+                    console.info("progress bar has completed, if you need to do anything after");
+                    $("#completed-msg").addClass("alert-success");
+                    $("#close").addClass("btn-success");
+                    $("#footer-text, #progress").toggleClass("d-none");
+                    $("#progressbar").text("0%").attr("aria-valuenow", 0).css("width", "0%");
+                    $("#load-icon").hide();
+                }, 2000);
             }
-        }, 100);
-    } else {
-        console.info("done?")
-        $("#progressbar").text("100%").attr("aria-valuenow", 100).css("width", "100%");
-        setTimeout(function() {
-            console.info("progress bar has completed, if you need to do anything after");
-            $("#completed-msg").addClass("alert-success");
-            $("#close").addClass("btn-success");
-            $("#footer-text, #progress").toggleClass("d-none");
-            $("#progressbar").text("0%").attr("aria-valuenow", 0).css("width", "0%");
-            $("#load-icon").hide();
-        }, 2000);
+        }, 500);
     }
 }
