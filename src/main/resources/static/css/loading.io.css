@@ -3,9 +3,9 @@
   position: relative;
   width: 64px;
   height: 64px;
-  position: absolute;
+  /* position: absolute; */
   top:325px;
-  left:928px;
+  /* left:928px; */
 }
 .lds-grid div {
   position: absolute;

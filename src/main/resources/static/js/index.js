@@ -79,6 +79,7 @@ $(function() {
                 contentType: false,
                 success: function(data) {
                     console.log(data);
+                    $("#filename").text(data);
                 }
             });
         }
@@ -120,13 +121,10 @@ function getProgress() {
     if ((Number(progress) != 100)) {
         setTimeout(function() {
             if (Number(progress) != 100) {
-                console.log(":: " + Number(progress));
                 getProgress();
             } else {
-                console.warn("should be all done");
-                $("#progressbar").text("100%").attr("aria-valuenow", 100).css("width", "100%");
                 setTimeout(function() {
-                    console.info("progress bar has completed, if you need to do anything after");
+                    console.log("progress bar has completed, if you need to do anything after");
                     $("#completed-msg").addClass("alert-success");
                     $("#close").addClass("btn-success");
                     $("#footer-text, #progress, #completed-msg").toggleClass("d-none");
@@ -134,6 +132,6 @@ function getProgress() {
                     $("#load-icon").hide();
                 }, 2000);
             }
-        }, 500);
+        }, 100);
     }
 }

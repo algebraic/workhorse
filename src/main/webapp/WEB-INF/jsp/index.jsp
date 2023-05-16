@@ -100,7 +100,7 @@
                 </div>
                 <div id="completed-msg" class="alert d-none" role="alert">
                     <h4 class="alert-heading">Process Completed</h4>
-                    <p>File processing has completed</p>
+                    <p>File <span id="filename"></span> has been successfully uploaded</p>
                     <hr>
                     <button id="close" class="btn">Close</button>
                 </div>

@@ -5,11 +5,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -55,25 +53,8 @@ public class FileController {
         return mav;
     }
 
-    // @ResponseBody
-    // @PostMapping(value = "check")
-    // // zj: the csv version
-    // public int uploadMultipart(@RequestParam("file") MultipartFile file) throws
-    // IOException {
-    // log.info("loading data from " + file.getOriginalFilename());
-    // List<DataObject> emails = new ArrayList<DataObject>();
-    // emails.addAll(CsvUtils.read(DataObject.class, file.getInputStream()));
-    // log.info("read " + emails.size() + " email addresses from file");
-    // for (DataObject e : emails) {
-    // log.info(e.getEmail());
-    // }
-    // this.size = emails.size();
-    // return this.size;
-    // }
-
     @ResponseBody
     @PostMapping(value = "check")
-    // zj: the xls version
     public int uploadMultipart(@RequestParam("file") MultipartFile file) {
         int rowcount = 0;
         try {
@@ -108,7 +89,6 @@ public class FileController {
                 rowcount++;
             }
 
-            // Print column headers and data
             System.out.println("Column headers: " + headers);
             System.out.println("Data rows: " + data.size());
             workbook.close();
@@ -120,15 +100,10 @@ public class FileController {
 
     @ResponseBody
     @PostMapping(value = "load")
-    public void load(@RequestParam("file") MultipartFile file, @RequestParam(name = "rowcount") Integer rowcount, HttpServletRequest request) throws IOException, InterruptedException, ExecutionException {
-        System.out.println("### row count = " + rowcount);
+    public String load(@RequestParam("file") MultipartFile file, @RequestParam(name = "rowcount") Integer rowcount, HttpServletRequest request) throws IOException, InterruptedException, ExecutionException {
         this.size = rowcount;
+        String filename = file.getOriginalFilename();
 
-        Properties props = new Properties();
-        // props.put("mail.smtp.auth", "true");
-        Session session = Session.getInstance(props);
-
-// ======================================================================================================
         try {
             Workbook workbook = new XSSFWorkbook(file.getInputStream());
             Sheet sheet = workbook.getSheetAt(0);
@@ -164,20 +139,13 @@ public class FileController {
 
                 Double percent = Double.valueOf(this.count) / Double.valueOf(this.size) * 100;
                 this.percent = percent;
-                log.info("Total rows processed: " + this.count + "/" + this.size + " = " + this.percent + "%");
+                // log.info("Total rows processed: " + this.count + "/" + this.size + " = " + this.percent + "%");
 
                 data.add(rowData);
             }
 
-            System.out.println("!!! count = " + count);
-            System.out.println("!!! this.size = " + this.size);
-            
-
             if (count == this.size) {
                 System.out.println("file process completed");
-                // this.count = 0;
-                // this.size = 0;
-                // this.percent = 0.0;
                 workbook.close();
             }
 
@@ -189,7 +157,7 @@ public class FileController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        return filename;
     }
 
     @ResponseBody
@@ -197,7 +165,6 @@ public class FileController {
     public String getProgress() {
         DecimalFormat dec = new DecimalFormat("#0");
         Double percent = Double.valueOf(this.count) / Double.valueOf(this.size) * 100;
-        // System.out.println("### this.count = " + this.count + " || this.size = " + this.size);
         return dec.format(percent);
     }
 

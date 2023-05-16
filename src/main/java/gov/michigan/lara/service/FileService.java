@@ -23,7 +23,7 @@ public class FileService {
     public Future<Integer> processRow(List<String> rowData, Integer n, HttpServletRequest request) {
         n++;
         try {
-            // System.out.println(">>> process row data: " + rowData.toString());
+            System.out.println(">>> process row data: " + rowData.toString());
             // Thread.sleep(1); // sleep for 10 milliseconds
         } catch (Exception e) {
             log.error("@@@ error: " + e.getMessage());
