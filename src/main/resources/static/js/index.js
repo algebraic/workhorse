@@ -129,7 +129,7 @@ function getProgress() {
                     console.info("progress bar has completed, if you need to do anything after");
                     $("#completed-msg").addClass("alert-success");
                     $("#close").addClass("btn-success");
-                    $("#footer-text, #progress").toggleClass("d-none");
+                    $("#footer-text, #progress, #completed-msg").toggleClass("d-none");
                     $("#progressbar").text("0%").attr("aria-valuenow", 0).css("width", "0%");
                     $("#load-icon").hide();
                 }, 2000);

@@ -98,7 +98,7 @@
                     <div></div>
                     <div></div>
                 </div>
-                <div id="completed-msg" class="alert" role="alert">
+                <div id="completed-msg" class="alert d-none" role="alert">
                     <h4 class="alert-heading">Process Completed</h4>
                     <p>File processing has completed</p>
                     <hr>
