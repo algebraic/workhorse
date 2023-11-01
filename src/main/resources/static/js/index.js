@@ -110,6 +110,7 @@ function getProgress() {
         type: 'GET',
         async: true,
         success: function(data) {
+            console.info(data);
             progress = data;
             $("#progressbar").text(progress + "%").attr("aria-valuenow", progress).css("width", progress + "%");
         },

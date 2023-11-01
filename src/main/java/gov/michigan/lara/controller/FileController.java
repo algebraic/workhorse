@@ -91,6 +91,9 @@ public class FileController {
 
             System.out.println("Column headers: " + headers);
             System.out.println("Data rows: " + data.size());
+            log.info("Column headers: " + headers);
+            log.info("Data rows: " + data.size());
+
             workbook.close();
         } catch (IOException e) {
             e.printStackTrace();
