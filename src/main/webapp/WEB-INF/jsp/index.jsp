@@ -32,7 +32,6 @@
             position: absolute;
             left: 70px;
             top: 45px;
-            visibility: hidden;
         }
         .hidden {
             display: none;
@@ -47,7 +46,7 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="/workhorse">
                 <img class="logo" src="/workhorse/img/small-light2.png">
-                <span class="ml-2 pt-1">WORKHORSE<small class="version"><a class="nav-link disabled">v0.0.1</a></small>
+                <span class="ml-2 pt-1">WORKHORSE<small class="version"><a class="nav-link disabled" id="buildId"></a></small>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -178,6 +177,25 @@
                 var section = $(this).attr("id");
                 console.info("section = " + section);
                 $('div[data-section="' + section + '"]').removeClass("hidden");
+            });
+
+            // get git version number
+            $.ajax({
+                type: "GET",
+                url: "commitId", // Replace with the correct URL to your controller method
+                dataType: "json",
+                success: function (data) {
+                    console.info("git data::" );
+                    console.info(data);
+                    var buildData = "branch - " + data["branch"];
+                    $("#buildId").text("build " + data['describeShort']).attr("title", buildData);
+                    // Assuming your controller method returns JSON
+                        // "<p>Commit Branch: " + data['Commit branch'] + "</p>" +
+                        // "<p>Commit ID: " + data['Commit id'] + "</p>");
+                },
+                error: function () {
+                    $("#commitData").html("Failed to retrieve commit data.");
+                }
             });
 
             // style first letter
