@@ -340,23 +340,27 @@
             // submit
             $('form#manualEntry').submit(function (e) {
                 e.preventDefault();
+
+                // get previously saved data
+                var savedData = JSON.parse(localStorage.formData);
+
                 // Serialize form data to a JSON object
                 var formData = $(this).serializeArray();
-                var formDataObject = {};
+                // var formDataObject = {};
                 var kpi = $("#kpiName").val();
-                formDataObject[kpi] = {};
+                savedData[kpi] = {};
                 var year = $("#year-input").val();
-                formDataObject[kpi][year] = {};
+                savedData[kpi][year] = {};
                 // formDataObject[]
                 formData.forEach(function (field, index) {
                     console.info(index);
                     console.info(field);
-                    formDataObject[kpi][year][field.name] = field.value;
+                    savedData[kpi][year][field.name] = field.value;
                     console.info("kpi: " + kpi);
                 });
 
                 // Convert the JSON object to a string and save it to local storage
-                localStorage.setItem('formData', JSON.stringify(formDataObject));
+                localStorage.setItem('formData', JSON.stringify(savedData));
                 alert('Form data serialized and saved to local storage.');
             });
 
