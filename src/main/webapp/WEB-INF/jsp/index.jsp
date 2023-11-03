@@ -36,6 +36,14 @@
         .hidden {
             display: none;
         }
+
+        .highlight-button {
+            background: yellow;
+        }
+        .input-group-text:first-of-type {
+            width: 100px;
+            overflow: visible;
+        }
     </style>
 
 </head>
@@ -46,26 +54,31 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="/workhorse">
                 <img class="logo" src="/workhorse/img/small-light2.png">
-                <span class="ml-2 pt-1">WORKHORSE<small class="version"><a class="nav-link disabled" id="buildId"></a></small>
+                <span class="ml-2 pt-1">WORKHORSE<small class="version"><a class="nav-link" id="buildId"></a></small>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 px-5">
-                    <li class="nav-item px-2">
-                        <a id="file_operation" class="btn btn-outline-warning section" href="#" role="button">File Operation</a>
-                        <a id="manual_entry" class="btn btn-outline-warning section" href="#" role="button">Manual Entry</a>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-5">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Select Action
+                        </a>
+                        <ul class="dropdown-menu" data-bs-theme="dark">
+                            <li><a class="dropdown-item section" id="manual_entry" href="#">Manual Entry</a></li>
+                            <li><a class="dropdown-item section" id="file_operation" href="#">File Operation</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">:)</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-
-    <div class="container-fluid">
-        
-    </div>
 
     <!-- file operation section -->
     <div class="container-fluid hidden" data-section="file_operation">
@@ -129,13 +142,127 @@
     
     <!-- manual entry section -->
     <div class="container-fluid hidden" data-section="manual_entry">
-        <h3>manual entry section</h3>
         <br>
-        <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="floatingInput" placeholder="placeholder text">
-            <label for="floatingInput">Field Name</label>
+        <h3>manual entry</h3>
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form id="manualEntry">
+                    <div class="mb-3">
+                        <select class="form-select" id="kpiName" aria-label="kpi name">
+                            <option value="BPL_01">PDM complete investigations within 120 days</option>
+                            <option value="BPL_02">PHC investigations completed within 120 days</option>
+                            <option value="BPL_03">OCC investigations completed within 120 days</option>
+                            <option value="BPL_04">Complaints received</option>
+                            <option value="BPL_05">Complaints closed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <button class="btn btn-outline-secondary" id="prev-year-btn" type="button"><</button>
+                            <input type="text" class="form-control text-center" id="year-input" readonly>
+                            <button class="btn btn-outline-secondary" id="next-year-btn" type="button">></button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">January</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">February</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">March</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">April</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">May</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">June</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">July</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">August</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">September</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">October</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">November</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">December</span>
+                                <input type="number" class="form-control">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <small><a href="https://jsfiddle.net/zjohnson/udtyrbao/7/" target="_blank">mine</a> shows placeholder text also ;)</small>
     </div>
 
     <!-- footer -->
@@ -170,7 +297,6 @@
 
     <script>
         $(function () {
-
             // section buttons
             $("a.section").click(function() {
                 $("div[data-section]").addClass("hidden");
@@ -178,49 +304,108 @@
                 console.info("section = " + section);
                 $('div[data-section="' + section + '"]').removeClass("hidden");
             });
+            $("a.section:first").click();
 
-            // get git version number
-            $.ajax({
-                type: "GET",
-                url: "commitId", // Replace with the correct URL to your controller method
-                dataType: "json",
-                success: function (data) {
-                    console.info("git data::" );
-                    console.info(data);
-                    var buildData = "branch - " + data["branch"];
-                    $("#buildId").text("build " + data['describeShort']).attr("title", buildData);
-                    // Assuming your controller method returns JSON
-                        // "<p>Commit Branch: " + data['Commit branch'] + "</p>" +
-                        // "<p>Commit ID: " + data['Commit id'] + "</p>");
-                },
-                error: function () {
-                    $("#commitData").html("Failed to retrieve commit data.");
+            // Get the current year
+            var currentYear = new Date().getFullYear();
+            var yearInput = $('#year-input');
+            // Initialize the input with the current year
+            yearInput.val(currentYear);
+
+            // set form stuff
+            doFormStuff()
+            
+            // Attach click event handlers to the buttons
+            $('#prev-year-btn').click(function () {
+                currentYear--;
+                yearInput.val(currentYear);
+                highlight($(this));
+            });
+            $('#next-year-btn').click(function () {
+                currentYear++;
+                yearInput.val(currentYear);
+                highlight($(this));
+            });
+
+            // modify on select
+            $("#kpiName").change(function() {
+                var val = $(this).val();
+                if (val === "BPL_04" || val === "BPL_05") {
+                    $("span.input-group-text:last", ".input-group").text("#");
+                } else {
+                    $("span.input-group-text:last", ".input-group").text("%");
                 }
             });
 
-            // style first letter
-            var $elements = $(".flash-text");
-            var upperCase = new RegExp('[^A-Z]');
-            $elements.each(function () {
-                var text = $(this).text().trim();
-                var words = text.split(' ');
+            // submit
+            $('form#manualEntry').submit(function (e) {
+                e.preventDefault();
+                // Serialize form data to a JSON object
+                var formData = $(this).serializeArray();
+                var formDataObject = {};
+                var kpi = $("#kpiName").val();
+                formDataObject[kpi] = {};
+                var year = $("#year-input").val();
+                formDataObject[kpi][year] = {};
+                // formDataObject[]
+                formData.forEach(function (field, index) {
+                    console.info(index);
+                    console.info(field);
+                    formDataObject[kpi][year][field.name] = field.value;
+                    console.info("kpi: " + kpi);
+                });
 
-                var newHtml = '';
-                for (var i = 0; i < words.length; i++) {
-                    var firstLetter = words[i].charAt(0);
-                    if (firstLetter === firstLetter.toUpperCase() && firstLetter != firstLetter.toLowerCase()) {
-                        var restOfWord = words[i].slice(1);
-                        var spannedLetter = '<span class="first-letter">' + firstLetter + '</span>';
-                        var newWord = spannedLetter + restOfWord;
-                        newHtml += newWord + ' ';
-                    } else {
-                        newHtml += words[i] + " ";
-                    }
+                // Convert the JSON object to a string and save it to local storage
+                localStorage.setItem('formData', JSON.stringify(formDataObject));
+                alert('Form data serialized and saved to local storage.');
+            });
+
+
+            // Retrieve data from local storage
+            var storedData = localStorage.getItem('formData');
+            console.info(storedData);
+            console.info("hello there");
+            $("#year-input").val(0);
+            if (storedData) {
+                // Parse the stored JSON data
+                var formDataObject = JSON.parse(storedData);
+                // Iterate over the form fields and set their values
+                var kpi = Object.keys(formDataObject)[0];
+                $("#kpiName").val(kpi);
+                var year = Object.keys(formDataObject[kpi]);
+                console.info("Year="  + year);
+                $('#manualEntry input').each(function () {
+                    var fieldName = $(this).attr('name');
+                    $(this).val(formDataObject[kpi][year][fieldName]);
+                });
+                $("#year-input").val(year);
+            }
+
+            // Keyboard arrow key event listeners
+            $("#year-input").keydown(function (e) {
+                if (e.which === 37 || e.which === 40) { // Left arrow key
+                    $('#prev-year-btn').click();
+                } else if (e.which === 39 || e.which === 38) { // Right arrow key
+                    $('#next-year-btn').click();
                 }
-                $(this).html(newHtml.trim());
+                doFormStuff();
             });
         });
+
+        function doFormStuff() {
+            // monkey with form fields
+            var year = $("#year-input").val();
+            $("input[type='number']", "#manualEntry").each(function (i) {
+                var $this = $(this);
+                $this.attr("name", i + 1 + "/1/" + year);
+            });
+        }
+
+        function highlight(button) {
+            button.addClass('btn-warning');
+            setTimeout(function () {
+                button.removeClass('btn-warning');
+            }, 100);
+        }
     </script>
 </body>
-
-</html>
