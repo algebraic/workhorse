@@ -45,12 +45,7 @@ public class FileController {
     @ModelAttribute
     @GetMapping(value = "/")
     public ModelAndView test() {
-        log.debug("debug message");
-        log.info("info message");
-        log.warn("warn message");
-        log.error("error message");
-        log.trace("trace message");
-        
+        log.info("index mapping");
         ModelAndView mav = new ModelAndView("index");
         this.size = 0;
         this.count = 0;

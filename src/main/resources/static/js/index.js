@@ -1,6 +1,17 @@
 $(function () {
 
-    // blank file on click so change sill fires
+    // prompt for username & save to localstorage
+    if ("username" in localStorage) {
+        $("#username").val(localStorage.getItem("username"));
+    } else {
+        var username=prompt("Please enter your username");
+        console.info("username=" + username);
+        localStorage.setItem("username", username);
+        $("#username").val(username);
+    }
+    
+
+    // blank-out file on click so change sill fires
     $("#fileinput").click(function () {
         $("#result").text("");
         $("#fileinput").val("");

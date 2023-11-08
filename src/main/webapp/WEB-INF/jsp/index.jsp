@@ -18,6 +18,7 @@
 
 
     <style>
+        /* zj: move this junk into style.css at some point */
         span.first-letter {
             text-shadow: -1px -1px rgba(221, 135, 6, 0.432) !important;
         }
@@ -139,11 +140,13 @@
     <!-- manual entry section -->
     <div class="container-fluid hidden" data-section="manual_entry">
         <br>
-        <h3>manual entry</h3>
+        <h3 class="form-title">BPL Data Entry</h3>
         <br>
         <div class="row justify-content-center">
             <div class="col-md-8">
+                <!-- zj: mostly skeletal form, id's & name's get populated via script -->
                 <form id="manualEntry">
+                    <input type="hidden" id="username" name="username">
                     <div class="mb-3">
                         <select class="form-select" id="kpiName" aria-label="kpi name">
                             <option value="BPL_01">PDM complete investigations within 120 days</option>
@@ -155,9 +158,9 @@
                     </div>
                     <div class="mb-3">
                         <div class="input-group">
-                            <button class="btn btn-outline-secondary" id="prev-year-btn" type="button"><</button>
+                            <button class="btn btn-outline-secondary year-btn" data-action="-" type="button"><</button>
                             <input type="text" class="form-control text-center" id="year-input" readonly>
-                            <button class="btn btn-outline-secondary" id="next-year-btn" type="button">></button>
+                            <button class="btn btn-outline-secondary year-btn" data-action="+" type="button">></button>
                         </div>
                     </div>
 
@@ -266,6 +269,7 @@
         <div class="row fixed-bottom">
             <div class="col-lg-12 text-center">
                 <div class="alert-dark bg-dark my-0 p-0" id="footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary float-start mt-2" id="test-data">test data</button>
                     <small style="top: 10px; position: relative;" class="flash-text" id="footer-text">
                         Web-based Organization and Reporting Kit for High-level Operations and Reliable Systematic Extraction
                     </small>
@@ -299,25 +303,23 @@
             });
             $("a.section:first").click();
 
-            // Get the current year
+            // get current year
             var currentYear = new Date().getFullYear();
             var yearInput = $('#year-input');
-            // Initialize the input with the current year
             yearInput.val(currentYear);
 
-            // set form stuff
-            doFormStuff()
-            
-            // Attach click event handlers to the buttons
-            $('#prev-year-btn').click(function () {
-                currentYear--;
+            // arrow buttons for year select
+            $('.year-btn').click(function () {
+                var action = $(this).attr("data-action");
+                if (action === "-") {
+                    currentYear--;
+                } else {
+                    currentYear++;
+                }
                 yearInput.val(currentYear);
                 highlight($(this));
-            });
-            $('#next-year-btn').click(function () {
-                currentYear++;
-                yearInput.val(currentYear);
-                highlight($(this));
+                setFieldAttributes();
+                // populateData($("#kpiName").val(), currentYear);
             });
 
             // modify on select
@@ -328,36 +330,37 @@
                 } else {
                     $("span.input-group-text:last", ".input-group").text("%");
                 }
-                doFormStuff();
-                populateData(val, $("#year-input").val());
+                setFieldAttributes();
+                // populateData(val, $("#year-input").val());
             });
 
             // submit
-            $('form#manualEntry').submit(function (e) {
+            $("form#manualEntry").submit(function (e) {
                 e.preventDefault();
-
-                var username=prompt("Please enter your username");
-                console.info("username=" + username);
-
+                var $form = $(this);
+                
                 // get previously saved data
                 var savedData = {};
                 if (localStorage.formData) {
                     savedData = JSON.parse(localStorage.formData);
+                    console.info("savedData");
+                    console.info(savedData);
+                } else {
+                    console.log("no saved data found");
                 }
 
                 // Serialize form data to a JSON object
-                var formData = $(this).serializeArray();
-                // var formDataObject = {};
+                var formData = $form.serializeArray();
                 var kpi = $("#kpiName").val();
+                console.log("@ kpi = " + kpi);
                 savedData[kpi] = {};
                 var year = $("#year-input").val();
+                console.log("@ year = " + year);
                 savedData[kpi][year] = {};
-                // formDataObject[]
                 formData.forEach(function (field, index) {
-                    console.info(index);
-                    console.info(field);
+                    console.log("@@ field = " + field.name + " -- " + field.value);
+                    // console.info(index + " -- " + field + " -- " + kpi);
                     savedData[kpi][year][field.name] = field.value;
-                    console.info("kpi: " + kpi);
                 });
 
                 // Convert the JSON object to a string and save it to local storage
@@ -368,56 +371,63 @@
             // Keyboard arrow key event listeners
             $("#year-input").keydown(function (e) {
                 if (e.which === 37 || e.which === 40) { // Left arrow key
-                    $('#prev-year-btn').click();
+                    $('.year-btn').eq(0).click();
                 } else if (e.which === 39 || e.which === 38) { // Right arrow key
-                    $('#next-year-btn').click();
+                    $('.year-btn').eq(1).click();
                 }
-                doFormStuff();
-                populateData($("#kpiName").val(), $("#year-input").val());
+            });
+
+            // set field attributes on load
+            setFieldAttributes();
+
+            // test data button
+            $("#test-data").click(function() {
+                testData();
             });
         });
 
-            function populateData(kpi, year) {
-                // populate form data for given kpi
-                console.info("kpi=" + kpi);
+        function populateData1(kpi, year) {
+            // populate form data for given kpi
+            console.info("kpi=" + kpi);
 
-                // Retrieve data from local storage
-                var storedData = localStorage.getItem('formData');
-                if (storedData) {
-                    // Parse the stored JSON data
-                    var formDataObject = JSON.parse(storedData);
+            // Retrieve data from local storage
+            var storedData = localStorage.getItem('formData');
+            if (storedData) {
+                // Parse the stored JSON data
+                var formDataObject = JSON.parse(storedData);
 
-                    if (formDataObject.hasOwnProperty(kpi)) {
-                        var year = Object.keys(formDataObject[kpi]);
-                        console.warn("year=" + year);
-                        // $("#year-input").val(year);
-                        // iterate over form fields & set values
-                        $('input[type="number"]', ".month-data").val("").each(function () {
-                            var fieldName = $(this).attr('name');
-                            $(this).val(formDataObject[kpi][year][fieldName]);
-                        });
-                    }
-                    // console.warn("hasOwnProperty(kpi)=" + formDataObject.hasOwnProperty(kpi));
-
-
-                    // // Iterate over the form fields and set their values
-                    // var kpi = Object.keys(formDataObject)[0];
-                    // $("#kpiName").val(kpi);
-                    // var year = Object.keys(formDataObject[kpi]);
-                    // console.info("Year="  + year);
-                    // $('#manualEntry input').each(function () {
-                    //     var fieldName = $(this).attr('name');
-                    //     $(this).val(formDataObject[kpi][year][fieldName]);
-                    // });
+                if (formDataObject.hasOwnProperty(kpi)) {
+                    var year = Object.keys(formDataObject[kpi]);
+                    console.warn("year=" + year);
                     // $("#year-input").val(year);
-                } else {
-                    $('input[type="number"]', ".month-data").val("");
+                    // iterate over form fields & set values
+                    $('input[type="number"]', ".month-data").val("").each(function () {
+                        var fieldName = $(this).attr('name');
+                        $(this).val(formDataObject[kpi][year][fieldName]);
+                    });
                 }
+                // console.warn("hasOwnProperty(kpi)=" + formDataObject.hasOwnProperty(kpi));
 
+
+                // // Iterate over the form fields and set their values
+                // var kpi = Object.keys(formDataObject)[0];
+                // $("#kpiName").val(kpi);
+                // var year = Object.keys(formDataObject[kpi]);
+                // console.info("Year="  + year);
+                // $('#manualEntry input').each(function () {
+                //     var fieldName = $(this).attr('name');
+                //     $(this).val(formDataObject[kpi][year][fieldName]);
+                // });
+                // $("#year-input").val(year);
+            } else {
+                $('input[type="number"]', ".month-data").val("");
             }
 
-        function doFormStuff() {
-            // monkey with form fields
+        }
+
+        function setFieldAttributes() {
+            console.log("%%% setFieldAttributes %%%")
+            // set form attributes
             var year = $("#year-input").val();
             $("input[type='number']", "#manualEntry").each(function (i) {
                 var $this = $(this);
@@ -431,5 +441,15 @@
                 button.removeClass('btn-warning');
             }, 100);
         }
+
+        function testData() {
+            $("input[type='number']", "#manualEntry").each(function (i) {
+                var $this = $(this);
+                var index = $("input[type='number']", "#manualEntry").index($this);
+                $this.val(index+1);
+            });
+        }
+        
+
     </script>
 </body>
