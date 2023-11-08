@@ -9,11 +9,12 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import gov.michigan.lara.controller.FileController;
+
+import org.apache.logging.log4j.*;
 
 public class CsvUtils {
-    private static final Logger log = LoggerFactory.getLogger(CsvUtils.class);
+    private static Logger log = LogManager.getLogger(CsvUtils.class);
 
     public static <T> List<T> read(Class<T> clazz, InputStream stream) {
         CsvMapper mapper = new CsvMapper();

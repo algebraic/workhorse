@@ -9,7 +9,6 @@
 	<wls:container-descriptor>
 		<!-- <wls:prefer-web-inf-classes>true</wls:prefer-web-inf-classes> -->
 		<wls:prefer-application-packages>
-			<wls:package-name>org.slf4j.*</wls:package-name>
 			<wls:package-name>org.hibernate.*</wls:package-name>
 			<wls:package-name>javax.validation.*</wls:package-name>
 			<wls:package-name>org.apache.tomcat.*</wls:package-name>

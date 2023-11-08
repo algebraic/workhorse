@@ -13,12 +13,9 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
         crossorigin="anonymous">
 
-    <link rel="stylesheet" href="/workhorse/css/material.float.labels.css">
-
     <link rel="stylesheet" href="/workhorse/css/style.css">
     <link rel="stylesheet" href="/workhorse/css/loading.io.css">
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
 
     <style>
         span.first-letter {
@@ -67,12 +64,11 @@
                             Select Action
                         </a>
                         <ul class="dropdown-menu" data-bs-theme="dark">
-                            <li><a class="dropdown-item section" id="manual_entry" href="#">Manual Entry</a></li>
-                            <li><a class="dropdown-item section" id="file_operation" href="#">File Operation</a></li>
+                            <li><a class="dropdown-item section" id="manual_entry" href="#">BPL Data Entry</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="#">:)</a></li>
+                            <li><a class="dropdown-item section" id="file_operation" href="#">File Operation</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -165,7 +161,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row month-data">
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">January</span>
@@ -289,9 +285,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-    <script src="/workhorse/js/material.float.labels.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.js"></script>
-    <script src="https://kit.fontawesome.com/208550a0ca.js"></script>
 
     <script src="/workhorse/js/index.js"></script>
 
@@ -335,14 +328,22 @@
                 } else {
                     $("span.input-group-text:last", ".input-group").text("%");
                 }
+                doFormStuff();
+                populateData(val, $("#year-input").val());
             });
 
             // submit
             $('form#manualEntry').submit(function (e) {
                 e.preventDefault();
 
+                var username=prompt("Please enter your username");
+                console.info("username=" + username);
+
                 // get previously saved data
-                var savedData = JSON.parse(localStorage.formData);
+                var savedData = {};
+                if (localStorage.formData) {
+                    savedData = JSON.parse(localStorage.formData);
+                }
 
                 // Serialize form data to a JSON object
                 var formData = $(this).serializeArray();
@@ -364,27 +365,6 @@
                 alert('Form data serialized and saved to local storage.');
             });
 
-
-            // Retrieve data from local storage
-            var storedData = localStorage.getItem('formData');
-            console.info(storedData);
-            console.info("hello there");
-            $("#year-input").val(0);
-            if (storedData) {
-                // Parse the stored JSON data
-                var formDataObject = JSON.parse(storedData);
-                // Iterate over the form fields and set their values
-                var kpi = Object.keys(formDataObject)[0];
-                $("#kpiName").val(kpi);
-                var year = Object.keys(formDataObject[kpi]);
-                console.info("Year="  + year);
-                $('#manualEntry input').each(function () {
-                    var fieldName = $(this).attr('name');
-                    $(this).val(formDataObject[kpi][year][fieldName]);
-                });
-                $("#year-input").val(year);
-            }
-
             // Keyboard arrow key event listeners
             $("#year-input").keydown(function (e) {
                 if (e.which === 37 || e.which === 40) { // Left arrow key
@@ -393,8 +373,48 @@
                     $('#next-year-btn').click();
                 }
                 doFormStuff();
+                populateData($("#kpiName").val(), $("#year-input").val());
             });
         });
+
+            function populateData(kpi, year) {
+                // populate form data for given kpi
+                console.info("kpi=" + kpi);
+
+                // Retrieve data from local storage
+                var storedData = localStorage.getItem('formData');
+                if (storedData) {
+                    // Parse the stored JSON data
+                    var formDataObject = JSON.parse(storedData);
+
+                    if (formDataObject.hasOwnProperty(kpi)) {
+                        var year = Object.keys(formDataObject[kpi]);
+                        console.warn("year=" + year);
+                        // $("#year-input").val(year);
+                        // iterate over form fields & set values
+                        $('input[type="number"]', ".month-data").val("").each(function () {
+                            var fieldName = $(this).attr('name');
+                            $(this).val(formDataObject[kpi][year][fieldName]);
+                        });
+                    }
+                    // console.warn("hasOwnProperty(kpi)=" + formDataObject.hasOwnProperty(kpi));
+
+
+                    // // Iterate over the form fields and set their values
+                    // var kpi = Object.keys(formDataObject)[0];
+                    // $("#kpiName").val(kpi);
+                    // var year = Object.keys(formDataObject[kpi]);
+                    // console.info("Year="  + year);
+                    // $('#manualEntry input').each(function () {
+                    //     var fieldName = $(this).attr('name');
+                    //     $(this).val(formDataObject[kpi][year][fieldName]);
+                    // });
+                    // $("#year-input").val(year);
+                } else {
+                    $('input[type="number"]', ".month-data").val("");
+                }
+
+            }
 
         function doFormStuff() {
             // monkey with form fields

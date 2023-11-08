@@ -6,11 +6,15 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
+import org.apache.logging.log4j.*;
 
 @SpringBootApplication
 public class WorkhorseApplication extends SpringBootServletInitializer {
 
+	private static Logger log = LogManager.getLogger(WorkhorseApplication.class);
+
 	public static void main(String[] args) {
+		log.info("starting application");
 		SpringApplication.run(WorkhorseApplication.class, args);
 	}
 

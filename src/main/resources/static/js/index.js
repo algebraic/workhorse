@@ -90,7 +90,6 @@ $(function () {
     $("#reset").click(function () {
         $("#result").text("").addClass("d-none");
         $("#file-note").removeClass("d-none");
-        $("#body").summernote("reset");
         $(".error").removeClass("error");
         $(".error").removeClass("error");
         $(".text-danger").remove();

@@ -16,8 +16,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.*;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,17 +34,23 @@ import gov.michigan.lara.service.FileService;
 @Controller
 @ControllerAdvice
 public class FileController {
+	private static Logger log = LogManager.getLogger(FileController.class);
 
     int size = 0;
     int count = 0;
     Double percent = 0.0;
 
-    private static final Logger log = LoggerFactory.getLogger(FileController.class);
     public FileService fileService = new FileService();
 
     @ModelAttribute
     @GetMapping(value = "/")
     public ModelAndView test() {
+        log.debug("debug message");
+        log.info("info message");
+        log.warn("warn message");
+        log.error("error message");
+        log.trace("trace message");
+        
         ModelAndView mav = new ModelAndView("index");
         this.size = 0;
         this.count = 0;
@@ -89,8 +95,6 @@ public class FileController {
                 rowcount++;
             }
 
-            System.out.println("Column headers: " + headers);
-            System.out.println("Data rows: " + data.size());
             log.info("Column headers: " + headers);
             log.info("Data rows: " + data.size());
 
@@ -148,15 +152,10 @@ public class FileController {
             }
 
             if (count == this.size) {
-                System.out.println("file process completed");
+                log.info("file process completed");
                 workbook.close();
             }
 
-            // Print column headers and data
-            System.out.println("Column headers: " + headers);
-            // System.out.println("Data: " + data);
-            System.out.println("Data size : " + data.size());
-            
         } catch (IOException e) {
             e.printStackTrace();
         }
