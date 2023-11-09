@@ -5,7 +5,6 @@ $(function () {
         $("#username").val(localStorage.getItem("username"));
     } else {
         var username=prompt("Please enter your username");
-        console.info("username=" + username);
         localStorage.setItem("username", username);
         $("#username").val(username);
     }

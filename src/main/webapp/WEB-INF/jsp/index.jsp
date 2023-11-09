@@ -149,16 +149,26 @@
                 <!-- zj: mostly skeletal form, id's & name's get populated via script -->
                 <form id="manualEntry">
                     <input type="hidden" id="username" name="username">
-                    <div class="mb-3">
-                        <select class="form-select" id="kpiName" aria-label="kpi name">
-                            <option value="BPL_01">PDM complete investigations within 120 days</option>
-                            <option value="BPL_02">PHC investigations completed within 120 days</option>
-                            <option value="BPL_03">OCC investigations completed within 120 days</option>
-                            <option value="BPL_04">Complaints received</option>
-                            <option value="BPL_05">Complaints closed</option>
-                        </select>
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            <select class="form-select" id="kpiName" aria-label="kpi name">
+                                <option value="BPL_01">PDM complete investigations within 120 days</option>
+                                <option value="BPL_02">PHC investigations completed within 120 days</option>
+                                <option value="BPL_03">OCC investigations completed within 120 days</option>
+                                <option value="BPL_04">Complaints received</option>
+                                <option value="BPL_05">Complaints closed</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
+
+                    <!-- loaded data row -->
+                    <div class="row mb-3" id="displayData">
+                        <div class="col-lg-12" style="min-height: 31px;">
+                            
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
                         <div class="input-group">
                             <button class="btn btn-outline-secondary year-btn" data-action="-" type="button"><</button>
                             <input type="text" class="form-control text-center" id="year-input" readonly>
@@ -271,8 +281,8 @@
         <div class="row fixed-bottom">
             <div class="col-lg-12 text-center">
                 <div class="alert-dark bg-dark my-0 p-0" id="footer">
-                    <button type="button" class="btn btn-sm btn-outline-secondary float-start mt-2" id="test-data">test data</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary float-start mt-2 ms-1" id="storageTest">storage test</button>
+                    <!-- <button type="button" class="btn btn-sm btn-outline-secondary float-start mt-2" id="test-data">load test data</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary float-start mt-2 ms-1" id="storageTest">storage test</button> -->
                     
                     <small style="top: 10px; position: relative;" class="flash-text" id="footer-text">
                         Web-based Organization and Reporting Kit for High-level Operations and Reliable Systematic Extraction
@@ -285,8 +295,6 @@
             </div>
         </div>
     </div>
-
-
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -310,8 +318,8 @@
 
             // get current year
             var currentYear = new Date().getFullYear();
-            var yearInput = $('#year-input');
-            yearInput.val(currentYear);
+            var $yearInput = $('#year-input');
+            $yearInput.val(currentYear);
 
             // arrow buttons for year select
             $('.year-btn').click(function () {
@@ -321,10 +329,13 @@
                 } else {
                     currentYear++;
                 }
-                yearInput.val(currentYear);
+                $yearInput.val(currentYear);
                 highlight($(this));
                 setFieldAttributes();
                 populateData($("#kpiName").val(), currentYear);
+                analyzeData();
+            }).focus(function() {
+                $yearInput.focus();
             });
 
             // modify on select
@@ -337,17 +348,26 @@
                 }
                 setFieldAttributes();
                 populateData(val, $("#year-input").val());
+                analyzeData();
             });
 
             $("#storageTest").click(function() {
                 // get previously saved data
+                $("#displayData div").empty();
                 var savedData = JSON.parse(localStorage.getItem('formData'));
-                $.each(savedData, function (key, value) {
-                    console.log("kpi: " + key);
-                    $.each(value, function(key, value) {
-                        console.log("Key: " + key + " = " + value);
+                kpi = $("#kpiName").val();
+                if (savedData.hasOwnProperty(kpi)) {
+                    var years = Object.keys(savedData[kpi]);
+                    $.each(years, function(index, year) {
+                        $("#displayData div").append("<a class='btn btn-sm year-badge btn-outline-info mx-1' title='load " + year + " data'>" + year + "</a>");
                     });
-                });
+                    $("a.year-badge").click(function() {
+                        var year = $(this).text();
+                        $("#year-input").val(year);
+                        setFieldAttributes();
+                        populateData(kpi, year);
+                    });
+                }
             });
 
             // submit
@@ -356,16 +376,8 @@
                 var $form = $(this);
                 
                 // get previously saved data
-                console.info("## savedData ##");
                 var savedData = JSON.parse(localStorage.getItem('formData'));
-                $.each(savedData, function(key, value) {
-                    console.log("Key: " + key);
-                    $.each(value, function(key, value) {
-                        console.log("Key: " + key + " = " + value);
-                    });
-                });
                 
-
                 // serialize form data to json
                 var formData = $form.serializeArray();
                 var kpi = $("#kpiName").val();
@@ -376,23 +388,24 @@
                 formData.forEach(function (field, index) {
                     newData[kpi][year][field.name] = field.value;
                 });
-                console.info("newData");
-                console.log(newData);
 
                 var finalObj = $.extend(true, {}, savedData, newData);
-                console.info("finalObj");
-                console.log(finalObj);
-
                 localStorage.setItem('formData', JSON.stringify(finalObj));
                 alert('Form data serialized and saved to local storage.');
             });
 
             // Keyboard arrow key event listeners
             $("#year-input").keydown(function (e) {
-                if (e.which === 37 || e.which === 40) { // Left arrow key
+                if (e.which === 37 || e.which === 40) { // left & up arrow keys
                     $('.year-btn').eq(0).click();
-                } else if (e.which === 39 || e.which === 38) { // Right arrow key
+                } else if (e.which === 39 || e.which === 38) { // right & down arrow key
                     $('.year-btn').eq(1).click();
+                } else if (e.which === 9 && e.shiftKey) { // tab key
+                    e.preventDefault();
+                    $("#kpiName").focus();
+                } else if (e.which === 9) { // tab key
+                    e.preventDefault();
+                    $("input[type='number']").eq(0).focus();
                 }
             });
 
@@ -401,9 +414,30 @@
 
             // test data button
             $("#test-data").click(function() {
-                testData();
+                analyzeData();
             });
         });
+
+        function analyzeData() {
+            // analyze saved data
+            $("#displayData div").empty();
+            var savedData = JSON.parse(localStorage.getItem('formData'));
+            kpi = $("#kpiName").val();
+            if (savedData && savedData.hasOwnProperty(kpi)) {
+                var years = Object.keys(savedData[kpi]);
+                $.each(years, function (index, year) {
+                    $("#displayData div").append("<a class='btn btn-sm year-badge btn-outline-info mx-1' title='load " + year + " data'>" + year + "</a>");
+                });
+                $("a.year-badge").click(function () {
+                    var year = $(this).text();
+                    $("#year-input").val(year);
+                    setFieldAttributes();
+                    populateData(kpi, year);
+                });
+            } else {
+                console.debug("no saved data found");
+            }
+        }
 
         function populateData(kpi, year) {
             // populate form data for given kpi/year
@@ -444,12 +478,10 @@
             }, 100);
         }
 
-        function testData() {
-            $("input[type='number']", "#manualEntry").each(function (i) {
-                var $this = $(this);
-                var index = $("input[type='number']", "#manualEntry").index($this);
-                $this.val(index+1);
-            });
+        function loadTestData() {
+            var test_json = {"BPL_01":{"2021":{"username":"username-test","1/1/2021":"","2/1/2021":"","3/1/2021":"","4/1/2021":"","5/1/2021":"","6/1/2021":"","7/1/2021":"","8/1/2021":"","9/1/2021":"68","10/1/2021":"78","11/1/2021":"63","12/1/2021":"68"},"2022":{"username":"username-test","1/1/2022":"76","2/1/2022":"76","3/1/2022":"63","4/1/2022":"76","5/1/2022":"79","6/1/2022":"87","7/1/2022":"77","8/1/2022":"80","9/1/2022":"83","10/1/2022":"80","11/1/2022":"85","12/1/2022":"63"},"2023":{"username":"username-test","1/1/2023":"76","2/1/2023":"76","3/1/2023":"50","4/1/2023":"77","5/1/2023":"90","6/1/2023":"95","7/1/2023":"63","8/1/2023":"85","9/1/2023":"77","10/1/2023":"78","11/1/2023":"84","12/1/2023":"79"}},"BPL_02":{"2021":{"username":"username-test","1/1/2021":"","2/1/2021":"","3/1/2021":"","4/1/2021":"","5/1/2021":"","6/1/2021":"","7/1/2021":"","8/1/2021":"","9/1/2021":"77","10/1/2021":"78","11/1/2021":"84","12/1/2021":"79"},"2022":{"username":"username-test","1/1/2022":"83","2/1/2022":"60","3/1/2022":"69","4/1/2022":"81","5/1/2022":"73","6/1/2022":"68","7/1/2022":"71","8/1/2022":"83","9/1/2022":"66","10/1/2022":"84","11/1/2022":"88","12/1/2022":"79"},"2023":{"username":"username-test","1/1/2023":"76","2/1/2023":"83","3/1/2023":"85","4/1/2023":"81","5/1/2023":"83","6/1/2023":"81","7/1/2023":"86","8/1/2023":"80","9/1/2023":"","10/1/2023":"","11/1/2023":"","12/1/2023":""}},"BPL_03":{"2021":{"username":"username-test","1/1/2021":"","2/1/2021":"","3/1/2021":"","4/1/2021":"","5/1/2021":"","6/1/2021":"","7/1/2021":"","8/1/2021":"","9/1/2021":"58","10/1/2021":"68","11/1/2021":"68","12/1/2021":"67"},"2022":{"username":"username-test","1/1/2022":"73","2/1/2022":"85","3/1/2022":"90","4/1/2022":"97","5/1/2022":"88","6/1/2022":"90","7/1/2022":"90","8/1/2022":"92","9/1/2022":"90","10/1/2022":"98","11/1/2022":"95","12/1/2022":"100"},"2023":{"username":"username-test","1/1/2023":"95","2/1/2023":"99","3/1/2023":"100","4/1/2023":"98","5/1/2023":"100","6/1/2023":"96","7/1/2023":"100","8/1/2023":"95","9/1/2023":"","10/1/2023":"","11/1/2023":"","12/1/2023":""}},"BPL_04":{"2021":{"username":"username-test","1/1/2021":"","2/1/2021":"","3/1/2021":"","4/1/2021":"","5/1/2021":"","6/1/2021":"","7/1/2021":"","8/1/2021":"","9/1/2021":"100","10/1/2021":"150","11/1/2021":"75","12/1/2021":"36"},"2022":{"username":"username-test","1/1/2022":"98","2/1/2022":"145","3/1/2022":"250","4/1/2022":"145","5/1/2022":"78","6/1/2022":"42","7/1/2022":"59","8/1/2022":"87","9/1/2022":"57","10/1/2022":"43","11/1/2022":"25","12/1/2022":"116"},"2023":{"username":"username-test","1/1/2023":"92","2/1/2023":"48","3/1/2023":"73","4/1/2023":"79","5/1/2023":"135","6/1/2023":"38","7/1/2023":"72","8/1/2023":"99","9/1/2023":"","10/1/2023":"","11/1/2023":"","12/1/2023":""}},"BPL_05":{"2021":{"username":"username-test","1/1/2021":"","2/1/2021":"","3/1/2021":"","4/1/2021":"","5/1/2021":"","6/1/2021":"","7/1/2021":"","8/1/2021":"","9/1/2021":"59","10/1/2021":"87","11/1/2021":"57","12/1/2021":"43"},"2022":{"username":"username-test","1/1/2022":"25","2/1/2022":"116","3/1/2022":"92","4/1/2022":"48","5/1/2022":"73","6/1/2022":"79","7/1/2022":"135","8/1/2022":"38","9/1/2022":"72","10/1/2022":"99","11/1/2022":"100","12/1/2022":"150"},"2023":{"username":"username-test","1/1/2023":"75","2/1/2023":"36","3/1/2023":"98","4/1/2023":"145","5/1/2023":"111","6/1/2023":"125","7/1/2023":"150","8/1/2023":"175","9/1/2023":"","10/1/2023":"","11/1/2023":"","12/1/2023":""}}};
+            localStorage.setItem("username", "username-test");
+            localStorage.setItem("formData", JSON.stringify(test_json));
         }
         
 
