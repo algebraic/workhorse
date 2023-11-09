@@ -77,6 +77,11 @@
         </div>
     </nav>
 
+    <!-- section title -->
+    <div class="container-fluid my-5">
+        <h3 id="section-title"></h3>
+    </div>
+
     <!-- file operation section -->
     <div class="container-fluid hidden" data-section="file_operation">
         <div id="overlay" class="d-none">
@@ -100,7 +105,7 @@
         </div>
     
         <br>
-        <div class="page-content hide float-labels">
+        <div class="page-content hide">
             <div class="container">
                 <form>
                     <div class="row">
@@ -139,9 +144,6 @@
     
     <!-- manual entry section -->
     <div class="container-fluid hidden" data-section="manual_entry">
-        <br>
-        <h3 class="form-title">BPL Data Entry</h3>
-        <br>
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <!-- zj: mostly skeletal form, id's & name's get populated via script -->
@@ -187,7 +189,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row month-data">
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">April</span>
@@ -210,7 +212,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row month-data">
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">July</span>
@@ -233,7 +235,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row month-data">
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">October</span>
@@ -270,6 +272,8 @@
             <div class="col-lg-12 text-center">
                 <div class="alert-dark bg-dark my-0 p-0" id="footer">
                     <button type="button" class="btn btn-sm btn-outline-secondary float-start mt-2" id="test-data">test data</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary float-start mt-2 ms-1" id="storageTest">storage test</button>
+                    
                     <small style="top: 10px; position: relative;" class="flash-text" id="footer-text">
                         Web-based Organization and Reporting Kit for High-level Operations and Reliable Systematic Extraction
                     </small>
@@ -297,9 +301,10 @@
             // section buttons
             $("a.section").click(function() {
                 $("div[data-section]").addClass("hidden");
-                var section = $(this).attr("id");
-                console.info("section = " + section);
+                var $this = $(this);
+                var section = $this.attr("id");
                 $('div[data-section="' + section + '"]').removeClass("hidden");
+                $("#section-title").text($this.text());
             });
             $("a.section:first").click();
 
@@ -319,7 +324,7 @@
                 yearInput.val(currentYear);
                 highlight($(this));
                 setFieldAttributes();
-                // populateData($("#kpiName").val(), currentYear);
+                populateData($("#kpiName").val(), currentYear);
             });
 
             // modify on select
@@ -331,40 +336,54 @@
                     $("span.input-group-text:last", ".input-group").text("%");
                 }
                 setFieldAttributes();
-                // populateData(val, $("#year-input").val());
+                populateData(val, $("#year-input").val());
+            });
+
+            $("#storageTest").click(function() {
+                // get previously saved data
+                var savedData = JSON.parse(localStorage.getItem('formData'));
+                $.each(savedData, function (key, value) {
+                    console.log("kpi: " + key);
+                    $.each(value, function(key, value) {
+                        console.log("Key: " + key + " = " + value);
+                    });
+                });
             });
 
             // submit
-            $("form#manualEntry").submit(function (e) {
+            $("form#manualEntry").submit(function(e) {
                 e.preventDefault();
                 var $form = $(this);
                 
                 // get previously saved data
-                var savedData = {};
-                if (localStorage.formData) {
-                    savedData = JSON.parse(localStorage.formData);
-                    console.info("savedData");
-                    console.info(savedData);
-                } else {
-                    console.log("no saved data found");
-                }
+                console.info("## savedData ##");
+                var savedData = JSON.parse(localStorage.getItem('formData'));
+                $.each(savedData, function(key, value) {
+                    console.log("Key: " + key);
+                    $.each(value, function(key, value) {
+                        console.log("Key: " + key + " = " + value);
+                    });
+                });
+                
 
-                // Serialize form data to a JSON object
+                // serialize form data to json
                 var formData = $form.serializeArray();
                 var kpi = $("#kpiName").val();
-                console.log("@ kpi = " + kpi);
-                savedData[kpi] = {};
+                var newData = {};
+                newData[kpi] = {};
                 var year = $("#year-input").val();
-                console.log("@ year = " + year);
-                savedData[kpi][year] = {};
+                newData[kpi][year] = {};
                 formData.forEach(function (field, index) {
-                    console.log("@@ field = " + field.name + " -- " + field.value);
-                    // console.info(index + " -- " + field + " -- " + kpi);
-                    savedData[kpi][year][field.name] = field.value;
+                    newData[kpi][year][field.name] = field.value;
                 });
+                console.info("newData");
+                console.log(newData);
 
-                // Convert the JSON object to a string and save it to local storage
-                localStorage.setItem('formData', JSON.stringify(savedData));
+                var finalObj = $.extend(true, {}, savedData, newData);
+                console.info("finalObj");
+                console.log(finalObj);
+
+                localStorage.setItem('formData', JSON.stringify(finalObj));
                 alert('Form data serialized and saved to local storage.');
             });
 
@@ -386,39 +405,23 @@
             });
         });
 
-        function populateData1(kpi, year) {
-            // populate form data for given kpi
-            console.info("kpi=" + kpi);
-
-            // Retrieve data from local storage
-            var storedData = localStorage.getItem('formData');
-            if (storedData) {
-                // Parse the stored JSON data
-                var formDataObject = JSON.parse(storedData);
-
+        function populateData(kpi, year) {
+            // populate form data for given kpi/year
+            var savedData = localStorage.getItem('formData');
+            if (savedData) {
+                var formDataObject = JSON.parse(savedData);
                 if (formDataObject.hasOwnProperty(kpi)) {
-                    var year = Object.keys(formDataObject[kpi]);
-                    console.warn("year=" + year);
-                    // $("#year-input").val(year);
-                    // iterate over form fields & set values
-                    $('input[type="number"]', ".month-data").val("").each(function () {
-                        var fieldName = $(this).attr('name');
-                        $(this).val(formDataObject[kpi][year][fieldName]);
-                    });
+                    if (formDataObject[kpi][year]) {
+                        $('input[type="number"]', ".month-data").val("").each(function () {
+                            var fieldName = $(this).attr('name');
+                            $(this).val(formDataObject[kpi][year][fieldName]);
+                        });
+                    } else {
+                        $('input[type="number"]', ".month-data").val("");
+                    }
+                } else {
+                    $('input[type="number"]', ".month-data").val("");
                 }
-                // console.warn("hasOwnProperty(kpi)=" + formDataObject.hasOwnProperty(kpi));
-
-
-                // // Iterate over the form fields and set their values
-                // var kpi = Object.keys(formDataObject)[0];
-                // $("#kpiName").val(kpi);
-                // var year = Object.keys(formDataObject[kpi]);
-                // console.info("Year="  + year);
-                // $('#manualEntry input').each(function () {
-                //     var fieldName = $(this).attr('name');
-                //     $(this).val(formDataObject[kpi][year][fieldName]);
-                // });
-                // $("#year-input").val(year);
             } else {
                 $('input[type="number"]', ".month-data").val("");
             }
@@ -426,7 +429,6 @@
         }
 
         function setFieldAttributes() {
-            console.log("%%% setFieldAttributes %%%")
             // set form attributes
             var year = $("#year-input").val();
             $("input[type='number']", "#manualEntry").each(function (i) {

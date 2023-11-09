@@ -117,14 +117,12 @@ $(function () {
         url: "commitId", // Replace with the correct URL to your controller method
         dataType: "json",
         success: function (data) {
-            console.info(data);
             var buildData = "branch:" + data["branch"];
             buildData += "\ncommitMessage - " + data["commitMessage"];
-            $("#buildId").text("build " + data['describeShort']).attr("data-bs-title", buildData);
-            $("#testlink").text("build " + data['describeShort']).attr("data-bs-title", buildData);
+            $("#buildId").text("build " + data['describeShort']);
         },
         error: function () {
-            $("#commitData").html("Failed to retrieve commit data.");
+            $("#buildId").text("build unavailable");
         }
     });
 
