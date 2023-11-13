@@ -66,10 +66,13 @@
                         </a>
                         <ul class="dropdown-menu" data-bs-theme="dark">
                             <li><a class="dropdown-item section" id="manual_entry" href="#">BPL Data Entry</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
                             <li><a class="dropdown-item section" id="file_operation" href="#">File Operation</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li class="text-center" style="font-variant: small-caps;">test actions</li>
+                            <li><hr class="dropdown-divider"></li>
+                            <!-- <li><a class="dropdown-item" id="exportTest" href="#">Export Test</a></li> -->
+                            <li><a class="dropdown-item" id="testData" href="#">load test data</a></li>
+                            <!-- <li><a class="dropdown-item" id="storageTest" href="#" disabled>Storage Test</a></li> -->
                         </ul>
                     </li>
                 </ul>
@@ -80,6 +83,18 @@
     <!-- section title -->
     <div class="container-fluid my-5">
         <h3 id="section-title"></h3>
+        <div class="instructions">
+            <p><b><u>BPL Reporting Data Entry proof-of-concept</u></b></p>
+            <p>The main idea is a web-based form for data collection. Click the menu above and click "<b>BPL Data Entry</b>" to test the form.
+                <br>Saving data saves to the browser's local storage, no data is currently being trasnsmitted or saved in any way.</p>
+            <p>We can also process an Excel data-file if need be, choose "<b>File Operation</b>" in the menu above to test the file operation.
+                <br>(but file operation doesn't currently have visible output)
+            </p>
+            <p>
+                The "<b>load test data</b>" action will load the data from Dennis that Sateesh used to set up the initial reports.
+            </p>
+            
+        </div>
     </div>
 
     <!-- file operation section -->
@@ -281,9 +296,6 @@
         <div class="row fixed-bottom">
             <div class="col-lg-12 text-center">
                 <div class="alert-dark bg-dark my-0 p-0" id="footer">
-                    <!-- <button type="button" class="btn btn-sm btn-outline-secondary float-start mt-2" id="test-data">load test data</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary float-start mt-2 ms-1" id="storageTest">storage test</button> -->
-                    
                     <small style="top: 10px; position: relative;" class="flash-text" id="footer-text">
                         Web-based Organization and Reporting Kit for High-level Operations and Reliable Systematic Extraction
                     </small>
@@ -308,13 +320,14 @@
         $(function () {
             // section buttons
             $("a.section").click(function() {
+                $("div.instructions").addClass("hidden");
                 $("div[data-section]").addClass("hidden");
                 var $this = $(this);
                 var section = $this.attr("id");
                 $('div[data-section="' + section + '"]').removeClass("hidden");
                 $("#section-title").text($this.text());
             });
-            $("a.section:first").click();
+            // $("a.section:first").click();
 
             // get current year
             var currentYear = new Date().getFullYear();
@@ -359,7 +372,7 @@
                 if (savedData.hasOwnProperty(kpi)) {
                     var years = Object.keys(savedData[kpi]);
                     $.each(years, function(index, year) {
-                        $("#displayData div").append("<a class='btn btn-sm year-badge btn-outline-info mx-1' title='load " + year + " data'>" + year + "</a>");
+                        $("#displayData div").append("<a class='btn btn-sm year-badge btn-outline-success mx-1' title='load " + year + " data'>" + year + "</a>");
                     });
                     $("a.year-badge").click(function() {
                         var year = $(this).text();
@@ -374,6 +387,15 @@
             $("form#manualEntry").submit(function(e) {
                 e.preventDefault();
                 var $form = $(this);
+                
+                // prompt for username & save to localstorage
+                if ("username" in localStorage) {
+                    $("#username").val(localStorage.getItem("username"));
+                } else {
+                    var username=prompt("Please enter your username");
+                    localStorage.setItem("username", username);
+                    $("#username").val(username);
+                }
                 
                 // get previously saved data
                 var savedData = JSON.parse(localStorage.getItem('formData'));
@@ -411,12 +433,18 @@
 
             // set field attributes on load
             setFieldAttributes();
+            // load any saved data on initial pageload
+            $("#kpiName").change();
 
             // test data button
-            $("#test-data").click(function() {
-                analyzeData();
+            $("#testData").click(function() {
+                loadTestData();
             });
         });
+
+        function exportTest() {
+            console.info("hi");
+        }
 
         function analyzeData() {
             // analyze saved data
@@ -426,7 +454,7 @@
             if (savedData && savedData.hasOwnProperty(kpi)) {
                 var years = Object.keys(savedData[kpi]);
                 $.each(years, function (index, year) {
-                    $("#displayData div").append("<a class='btn btn-sm year-badge btn-outline-info mx-1' title='load " + year + " data'>" + year + "</a>");
+                    $("#displayData div").append("<a class='btn btn-sm year-badge btn-outline-success mx-1' title='load " + year + " data'>" + year + "</a>");
                 });
                 $("a.year-badge").click(function () {
                     var year = $(this).text();

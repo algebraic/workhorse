@@ -1,15 +1,4 @@
 $(function () {
-
-    // prompt for username & save to localstorage
-    if ("username" in localStorage) {
-        $("#username").val(localStorage.getItem("username"));
-    } else {
-        var username=prompt("Please enter your username");
-        localStorage.setItem("username", username);
-        $("#username").val(username);
-    }
-    
-
     // blank-out file on click so change sill fires
     $("#fileinput").click(function () {
         $("#result").text("");
@@ -50,8 +39,6 @@ $(function () {
         var errorText = "<span class='text-danger validation-error'>field required</span>";
         var emailErrorText = "<span class='text-danger validation-error'>valid email required</span>";
         var error = false;
-
-        // alert("rowcount = " + $("#rowcount").val());
 
         $(":text.form-control, :file.form-control-file").each(function () {
             var $this = $(this);
