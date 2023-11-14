@@ -100,7 +100,7 @@ $(function () {
     // get git version number
     $.ajax({
         type: "GET",
-        url: "commitId", // Replace with the correct URL to your controller method
+        url: "../workhorse/commitId", 
         dataType: "json",
         success: function (data) {
             var buildData = "branch:" + data["branch"];
