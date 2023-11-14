@@ -9,9 +9,8 @@
 		<wls:prefer-application-packages>
 			<wls:package-name>org.hibernate.*</wls:package-name>
 			<wls:package-name>javax.validation.*</wls:package-name>
-			<wls:package-name>org.apache.tomcat.*</wls:package-name>
+			<wls:package-name>org.apache.*</wls:package-name>
 			<wls:package-name>org.springframework.*</wls:package-name>
-			<wls:package-name>org.apache.poi.*</wls:package-name>
 		</wls:prefer-application-packages>
 	</wls:container-descriptor>
 </wls:weblogic-web-app>
