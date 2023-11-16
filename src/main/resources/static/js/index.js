@@ -108,7 +108,7 @@ $(function () {
             $("#buildId").text("build " + data['describeShort']);
         },
         error: function () {
-            $("#buildId").text("build unavailable");
+            $("#buildId").text("build id unavailable");
         }
     });
 

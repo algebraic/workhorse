@@ -91,9 +91,9 @@
                 <br>(but file operation doesn't currently have visible output)
             </p>
             <p>
-                The "<b>load test data</b>" action will load the data from Dennis that Sateesh used to set up the initial reports.
+                The "<b>load test data</b>" action will load the data used to set up the initial reports
             </p>
-            
+
         </div>
     </div>
 
