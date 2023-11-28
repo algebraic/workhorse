@@ -42,41 +42,49 @@
             width: 100px;
             overflow: visible;
         }
+        .input-group-text:last-of-type {
+            min-width: 25px;
+            text-align: center;
+            display: inline-block;
+            padding-left: 0px;
+            padding-right: 0;
+        }
     </style>
 
 </head>
 
 <body>
     <!-- navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/workhorse">
                 <img class="logo" src="/workhorse/img/small-light2.png">
                 <span class="ml-2 pt-1">WORKHORSE<small class="version"><a class="nav-link" id="buildId"></a></small>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-5">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Select Action
-                        </a>
-                        <ul class="dropdown-menu" data-bs-theme="dark">
-                            <li><a class="dropdown-item section" id="manual_entry" href="#">BPL Data Entry</a></li>
-                            <li><a class="dropdown-item section" id="file_operation" href="#">File Operation</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li class="text-center" style="font-variant: small-caps;">test actions</li>
-                            <li><hr class="dropdown-divider"></li>
-                            <!-- <li><a class="dropdown-item" id="exportTest" href="#">Export Test</a></li> -->
-                            <li><a class="dropdown-item" id="testData" href="#">load test data</a></li>
-                            <!-- <li><a class="dropdown-item" id="storageTest" href="#" disabled>Storage Test</a></li> -->
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+            </button> -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-5">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Select Action
+                    </a>
+                    <ul class="dropdown-menu" data-bs-theme="dark">
+                        <li><a class="dropdown-item section" id="manual_entry" href="#">BPL Data Entry</a></li>
+                        <li><a class="dropdown-item section" id="file_operation" href="#">File Operation</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="text-center" style="font-variant: small-caps;">test actions</li>
+                        <li><hr class="dropdown-divider"></li>
+                        <!-- <li><a class="dropdown-item" id="exportTest" href="#">Export Test</a></li> -->
+                        <li><a class="dropdown-item" id="testData" href="#">load test data</a></li>
+                        <!-- <li><a class="dropdown-item" id="storageTest" href="#" disabled>Storage Test</a></li> -->
+                    </ul>
+                </li>
+            </ul>
+            <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                
+            </div> -->
         </div>
     </nav>
 
@@ -195,21 +203,21 @@
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">January</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">February</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">March</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
@@ -218,21 +226,21 @@
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">April</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">May</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">June</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
@@ -241,21 +249,21 @@
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">July</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">August</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">September</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
@@ -264,21 +272,21 @@
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">October</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">November</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">December</span>
-                                <input type="number" class="form-control">
+                                <input type="text" class="form-control">
                                 <span class="input-group-text">%</span>
                             </div>
                         </div>
@@ -315,6 +323,7 @@
         crossorigin="anonymous"></script>
 
     <script src="/workhorse/js/index.js"></script>
+    <script src="/workhorse/js/jquery.numericInput.js"></script>
 
     <script>
         $(function () {
@@ -427,7 +436,7 @@
                     $("#kpiName").focus();
                 } else if (e.which === 9) { // tab key
                     e.preventDefault();
-                    $("input[type='number']").eq(0).focus();
+                    $("input[type='text']", ".month-data").eq(0).focus();
                 }
             });
 
@@ -468,32 +477,29 @@
         }
 
         function populateData(kpi, year) {
+            // blank inputs & apply numeric-input plugin
+            $('input[type="text"]', ".month-data").val("").numeric();
             // populate form data for given kpi/year
             var savedData = localStorage.getItem('formData');
             if (savedData) {
                 var formDataObject = JSON.parse(savedData);
                 if (formDataObject.hasOwnProperty(kpi)) {
                     if (formDataObject[kpi][year]) {
-                        $('input[type="number"]', ".month-data").val("").each(function () {
+                        $('input[type="text"]', ".month-data").val("").each(function () {
                             var fieldName = $(this).attr('name');
                             $(this).val(formDataObject[kpi][year][fieldName]);
                         });
                     } else {
-                        $('input[type="number"]', ".month-data").val("");
+                        $('input[type="text"]', ".month-data").val("");
                     }
-                } else {
-                    $('input[type="number"]', ".month-data").val("");
-                }
-            } else {
-                $('input[type="number"]', ".month-data").val("");
+                } 
             }
-
         }
 
         function setFieldAttributes() {
             // set form attributes
             var year = $("#year-input").val();
-            $("input[type='number']", "#manualEntry").each(function (i) {
+            $('input[type="text"]', ".month-data").each(function (i) {
                 var $this = $(this);
                 $this.attr("name", i + 1 + "/1/" + year);
             });
