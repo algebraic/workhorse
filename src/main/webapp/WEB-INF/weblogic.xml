@@ -5,7 +5,6 @@
 		http://xmlns.oracle.com/weblogic/weblogic-web-app
 		http://xmlns.oracle.com/weblogic/weblogic-web-app/1.4/weblogic-web-app.xsd">
 	<wls:container-descriptor>
-		<!-- <wls:prefer-web-inf-classes>true</wls:prefer-web-inf-classes> -->
 		<wls:prefer-application-packages>
 			<wls:package-name>org.hibernate.*</wls:package-name>
 			<wls:package-name>javax.validation.*</wls:package-name>

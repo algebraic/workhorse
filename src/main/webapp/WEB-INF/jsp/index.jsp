@@ -81,6 +81,7 @@
                         <!-- <li><a class="dropdown-item" id="exportTest" href="#">Export Test</a></li> -->
                         <li><a class="dropdown-item" id="testData" href="#">load test data</a></li>
                         <!-- <li><a class="dropdown-item" id="storageTest" href="#" disabled>Storage Test</a></li> -->
+                        <li><a class="dropdown-item" id="onedriveAuth" href="https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=ddcaa0f6-2021-494f-9680-d924aeb7eacd&scope=https://graph.microsoft.com/.default&response_type=token&redirect_uri=http://localhost:8080/workhorse/">OneDrive auth</a></li>
                     </ul>
                 </li>
             </ul>
@@ -318,6 +319,7 @@
         </div>
     </div>
 
+    <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.25.0/js/msal-browser.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
         <!-- zj: 112803, SOM security started blocking cdn.jsdelivr.net!? -->
@@ -326,6 +328,7 @@
         crossorigin="anonymous"></script> -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js" integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@microsoft/microsoft-graph-client@3.0.0/dist/esm/index.js"></script>
 
     <script src="/workhorse/js/index.js"></script>
     <script src="/workhorse/js/jquery.numericInput.js"></script>
@@ -341,7 +344,7 @@
                 $('div[data-section="' + section + '"]').removeClass("hidden");
                 $("#section-title").text($this.text());
             });
-            $("a.section:first").click();
+            // $("a.section:first").click();
 
             // get current year
             var currentYear = new Date().getFullYear();
@@ -455,7 +458,94 @@
             $("#testData").click(function() {
                 loadTestData();
             });
+            
+            $("#onedrive").click(function () {
+                console.log("onedrive auth 3");
+                // Your application's client ID
+                var clientId = "ddcaa0f6-2021-494f-9680-d924aeb7eacd";
+
+                // Your OneDrive API scope
+                var scope = "onedrive.readwrite";
+
+                // Your redirect URI
+                var redirectUri = "http://localhost:8080/workhorse/";
+
+                // The authorization endpoint
+                var authEndpoint = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
+
+                // Build the authorization URL
+                var authUrl = authEndpoint +
+                    "?client_id=" + encodeURIComponent(clientId) +
+                    "&scope=" + encodeURIComponent(scope) +
+                    "&response_type=token" +
+                    "&redirect_uri=" + encodeURIComponent(redirectUri);
+
+                var testurl = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=ddcaa0f6-2021-494f-9680-d924aeb7eacd&scope=onedrive.readwrite&response_type=token&redirect_uri=http://localhost:8080/workhorse/";
+                $.ajax({
+                    type: 'GET',
+                    crossDomain: true,
+                    dataType: 'json',
+                    url: testurl,
+                    success: function (jsondata) {
+                        console.log("success");
+                        console.log(JSON.stringify(djsondataata));
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", status, error);
+                    }
+                });
+            });
+            
+            $("#onedriveAuth").click(function() {
+                checkSignIn();
+                console.info("checking signin...")
+            });
         });
+
+        // zj: msal stuff
+        function checkSignIn() {
+            console.info("starting checkSignIn function");
+            // Configuration for MSAL using the common endpoint
+            const msalConfig = {
+                auth: {
+                    // clientId: 'your-client-id', // This is required but can be any valid client ID
+                    clientId: 'ddcaa0f6-2021-494f-9680-d924aeb7eacd',
+                    authority: 'https://login.microsoftonline.com/common',
+                    redirectUri: 'http://localhost:8080/workhorse/',
+                },
+                cache: {
+                    cacheLocation: 'localStorage',
+                }
+            };
+
+            // Instantiate MSAL
+            const myMSALObj = new Msal.UserAgentApplication(msalConfig);
+
+            // Check if user is signed in
+            const user = myMSALObj.getAccount();
+
+            if (user) {
+                // User is signed in
+                alert('Signed in as ' + user.username);
+            } else {
+                // User is not signed in, prompt for login
+                signIn(myMSALObj);
+            }
+        }
+
+        // Sign in function
+        function signIn(msalObj) {
+            msalObj.loginPopup().then(response => {
+                // Successful login
+                alert('Signed in as ' + response.account.username);
+            }).catch(error => {
+                // Handle errors
+                console.error(error);
+            });
+        }
+
+        // zj: end msal section
+
 
         function exportTest() {
             console.info("hi");
