@@ -17,6 +17,7 @@
 
     <link rel="stylesheet" href="/workhorse/css/style.css">
     <link rel="stylesheet" href="/workhorse/css/loading.io.css">
+    <link rel="stylesheet" href="/workhorse/css/floatLabels.css">
 
 
     <style>
@@ -74,7 +75,10 @@
                     </a>
                     <ul class="dropdown-menu" data-bs-theme="dark">
                         <li><a class="dropdown-item section" id="manual_entry" href="#">BPL Data Entry</a></li>
-                        <li><a class="dropdown-item section" id="file_operation" href="#">File Operation</a></li>
+                        <!-- zj: disabled pending resolution of weblogic upload problems
+                            <li><a class="dropdown-item section" id="file_operation" href="#">File Operation</a></li> 
+                        -->
+                        <li><a class="dropdown-item section" id="kpi_edit" href="#">KPI Data</a></li> 
                         <li><hr class="dropdown-divider"></li>
                         <li class="text-center" style="font-variant: small-caps;">test actions</li>
                         <li><hr class="dropdown-divider"></li>
@@ -98,9 +102,6 @@
             <p><b><u>BPL Reporting Data Entry proof-of-concept</u></b></p>
             <p>The main idea is a web-based form for data collection. Click the menu above and click "<b>BPL Data Entry</b>" to test the form.
                 <br>Saving data saves to the browser's local storage, no data is currently being trasnsmitted or saved in any way.</p>
-            <p>We can also process an Excel data-file if need be, choose "<b>File Operation</b>" in the menu above to test the file operation.
-                <br>(but file operation doesn't currently have visible output)
-            </p>
             <p>
                 The "<b>load test data</b>" action will load the data used to set up the initial reports
             </p>
@@ -302,6 +303,160 @@
         </div>
     </div>
 
+
+    <!-- kpi data entry section -->
+    <div class="container-fluid hidden" data-section="kpi_edit">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form id="kpiEdit" class="floatLabels">
+                    <input type="hidden" id="username" name="username">
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            <select class="form-select" id="kpiSelector">
+                                <option value="BPL_01">PDM complete investigations within 120 days</option>
+                                <option value="BPL_02">PHC investigations completed within 120 days</option>
+                                <option value="BPL_03">OCC investigations completed within 120 days</option>
+                                <option value="BPL_04">Complaints received</option>
+                                <option value="BPL_05">Complaints closed</option>
+                                <option value="BFS_INSP_02">BFS_INSP_02</option>
+                                <option value="BCC_INSP_01">BCC_INSP_01</option>
+                                <option value="BCC_INSP_02">BCC_INSP_02</option>
+                                <option value="BCC_INSP_03">BCC_INSP_03</option>
+                                <option value="BCC_INSP_04">BCC_INSP_04</option>
+                                <option value="BFS_INSP_01">BFS_INSP_01</option>
+                                <option value="BFS_INSP_02">BFS_INSP_02</option>
+                                <option value="BPL_INSP_01">BPL_INSP_01</option>
+                                zj: double check, but it looks to be working...
+                                <option selected disabled hidden>Select KPI</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Bureau" class="control-label">Bureau</label>
+                                <input type="text" class="form-control" id="Bureau" name="Bureau" placeholder="Bureau placeholder text">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="KPI_Area" class="control-label">KPI Area</label>
+                                <input type="text" class="form-control" id="KPI_Area" name="KPI_Area"placeholder="KPI Area placeholder text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="KPI_Name" class="control-label">KPI Name</label>
+                                <input type="text" class="form-control" id="KPI_Name" name="KPI_Name" placeholder="KPI Name placeholder text">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="KPI_ID" class="control-label">KPI ID</label>
+                                <input type="text" class="form-control" id="KPI_ID" name="KPI_ID" placeholder="KPI ID placeholder text">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Data_Processed_from_Dustin_Excel" class="control-label">Data Processed from Dustin Excel?</label>
+                                <input type="text" class="form-control" id="Data_Processed_from_Dustin_Excel" name="Data_Processed_from_Dustin_Excel" placeholder="Data Processed from Dustin Excel? placeholder text">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Type" class="control-label">Type</label>
+                                <input type="text" class="form-control" id="Type" name="Type" placeholder="Type placeholder text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Data_Stored_As" class="control-label">Data Stored As</label>
+                                <input type="text" class="form-control" id="Data_Stored_As" name="Data_Stored_As" placeholder="Data Stored As placeholder text">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Denominator_for_Calculation" class="control-label">Denominator for % Calculation</label>
+                                <input type="text" class="form-control" id="Denominator_for_Calculation" name="Denominator_for_Calculation" placeholder="Denominator for % Calculation placeholder text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Target" class="control-label">Target</label>
+                                <input type="text" class="form-control" id="Target" name="Target" placeholder="Target placeholder text">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="12_Month_Rolling_Avg" class="control-label">12 Month Rolling Avg</label>
+                                <input type="text" class="form-control" id="12_Month_Rolling_Avg" name="12_Month_Rolling_Avg" placeholder="12 Month Rolling Avg placeholder text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Access" class="control-label">Access</label>
+                                <input type="text" class="form-control" id="Access" name="Access" placeholder="Access placeholder text">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Requested_by" class="control-label">Requested By</label>
+                                <input type="text" class="form-control" id="Requested_by" name="Requested_by" placeholder="Requested By placeholder text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Source_System" class="control-label">Source System</label>
+                                <input type="text" class="form-control" id="Source_System" name="Source_System" placeholder="Source System placeholder text">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Data_Feed" class="control-label">Data Feed</label>
+                                <input type="text" class="form-control" id="Data_Feed" name="Data_Feed" placeholder="Data Feed placeholder text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Comments" class="control-label">Comments</label>
+                                <input type="text" class="form-control" id="Comments" name="Comments" placeholder="Comments placeholder text">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Dev_Comments" class="control-label">Dev Comments</label>
+                                <input type="text" class="form-control" id="Dev_Comments" name="Dev_Comments" placeholder="Dev Comments placeholder text">
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="row justify-content-center">
+                        <button type="button" class="btn btn-primary" id="kpiSubmit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- zj: new stuff -->
+
+
     <!-- footer -->
     <div class="container-fluid">
         <div class="row fixed-bottom">
@@ -332,6 +487,7 @@
 
     <script src="/workhorse/js/index.js"></script>
     <script src="/workhorse/js/jquery.numericInput.js"></script>
+    <script src="/workhorse/js/floatLabels.js"></script>
 
     <script>
         $(function () {
@@ -344,7 +500,7 @@
                 $('div[data-section="' + section + '"]').removeClass("hidden");
                 $("#section-title").text($this.text());
             });
-            // $("a.section:first").click();
+            $("a.section").eq(1).click();
 
             // get current year
             var currentYear = new Date().getFullYear();
@@ -500,7 +656,75 @@
                 checkSignIn();
                 console.info("checking signin...")
             });
+
+            // zj: kpi editing stuff
+            $("#kpiSelector").change(function () {
+                var kpiId = $(this).val();
+                // blank inputs
+                $('input[type="text"]', "form#kpiEdit").val("").blur();
+                console.info("selectedKpi=" + kpiId);
+                selectedKpi = findKPIObject(kpiId);
+                if (selectedKpi != "" && selectedKpi != null) {
+                    // Loop through form fields and set values
+                    for (var key in selectedKpi) {
+                        if (selectedKpi.hasOwnProperty(key)) {
+                            $("#" + key).val(selectedKpi[key]).blur();
+                        }
+                    }
+                }
+            });
+            
+            $("#kpiSubmit").click(function(e) {
+                e.preventDefault();
+                updateJSONWithFormData($("#kpiSelector").val());
+            });
         });
+
+        // function to update JSON with form data
+        function updateJSONWithFormData(kpiId) {
+            var kpiObject = findKPIObject(kpiId);
+
+            var kpiData = JSON.parse(localStorage.getItem("kpiData")) || [];
+
+            // If KPI object is not found, create a new one with all form fields
+            if (!kpiObject) {
+                kpiObject = {};
+
+                // Loop through form fields and set initial values in the new KPI object
+                $("form#kpiEdit input").each(function () {
+                    var fieldName = $(this).attr("id");
+                    kpiObject[fieldName] = $(this).val();
+                });
+                // Add the new KPI object to the JSON array
+                kpiData.push(kpiObject);
+            } else {
+                var index = kpiData.findIndex(function(kpi) {
+                    return kpi.KPI_ID === kpiId;
+                });
+                console.info("index=" + index);
+                // Loop through form fields and update values in the existing KPI object
+                $("form#kpiEdit input").each(function () {
+                    var fieldName = $(this).attr("id");
+                    var $val = $(this).val();
+                    console.info("setting " + fieldName + " = " + $val)
+                    kpiObject[fieldName] = $val;
+                });
+                kpiData[index] = kpiObject;
+            }
+            console.debug("debugging...");
+            localStorage.setItem('kpiData', JSON.stringify(kpiData));
+        }
+
+        // function to find KPI object by KPI_ID
+        function findKPIObject(kpiId) {
+            var kpiData = localStorage.getItem('kpiData');
+            if (kpiData) {
+                var formDataObject = JSON.parse(kpiData);
+                return formDataObject.find(function (item) {
+                    return item.KPI_ID === kpiId;
+                });
+            }
+        }
 
         // zj: msal stuff
         function checkSignIn() {

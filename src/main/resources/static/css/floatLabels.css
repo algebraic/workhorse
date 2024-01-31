@@ -1,0 +1,37 @@
+
+/* --- material floating label --- */
+ .control-label {
+    font-size: 16px;
+    font-weight: 400;
+    opacity: 0.4;
+    pointer-events: none;
+    position: absolute;
+    transform: translate3d(0, 8px, 0) scale(1);
+    transform-origin: left top;
+    transition: 150ms;
+    padding-left: 5px;
+}
+.form-group.focused .control-label {
+    opacity: 1;
+    transform: scale(0.8);
+    color: rgb(13, 110, 253);
+    display: inline;
+    padding-top: 0px !important;
+    margin-top: -17px !important;
+}
+.form-control {
+    align-self: flex-end;
+}
+.form-group {
+    padding: 10px 0px 10px 0px;
+}
+.form-control::-webkit-input-placeholder {
+    color: transparent;
+    transition: 240ms;
+}
+.form-control:focus::-webkit-input-placeholder {
+    transition: none;
+}
+.form-group.focused .form-control::-webkit-input-placeholder {
+    color: #bbb;
+}
