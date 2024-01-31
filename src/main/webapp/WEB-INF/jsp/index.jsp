@@ -102,9 +102,12 @@
             <p><b><u>BPL Reporting Data Entry proof-of-concept</u></b></p>
             <p>The main idea is a web-based form for data collection. Click the menu above and click "<b>BPL Data Entry</b>" to test the form.
                 <br>Saving data saves to the browser's local storage, no data is currently being trasnsmitted or saved in any way.</p>
-            <p>
-                The "<b>load test data</b>" action will load the data used to set up the initial reports
-            </p>
+                <p>
+                    The "<b>KPI Data</b>" action will open a form to add or edit KPI's
+                </p>
+                <p>
+                    The "<b>load test data</b>" action will load the data used to set up the initial reports
+                </p>
 
         </div>
     </div>
@@ -184,6 +187,14 @@
                                 <option value="BPL_03">OCC investigations completed within 120 days</option>
                                 <option value="BPL_04">Complaints received</option>
                                 <option value="BPL_05">Complaints closed</option>
+                                <option value="BFS_INSP_02">BFS_INSP_02</option>
+                                <option value="BCC_INSP_01">BCC_INSP_01</option>
+                                <option value="BCC_INSP_02">BCC_INSP_02</option>
+                                <option value="BCC_INSP_03">BCC_INSP_03</option>
+                                <option value="BCC_INSP_04">BCC_INSP_04</option>
+                                <option value="BFS_INSP_01">BFS_INSP_01</option>
+                                <option value="BFS_INSP_02">BFS_INSP_02</option>
+                                <option value="BPL_INSP_01">BPL_INSP_01</option>
                             </select>
                         </div>
                     </div>
@@ -500,6 +511,7 @@
                 $('div[data-section="' + section + '"]').removeClass("hidden");
                 $("#section-title").text($this.text());
             });
+            // zj: auto-click something on page load
             $("a.section").eq(1).click();
 
             // get current year
