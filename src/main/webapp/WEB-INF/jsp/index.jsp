@@ -42,6 +42,11 @@ crossorigin="anonymous"> -->
             top: -20px;
         }
 
+        /* font-awesome styles */
+        i.fa-regular {
+            font-size: large;
+        }
+
         /* zj: move this junk into style.css at some point */
         span.first-letter {
             text-shadow: -1px -1px rgba(221, 135, 6, 0.432) !important;
@@ -253,12 +258,9 @@ crossorigin="anonymous"> -->
 
                     <div class="row mb-3">
                         <div class="input-group">
-                            <button class="btn btn-outline-secondary year-btn" data-action="-" type="button">
-                                << /button>
-                                    <input type="text" class="form-control text-center" id="year-input"
-                                        readonly>
-                                    <button class="btn btn-outline-secondary year-btn" data-action="+"
-                                        type="button">></button>
+                            <button class="btn btn-outline-secondary year-btn" data-action="-" type="button"><</button>
+                            <input type="text" class="form-control text-center" id="year-input" readonly>
+                            <button class="btn btn-outline-secondary year-btn" data-action="+" type="button">></button>
                         </div>
                     </div>
 
@@ -373,14 +375,14 @@ crossorigin="anonymous"> -->
 
                     <br>
                     <div class="col-xs-1">
-                        <button type="button" class="btn btn-primary" id="kpiSubmit">fire this on page
-                            load</button>
+                        <button type="button" class="btn btn-sm btn-secondary" id="kpiSubmit">reload</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
     <!-- zj: new stuff -->
+    
 
 
     <!-- footer -->
@@ -423,9 +425,9 @@ crossorigin="anonymous"></script> -->
     <script src="/workhorse/js/index.js"></script>
     <script src="/workhorse/js/jquery.numericInput.js"></script>
     <script src="/workhorse/js/floatLabels.js"></script>
-    <script
-        src="https://cdn.datatables.net/v/bs5/dt-1.13.8/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/cr-1.7.0/r-2.5.0/sr-1.3.0/datatables.min.js"></script>
-
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.8/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/cr-1.7.0/r-2.5.0/sr-1.3.0/datatables.min.js"></script>
+    <script src="https://kit.fontawesome.com/208550a0ca.js" crossorigin="anonymous"></script>
+    
     <script>
         $(function () {
             // section buttons
@@ -619,7 +621,8 @@ crossorigin="anonymous"></script> -->
                         var tableHtml = '<table class="table table-striped data-tables" id="kpi_table"><thead><tr>';
                         // Iterate over the fields of the first item to get column names
                         $.each(Object.keys(data[0]), function (index, fieldName) {
-                            tableHtml += '<th scope="col">' + fieldName + ' (' + index + ')</th>';
+                            var colName = (index > 0) ? fieldName : '';
+                            tableHtml += '<th scope="col">' + colName + '</th>';
                         });
                         tableHtml += '</tr></thead><tbody>';
 
@@ -631,7 +634,7 @@ crossorigin="anonymous"></script> -->
                             $.each(item, function (key, value) {
                                 // Add the scope="row" attribute to the first <td> element
                                 if (key === Object.keys(item)[0]) {
-                                    tableHtml += '<td scope="row">' + value + '</td>';
+                                    tableHtml += '<td scope="row" data-id="' + value + '"><i class="fa-regular fa-trash-can"></i> <i class="fa-regular fa-pen-to-square"></i></td>';
                                 } else {
                                     tableHtml += '<td>' + value + '</td>';
                                 }
@@ -649,12 +652,12 @@ crossorigin="anonymous"></script> -->
                                 // order: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
                             },
                             columnDefs: [
-                                { "targets": [2,3,4,5,6,7], visible: false }
+                                { "targets": [2,6,7,8], visible: false },
+                                { "targets": [0], orderable: false }
                             ],
                             stateSave: true,
                             dom: 'Bfrtip',
                             buttons: [
-                                // 'copy','excel','pdf',
                                 {
                                     extend: 'colvis',
                                     className: "btn-sm",
@@ -674,15 +677,25 @@ crossorigin="anonymous"></script> -->
                                 }
                             ]
                         });
+                        // post datatables-init actions
                         $("ul.pagination", "#kpi_table_paginate").addClass("pagination-sm");
+                        $("table#kpi_table").on("click", "i.fa-regular", function () {
+                            var id = $(this).parent().attr("data-id");
+                            alert("id=" + id);
+                            // zj: differentiate between edit & delete
+                            // wait...no, skip delete, just do edit and delete from the edit form
+                            // also, make an edit form
+                        });
+
                     },
                     error: function (xhr, status, error) {
                         console.error('Error retrieving JSON data:', error);
                         // Handle error response
                     }
                 });
-
+                
             });
+
         });
 
 

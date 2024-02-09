@@ -1,7 +1,6 @@
 package gov.michigan.lara.util;
 
 import gov.michigan.lara.domain.KPI;
-import gov.michigan.lara.util.Repository;
 
 import java.util.List;
 import java.util.Objects;
