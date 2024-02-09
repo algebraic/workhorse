@@ -375,7 +375,7 @@ crossorigin="anonymous"> -->
 
                     <br>
                     <div class="col-xs-1">
-                        <button type="button" class="btn btn-sm btn-secondary" id="kpiSubmit">reload</button>
+                        <button type="button" class="btn btn-sm btn-secondary hidden" id="kpiSubmit">reload</button>
                     </div>
                 </form>
             </div>
@@ -444,8 +444,7 @@ crossorigin="anonymous"></script> -->
                 }
             });
             // zj: auto-click something on page load
-            $("a.section").eq(1).click();
-            // zj - left off here 2/2 Friday - auto click won't show the table
+            // $("a.section").eq(1).click();
 
             // get current year
             var currentYear = new Date().getFullYear();
