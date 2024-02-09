@@ -150,7 +150,8 @@ crossorigin="anonymous"> -->
                 saved in any way.
             </p>
             <p>
-                The "<b>KPI Data</b>" action will open a form to add or edit KPI's
+                The "<b>KPI Data</b>" action will show all the currently loaded KPI's once the database is loaded.<br>
+                <small>(KPI input is currently disabled for testing)</small>
             </p>
             <p>
                 The "<b>load test data</b>" action will load the data used to set up the initial reports
