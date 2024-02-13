@@ -157,7 +157,7 @@ crossorigin="anonymous"> -->
                 The "<b>load test data</b>" action will load the data used to set up the initial reports
             </p>
             <p>
-                <a href="h2">h2 testing</a>
+                <a href="/workhorse/h2" target="_blank">h2 testing</a>
             </p>
         </div>
     </div>
