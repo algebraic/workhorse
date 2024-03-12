@@ -37,9 +37,26 @@ crossorigin="anonymous"> -->
         div#kpi_table_wrapper {
             font-size: small;
         }
+
         #kpi_table_paginate {
             position: relative;
             top: -20px;
+        }
+
+        .modal-body label {
+            min-width: 150px;
+            text-align: right !important;
+            font-weight: bold;
+        }
+        .modal-body input[type=text] {
+            width: 60%;
+            margin-bottom: 8px;
+        }
+
+        #kpi_addNew {
+            position: relative;
+            top: -31px;
+            left: 226px;
         }
 
         /* font-awesome styles */
@@ -113,9 +130,10 @@ crossorigin="anonymous"> -->
                     </a>
                     <ul class="dropdown-menu" data-bs-theme="dark">
                         <li><a class="dropdown-item section" id="manual_entry" href="#">BPL Data Entry</a></li>
-                        <!-- zj: disabled pending resolution of weblogic upload problems
-                    <li><a class="dropdown-item section" id="file_operation" href="#">File Operation</a></li> 
-                -->
+                                <!-- zj: disabled pending resolution of weblogic upload problems-->
+                                <li><a class="dropdown-item section hidden" id="file_operation" href="#">File
+                                        Operation</a></li>
+
                         <li><a class="dropdown-item section" id="kpi_edit" href="#">KPI Data</a></li>
                         <li>
                             <hr class="dropdown-divider">
@@ -150,7 +168,8 @@ crossorigin="anonymous"> -->
                 saved in any way.
             </p>
             <p>
-                The "<b>KPI Data</b>" action will show all the currently loaded KPI's once the database is loaded.<br>
+                        The "<b>KPI Data</b>" action will show all the currently loaded KPI's once the database is
+                        loaded.<br>
                 <small>(KPI input is currently disabled for testing)</small>
             </p>
             <p>
@@ -376,7 +395,7 @@ crossorigin="anonymous"> -->
 
                     <br>
                     <div class="col-xs-1">
-                        <button type="button" class="btn btn-sm btn-secondary hidden" id="kpiSubmit">reload</button>
+                        <button type="button" class="btn btn-sm btn-secondary" id="kpiSubmit">reload</button>
                     </div>
                 </form>
             </div>
@@ -384,6 +403,78 @@ crossorigin="anonymous"> -->
     </div>
     <!-- zj: new stuff -->
     
+
+            <!-- // zj: modal-stuff -->
+            <!-- kpi modal edit -->
+            <div class="modal fade" id="kpiModal" tabindex="-1" aria-labelledby="kpiModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="kpiModalLabel">KPI Entry</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="kpiEditForm">
+                                <input type="hidden" id="id" name="id">
+                                <label for="bureau">bureau</label>
+                                <input type="text" id="bureau" name="bureau" class="required">
+                                <br>
+                                <label for="fromExcel">fromExcel</label>
+                                <input type="hidden" name="fromExcel" value="false">
+                                <input type="checkbox" id="fromExcel" name="fromExcel" value="true">
+                                <br>
+                                <label for="dataType">dataType</label>
+                                <input type="text" id="dataType" name="dataType">
+                                <br>
+                                <label for="dataStoreType">dataStoreType</label>
+                                <input type="text" id="dataStoreType" name="dataStoreType">
+                                <br>
+                                <label for="calcDenominator">calcDenominator</label>
+                                <input type="text" id="calcDenominator" name="calcDenominator">
+                                <br>
+                                <label for="target">target</label>
+                                <input type="text" id="target" name="target">
+                                <br>
+                                <label for="rollingAvg">rollingAvg</label>
+                                <input type="hidden" name="rollingAvg" value="false">
+                                <input type="checkbox" id="rollingAvg" name="rollingAvg" value="true">
+                                <br>
+                                <label for="access">access</label>
+                                <input type="text" id="access" name="access">
+                                <br>
+                                <label for="requestedBy">requestedBy</label>
+                                <input type="text" id="requestedBy" name="requestedBy">
+                                <br>
+                                <label for="sourceSystem">sourceSystem</label>
+                                <input type="text" id="sourceSystem" name="sourceSystem">
+                                <br>
+                                <label for="dataFeed">dataFeed</label>
+                                <input type="text" id="dataFeed" name="dataFeed">
+                                <br>
+                                <label for="comments">comments</label>
+                                <input type="text" id="comments" name="comments">
+                                <br>
+                                <label for="devComments">devComments</label>
+                                <input type="text" id="devComments" name="devComments">
+                                <br>
+                                <label for="kpi_ID">kpi_ID</label>
+                                <input type="text" id="kpi_ID" name="kpi_ID">
+                                <br>
+                                <label for="kpi_Area">kpi_Area</label>
+                                <input type="text" id="kpi_Area" name="kpi_Area">
+                                <br>
+                                <label for="kpi_Name">kpi_Name</label>
+                                <input type="text" id="kpi_Name" name="kpi_Name" class="required">
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" id="deleteKpi">Delete</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="saveKpi">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
     <!-- footer -->
@@ -426,7 +517,8 @@ crossorigin="anonymous"></script> -->
     <script src="/workhorse/js/index.js"></script>
     <script src="/workhorse/js/jquery.numericInput.js"></script>
     <script src="/workhorse/js/floatLabels.js"></script>
-    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.8/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/cr-1.7.0/r-2.5.0/sr-1.3.0/datatables.min.js"></script>
+            <script
+                src="https://cdn.datatables.net/v/bs5/dt-1.13.8/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/cr-1.7.0/r-2.5.0/sr-1.3.0/datatables.min.js"></script>
     <script src="https://kit.fontawesome.com/208550a0ca.js" crossorigin="anonymous"></script>
     
     <script>
@@ -439,13 +531,41 @@ crossorigin="anonymous"></script> -->
                 var section = $this.attr("id");
                 $('div[data-section="' + section + '"]').removeClass("hidden");
                 $("#section-title").text($this.text());
+                // section-specific actions
                 if ($this.text() == "KPI Data") {
-                    // alert("doin' it");
                     $("#kpiSubmit").click();
+                }
+                if ($this.text() == "BPL Data Entry") {
+                    var kpiSelect = $('#kpiName');
+                    kpiSelect.empty(); // Clear existing options
+                    ///////////////////////////////////////////////////////////
+                    $.ajax({
+                        url: 'kpi',  // Replace with the actual URL of your controller mapping
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            console.info(data);
+                            // Populate the select element with fetched data
+                            $.each(data, function (index, kpi) {
+                                // Create an option element for each KPI
+                                var option = $('<option>', {
+                                    value: kpi.kpi_ID, // Use the 'id' property for the option value
+                                    text: kpi.kpi_Name // Use the 'kpi_ID' property for the option text
+                                });
+
+                                // Append the option to the select element
+                                kpiSelect.append(option);
+                            });
+                        },
+                        error: function (error) {
+                            console.error('Error fetching KPI list:', error);
+                        }
+                    });
+                    ///////////////////////////////////////////////////////////
                 }
             });
             // zj: auto-click something on page load
-            // $("a.section").eq(1).click();
+            // $("a.section").eq(2).click();
 
             // get current year
             var currentYear = new Date().getFullYear();
@@ -602,7 +722,7 @@ crossorigin="anonymous"></script> -->
                 console.info("checking signin...");
             });
 
-            // zj: kpi editing stuff :: blarg
+            // zj: kpi editing stuff
             $("#kpiSelector").change(function () {
                 var kpiId = $(this).val();
                 console.info("kpiId=" + kpiId);
@@ -610,10 +730,10 @@ crossorigin="anonymous"></script> -->
 
             $("#kpiSubmit").click(function (e) {
                 e.preventDefault();
-                $("#testdiv").text("hello there");
+                $("#testdiv").text("database not loaded");
 
                 $.ajax({
-                    url: 'kpi', // Replace with the actual URL of your GET endpoint
+                    url: 'kpi',
                     type: 'GET',
                     dataType: 'json',
                     success: function (data) {
@@ -634,12 +754,11 @@ crossorigin="anonymous"></script> -->
                             $.each(item, function (key, value) {
                                 // Add the scope="row" attribute to the first <td> element
                                 if (key === Object.keys(item)[0]) {
-                                    tableHtml += '<td scope="row" data-id="' + value + '"><i class="fa-regular fa-trash-can"></i> <i class="fa-regular fa-pen-to-square"></i></td>';
+                                    tableHtml += '<td scope="row" data-id="' + value + '"><i class="fa-regular fa-pen-to-square" alt="edit" data-bs-toggle="modal" data-bs-target="#kpiModal"></i></td>';
                                 } else {
                                     tableHtml += '<td>' + value + '</td>';
                                 }
                             });
-
                             tableHtml += '</tr>';
                         });
 
@@ -652,11 +771,11 @@ crossorigin="anonymous"></script> -->
                                 // order: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
                             },
                             columnDefs: [
-                                { "targets": [2,6,7,8], visible: false },
+                                { "targets": [2, 6, 7, 8], visible: false },
                                 { "targets": [0], orderable: false }
                             ],
                             stateSave: true,
-                            dom: 'Bfrtip',
+                            dom: 'Bf<"toolbar">rtip',
                             buttons: [
                                 {
                                     extend: 'colvis',
@@ -668,23 +787,32 @@ crossorigin="anonymous"></script> -->
                                 {
                                     text: 'Reset Columns',
                                     className: "btn-sm",
-                                    action: function (e, dt, node, config) { 
+                                    action: function (e, dt, node, config) {
                                         console.info("deleting dt localstorage");
-                                        this.colReorder.reset(); 
-                                        dt.columns(config.show).visible(true); 
+                                        this.colReorder.reset();
+                                        dt.columns(config.show).visible(true);
                                         localStorage.removeItem("DataTables_kpi_table_/workhorse/");
                                     }
                                 }
-                            ]
+                            ],
+                            initComplete: function () {
+                                // add edit buttons to table row
+                                $("div.toolbar").html('<button type="button" class="btn btn-outline-success btn-sm" id="kpi_addNew" title="add new KPI" data-bs-toggle="modal" data-bs-target="#kpiModal"><i class="fa-solid fa-plus"></i> KPI</button>');
+                                // attach click event to addNew button
+                                $("div.toolbar").on("click", "#kpi_addNew", function () {
+                                    // if actions need to happen on add...
+                                    $(":checkbox", "#kpiEditForm").attr("checked", false);
+
+                                    // for the whole "add new" thing we'll need to do some validation...
+                                    // diff between editing adn adding...
+                                });
+                            }
                         });
                         // post datatables-init actions
                         $("ul.pagination", "#kpi_table_paginate").addClass("pagination-sm");
                         $("table#kpi_table").on("click", "i.fa-regular", function () {
                             var id = $(this).parent().attr("data-id");
-                            alert("id=" + id);
-                            // zj: differentiate between edit & delete
-                            // wait...no, skip delete, just do edit and delete from the edit form
-                            // also, make an edit form
+                            editKpi(id);
                         });
 
                     },
@@ -693,11 +821,148 @@ crossorigin="anonymous"></script> -->
                         // Handle error response
                     }
                 });
-                
+
             });
 
+
+            $("#saveKpi").click(function () {
+                $(".error").removeClass("error");
+                var $form = $("form#kpiEditForm");
+                var id = $("#id", $form).val();
+                var kpiData = {};
+                
+                // validate required fields
+                $("input.required").each(function() {
+                    if ($(this).val().trim() === '') {
+                        $(this).addClass('error');
+                    } else {
+                        $(this).removeClass('error');
+                    }
+                });
+                if ($(".error").length > 0) {
+                    return;
+                }
+                $('#kpiEditForm').serializeArray().forEach(function (item) {
+                    kpiData[item.name] = item.value;
+                });
+                console.info("kpiData::");
+                console.info(JSON.stringify(kpiData));
+                
+                var operationType = $("#id").val() ? "update" : "new";
+                
+                // zj: left off here - differentiate between controller methods
+                if (operationType == "update") {
+                    console.info("updating...");
+                    $.ajax({
+                        type: 'PUT',
+                        url: 'kpi/' + id,
+                        contentType: 'application/json',
+                        data: JSON.stringify(kpiData),
+                        success: function (response) {
+                            console.log('KPI updated successfully:', response);
+                            showSuccess('KPI updated successfully:', response);
+                            // Handle success, e.g., show a success message
+                        },
+                        error: function (error) {
+                            alert('Error updating KPI:', error);
+                            // Handle error, e.g., show an error message
+                        }
+                    });
+                } else if (operationType == "new") {
+                    console.info("saving new...");
+                    $.ajax({
+                        type: 'POST',
+                        url: 'kpi/',
+                        contentType: 'application/json',
+                        data: JSON.stringify(kpiData),
+                        success: function (response) {
+                            console.log('KPI added successfully:', response);
+                            showSuccess('KPI added successfully:', response);
+                            // Handle success, e.g., show a success message
+                        },
+                        error: function (error) {
+                            alert('Error updating KPI:', error);
+                            // Handle error, e.g., show an error message
+                        }
+                    });
+                }
+
+
+            });
+
+            $("#deleteKpi").click(function () {
+                var id = $("#id", "form#kpiEditForm").val();
+                $.ajax({
+                    type: 'DELETE',
+                    contentType: 'application/json',
+                    url: 'kpi/' + id,
+                    success: function (response) {
+                        console.log(response);
+                        showSuccess(response);
+                    },
+                    error: function (error) {
+                        alert("error deleting KPI:", error);
+                        console.error('Error deleting KPI:', error);
+                        // Handle error, e.g., show an error message
+                    }
+                });
+
+            });
+
+            $("#kpiModal").on('hidden.bs.modal', function () {
+                console.info("closing modal, reset form");
+                $("form#kpiEditForm")[0].reset();
+            });
         });
 
+        <!-- // zj: modal-stuff -->
+        // edit kpi
+        function editKpi(id) {
+            $.ajax({
+                url: 'kpi/' + id,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $.each(data, function (key, value) {
+                        // handle booleans
+                        if (value === true || value === false) {
+                            console.info(key + " -- " + value + " (BOOLEAN)");
+                            $("#" + key).attr("checked", value);
+                        } else {
+                            console.info(key + " -- " + value);
+                            $("#" + key).val(value);
+                        }
+                        // var $element = "<input id='" + key + "' name='" + key + "' value='" + value + "'>";
+                        // $("div.modal-body", "#kpiModal").append($element + "<br>");
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert("ERROR");
+                    console.error('Error retrieving JSON data:', error);
+                    // Handle error response
+                }
+            });
+        }
+
+                function showSuccess(message) {
+                        $('#kpiModal').modal('hide');
+                        $("#kpiSubmit").click();
+
+                        // Create a new toast element
+                        var toast = $('<div class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true" data-delay="8000" style="position: absolute; top: 100px; left: 50%; transform: translateX(-50%);"><div class="toast-body">' + message + '</div></div>');
+
+                        // Append the toast to the body
+                        $('body').append(toast);
+
+                        // Show the toast
+                        toast.toast('show');
+
+                        // Remove the toast after it is hidden
+                        toast.on('hidden.bs.toast', function () {
+                            toast.remove();
+                        });
+                    }
 
         // zj: msal stuff
         function checkSignIn() {

@@ -30,12 +30,12 @@ public class KPI implements Serializable {
     private String KPI_Area;
     private String KPI_Name;
     private String KPI_ID;
-    private boolean fromExcel;
+    private Boolean fromExcel;
     private String dataType;
     private String dataStoreType;
     private int calcDenominator;
     private String target;
-    private boolean rollingAvg;
+    private Boolean rollingAvg;
     private String access;
     private String requestedBy;
     private String sourceSystem;

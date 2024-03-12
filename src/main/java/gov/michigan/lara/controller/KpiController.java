@@ -10,40 +10,42 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 
-public class KpiController {
+public class KpiController{
     @Autowired
     private KpiService kpiService;
 
     // Save operation
     @PostMapping("/kpi")
-    public KPI saveKpi(@Valid @RequestBody KPI kpi) {
-        System.out.println("testing 1");
+    public KPI saveKpi(@Valid @RequestBody KPI kpi){
         return kpiService.saveKpi(kpi);
     }
 
     // Read operation
     @GetMapping("/kpi")
-    public List<KPI> fetchKpiList() {
-        System.out.println("testing 2");
+    public List<KPI> fetchKpiList(){
         return kpiService.fetchKpiList();
     }
 
     // Update operation
     @PutMapping("/kpi/{id}")
-    public KPI updateKpi(@RequestBody KPI kpi, @PathVariable("id") Long id) {
-        System.out.println("testing 3");
-        return kpiService.updateKpi(kpi, id);
+    public KPI updateKpi(@RequestBody KPI kpi,@PathVariable("id") Long id){
+        return kpiService.updateKpi(kpi,id);
     }
 
     // Delete operation
     @DeleteMapping("/kpi/{id}")
-    public String deleteKpiById(@PathVariable("id") Long id) {
-        System.out.println("testing 4");
+    public String deleteKpiById(@PathVariable("id") Long id){
         kpiService.deleteKpiById(id);
         return "Deleted Successfully";
     }
 
+    // Find by ID operation
+    @GetMapping("/kpi/{id}")
+    public KPI findKpiById(@PathVariable("id") Long id){
+        return kpiService.findKpiById(id);
+    }
+
 }
 
-
-// well i'll be a son of a bitch...the fetchKpiList method works at least, hell yeah!!!
+// well i'll be a son of a bitch...the fetchKpiList method works at least, hell
+// yeah!!!
