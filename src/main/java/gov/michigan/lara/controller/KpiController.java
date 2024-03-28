@@ -1,7 +1,7 @@
 package gov.michigan.lara.controller;
 
 import gov.michigan.lara.domain.KPI;
-import gov.michigan.lara.util.KpiService;
+import gov.michigan.lara.service.KpiService;
 
 import java.util.List;
 import javax.validation.Valid;

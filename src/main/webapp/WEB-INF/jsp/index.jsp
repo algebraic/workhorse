@@ -129,7 +129,7 @@ crossorigin="anonymous"> -->
                         Select Action
                     </a>
                     <ul class="dropdown-menu" data-bs-theme="dark">
-                        <li><a class="dropdown-item section" id="manual_entry" href="#">BPL Data Entry</a></li>
+                        <li><a class="dropdown-item section" id="manual_entry" href="#">Data Entry</a></li>
                                 <!-- zj: disabled pending resolution of weblogic upload problems-->
                                 <li><a class="dropdown-item section hidden" id="file_operation" href="#">File
                                         Operation</a></li>
@@ -244,146 +244,17 @@ crossorigin="anonymous"> -->
 
     <!-- manual entry section -->
     <div class="container-fluid hidden" data-section="manual_entry">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <!-- zj: mostly skeletal form, id's & name's get populated via script -->
-                <form id="manualEntry">
-                    <input type="hidden" id="username" name="username">
-                    <div class="row mb-3">
-                        <div class="input-group">
-                            <select class="form-select" id="kpiName" aria-label="kpi name">
-                                <option value="BPL_01">PDM complete investigations within 120 days</option>
-                                <option value="BPL_02">PHC investigations completed within 120 days</option>
-                                <option value="BPL_03">OCC investigations completed within 120 days</option>
-                                <option value="BPL_04">Complaints received</option>
-                                <option value="BPL_05">Complaints closed</option>
-                                <option value="BFS_INSP_02">BFS_INSP_02</option>
-                                <option value="BCC_INSP_01">BCC_INSP_01</option>
-                                <option value="BCC_INSP_02">BCC_INSP_02</option>
-                                <option value="BCC_INSP_03">BCC_INSP_03</option>
-                                <option value="BCC_INSP_04">BCC_INSP_04</option>
-                                <option value="BFS_INSP_01">BFS_INSP_01</option>
-                                <option value="BFS_INSP_02">BFS_INSP_02</option>
-                                <option value="BPL_INSP_01">BPL_INSP_01</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- loaded data row -->
-                    <div class="row mb-3" id="displayData">
-                        <div class="col-lg-12" style="min-height: 31px;">
-
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="input-group">
-                            <button class="btn btn-outline-secondary year-btn" data-action="-" type="button"><</button>
-                            <input type="text" class="form-control text-center" id="year-input" readonly>
-                            <button class="btn btn-outline-secondary year-btn" data-action="+" type="button">></button>
-                        </div>
-                    </div>
-
-                    <div class="row month-data">
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">January</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">February</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">March</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row month-data">
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">April</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">May</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">June</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row month-data">
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">July</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">August</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">September</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row month-data">
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">October</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">November</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">December</span>
-                                <input type="text" class="form-control">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
+        <div class="btn-group-vertical float-start" role="group" aria-label="Bureau selection">
+            <button type="button" class="btn btn-primary test-load">BCC</button>
+            <button type="button" class="btn btn-primary test-load">BFS</button>
+            <button type="button" class="btn btn-primary test-load">BPL</button>
+            <button type="button" class="btn btn-primary test-load">CSCL</button>
+        </div>
+        <div class="col-xs-10">
+            <div class="container" id="test-data"></div>
         </div>
     </div>
-
+    
 
     <!-- kpi data entry section -->
     <div class="container-fluid hidden" data-section="kpi_edit">
@@ -419,9 +290,8 @@ crossorigin="anonymous"> -->
                                 <label for="bureau">bureau</label>
                                 <input type="text" id="bureau" name="bureau" class="required">
                                 <br>
-                                <label for="fromExcel">fromExcel</label>
-                                <input type="hidden" name="fromExcel" value="false">
-                                <input type="checkbox" id="fromExcel" name="fromExcel" value="true">
+                                <label for="historicalData">historicalData</label>
+                                <input type="text" id="historicalData" name="historicalData">
                                 <br>
                                 <label for="dataType">dataType</label>
                                 <input type="text" id="dataType" name="dataType">
@@ -565,7 +435,7 @@ crossorigin="anonymous"></script> -->
                 }
             });
             // zj: auto-click something on page load
-            // $("a.section").eq(2).click();
+            $("a.section").eq(0).click();
 
             // get current year
             var currentYear = new Date().getFullYear();
@@ -909,10 +779,38 @@ crossorigin="anonymous"></script> -->
 
             });
 
-            $("#kpiModal").on('hidden.bs.modal', function () {
+            $("#kpiModal").on('hidden.bs.modal', function() {
                 console.info("closing modal, reset form");
                 $("form#kpiEditForm")[0].reset();
             });
+
+            $(".test-load").click(function() {
+                $.ajax({
+                    url: 'records',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        var $testDiv = $('#test-data');
+                        for (var i = 0; i < response.length; i++) {
+                            var record = response[i];
+                            var recordLine = '';
+                            for (var key in record) {
+                                if (record.hasOwnProperty(key)) {
+                                    recordLine += key + ': ' + record[key] + ' | ';
+                                }
+                            }
+                            // Append the record line to the test-div
+                            console.info("recordLine=" + recordLine);
+                            $testDiv.append('<div>' + recordLine + '</div>');
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error fetching record list:', error);
+                    }
+                });
+            });
+            
+
         });
 
         <!-- // zj: modal-stuff -->

@@ -1,11 +1,15 @@
 package gov.michigan.lara.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,26 +24,20 @@ import lombok.NoArgsConstructor;
 @Builder
 
 @EqualsAndHashCode(callSuper = false)
-public class KPI implements Serializable {
+public class RecordCount implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String bureau;
-    private String KPI_Area;
-    private String KPI_Name;
+    // @ManyToOne
+    // @JoinColumn(name = "KPI_ID") // this should match the column name in the Count table
+    // private KPI kpi;
+    
     private String KPI_ID;
-    private String historicalData;
-    private String dataType;
-    private String dataStoreType;
-    private Integer calcDenominator;
-    private String target;
-    private Boolean rollingAvg;
-    private String access;
-    private String requestedBy;
-    private String sourceSystem;
-    private String dataFeed;
-    private String comments;
-    private String devComments;
+
+    private String PRCT_VAL;
+    private String COUNT_VAL;
+    private String ENTRYDATE;
+    
 }

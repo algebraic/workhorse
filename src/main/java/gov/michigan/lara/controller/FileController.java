@@ -1,6 +1,7 @@
 package gov.michigan.lara.controller;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,8 +45,24 @@ public class FileController {
 
     @ModelAttribute
     @GetMapping(value = "/")
-    public ModelAndView test() {
+    public ModelAndView test(HttpServletRequest request) {
         log.info("index mapping");
+        
+        // String user=request.getUserPrincipal().getName();
+        System.out.println("Logging before calling getUserPrincipal()");
+
+        // Retrieve the user principal
+        Principal principal = request.getUserPrincipal();
+        if (principal != null) {
+            String username = principal.getName();
+            System.out.println("User principal name: " + username);
+        } else {
+            System.out.println("User principal is null");
+        }
+
+        // Log after calling getUserPrincipal()
+        System.out.println("Logging after calling getUserPrincipal()");
+
         ModelAndView mav = new ModelAndView("index");
         this.size = 0;
         this.count = 0;

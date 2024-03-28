@@ -1,11 +1,11 @@
-package gov.michigan.lara.util;
+package gov.michigan.lara.dao;
 
-import gov.michigan.lara.domain.KPI;
+import gov.michigan.lara.domain.RecordCount;
 import org.springframework.data.repository.CrudRepository;
 
 // Annotation
 @org.springframework.stereotype.Repository
 
 // Interface extending CrudRepository
-public interface Repository extends CrudRepository<KPI, Long> {
+public interface RecordRepository extends CrudRepository<RecordCount, Long> {
 }

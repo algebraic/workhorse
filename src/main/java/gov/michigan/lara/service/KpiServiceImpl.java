@@ -1,5 +1,6 @@
-package gov.michigan.lara.util;
+package gov.michigan.lara.service;
 
+import gov.michigan.lara.dao.KpiRepository;
 import gov.michigan.lara.domain.KPI;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class KpiServiceImpl implements KpiService {
     private static Logger log = LogManager.getLogger();
 
     @Autowired
-    private Repository repository;
+    private KpiRepository repository;
 
     @Override
     public KPI saveKpi(KPI kpi) {
@@ -51,7 +52,7 @@ public class KpiServiceImpl implements KpiService {
         kpiDB.setKPI_Area(kpi.getKPI_Area());
         kpiDB.setKPI_Name(kpi.getKPI_Name());
         kpiDB.setKPI_ID(kpi.getKPI_ID());
-        kpiDB.setFromExcel(kpi.getFromExcel());
+        kpiDB.setHistoricalData(kpi.getHistoricalData());
         kpiDB.setDataType(kpi.getDataType());
         kpiDB.setDataStoreType(kpi.getDataStoreType());
         kpiDB.setCalcDenominator(kpi.getCalcDenominator());

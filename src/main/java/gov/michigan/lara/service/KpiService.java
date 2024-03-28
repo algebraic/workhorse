@@ -1,4 +1,4 @@
-package gov.michigan.lara.util;
+package gov.michigan.lara.service;
 
 import gov.michigan.lara.domain.KPI;
 import java.util.List;
