@@ -30,7 +30,6 @@ public class RecordCountController{
     // Read operation
     @GetMapping("/records")
     public List<RecordCount> fetchRecordCounts(){
-        log.info("\n****************************************\n");
         List<RecordCount> testlist = recordService.fetchRecordList();
 
         for (RecordCount record : testlist) {
@@ -40,15 +39,15 @@ public class RecordCountController{
                 field.setAccessible(true); // Allows accessing private fields
                 try {
                     Object value = field.get(record);
-                    log.info(field.getName() + ": " + value);
+                    // log.info(field.getName() + ": " + value);
                 } catch (IllegalAccessException e) {
                     log.error("Error accessing field: " + field.getName(), e);
                 }
             }
         }
-        log.info("\n****************************************\n");
         return testlist;
     }
+
 
     // // Update operation
     // @PutMapping("/kpi/{id}")

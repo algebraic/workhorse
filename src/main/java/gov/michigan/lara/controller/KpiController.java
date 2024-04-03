@@ -45,7 +45,16 @@ public class KpiController{
         return kpiService.findKpiById(id);
     }
 
-}
+    // get distinct bureau's from entered kpi's
+    @GetMapping("/kpi/bureaus")
+    public List<String> getBureauList(){
+        return kpiService.getBureauList();
+    }
 
-// well i'll be a son of a bitch...the fetchKpiList method works at least, hell
-// yeah!!!
+    // get distinct kpi areas from given bureau
+    @GetMapping("/kpi/bureaus/{bureau}")
+    public List<String> getKpiAreasByBureau(@PathVariable("bureau") String bureau){
+        return kpiService.getKpiAreasByBureau(bureau);
+    }
+
+}

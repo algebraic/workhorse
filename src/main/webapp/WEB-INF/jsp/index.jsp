@@ -105,6 +105,20 @@ crossorigin="anonymous"> -->
         .data-tables td {
             white-space: nowrap;
         }
+
+        .accordion#bureau-list {
+            min-width: 130px;
+        }
+
+        .kpi-area-btn {
+            display: block;
+            width: 100%;
+        }
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: rgba(0,0,0,.125);
+        }
+
     </style>
 
 </head>
@@ -242,13 +256,10 @@ crossorigin="anonymous"> -->
         </div>
     </div>
 
-    <!-- manual entry section -->
+    <!-- data entry section -->
     <div class="container-fluid hidden" data-section="manual_entry">
-        <div class="btn-group-vertical float-start" role="group" aria-label="Bureau selection">
-            <button type="button" class="btn btn-primary test-load">BCC</button>
-            <button type="button" class="btn btn-primary test-load">BFS</button>
-            <button type="button" class="btn btn-primary test-load">BPL</button>
-            <button type="button" class="btn btn-primary test-load">CSCL</button>
+        <div class="float-start" role="group" aria-label="Bureau selection">
+            <div class="accordion" id="bureau-list"></div>
         </div>
         <div class="col-xs-10">
             <div class="container" id="test-data"></div>
@@ -405,30 +416,26 @@ crossorigin="anonymous"></script> -->
                 if ($this.text() == "KPI Data") {
                     $("#kpiSubmit").click();
                 }
-                if ($this.text() == "BPL Data Entry") {
-                    var kpiSelect = $('#kpiName');
-                    kpiSelect.empty(); // Clear existing options
+                if ($this.text() == "Data Entry") {
                     ///////////////////////////////////////////////////////////
+                    var $div = $("#bureau-list").empty();
+                    
                     $.ajax({
-                        url: 'kpi',  // Replace with the actual URL of your controller mapping
+                        url: 'kpi/bureaus',
                         type: 'GET',
                         dataType: 'json',
-                        success: function(data) {
-                            console.info(data);
-                            // Populate the select element with fetched data
-                            $.each(data, function (index, kpi) {
-                                // Create an option element for each KPI
-                                var option = $('<option>', {
-                                    value: kpi.kpi_ID, // Use the 'id' property for the option value
-                                    text: kpi.kpi_Name // Use the 'kpi_ID' property for the option text
-                                });
+                        success: function(response) {
+                            for (var i = 0; i < response.length; i++) {
+                                var $element = '<div class="accordion-item"><h2 class="accordion-header">';
+                                $element += '<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-bureau-' + i + '" aria-expanded="false" aria-controls="panel-bureau-' + i + '">' + response[i] + '</button></h2>';
+                                $element += '<div id="panel-bureau-' + i + '" class="accordion-collapse collapse"><div class="accordion-body p-0"></div></div>';
 
-                                // Append the option to the select element
-                                kpiSelect.append(option);
-                            });
+                                // $div.append('<button type="button" class="btn btn-primary bureau-load" data-bureau="' + response[i] + '">' + response[i] + '</button>');
+                                $div.append($element);
+                            }
                         },
-                        error: function (error) {
-                            console.error('Error fetching KPI list:', error);
+                        error: function(error) {
+                            console.error('Error fetching record list:', error);
                         }
                     });
                     ///////////////////////////////////////////////////////////
@@ -784,13 +791,34 @@ crossorigin="anonymous"></script> -->
                 $("form#kpiEditForm")[0].reset();
             });
 
-            $(".test-load").click(function() {
+            
+            $("#bureau-list").on("click", ".accordion-button", function() {
+                var bureau = $(this).text();
+                var $container = $(this).parents(".accordion-item").find(".accordion-body").empty();
+                var $kpiareas = "";
+                console.info("!!bureau: " + bureau);
                 $.ajax({
-                    url: 'records',
+                    url: 'kpi/bureaus/' + bureau,
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
-                        var $testDiv = $('#test-data');
+                        for (var i = 0; i < response.length; i++) {
+                            var record = response[i];
+                            console.info("area: " + record);
+                            $container.append('<button type="button" class="btn btn-light kpi-area-btn rounded-0">' + record + '</button>');
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error fetching record list:', error);
+                    }
+                });
+                /*
+                $.ajax({
+                    url: 'records/' + bureau,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        var $testDiv = $('#test-data').empty();
                         for (var i = 0; i < response.length; i++) {
                             var record = response[i];
                             var recordLine = '';
@@ -808,9 +836,10 @@ crossorigin="anonymous"></script> -->
                         console.error('Error fetching record list:', error);
                     }
                 });
+                */
             });
             
-
+            // zj: end stupidly huge script block
         });
 
         <!-- // zj: modal-stuff -->

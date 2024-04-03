@@ -4,8 +4,6 @@ import gov.michigan.lara.dao.KpiRepository;
 import gov.michigan.lara.domain.KPI;
 
 import java.util.List;
-import java.util.Objects;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,23 +23,16 @@ public class KpiServiceImpl implements KpiService {
 
     @Override
     public KPI saveKpi(KPI kpi) {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'saveKpi'");
         return repository.save(kpi);
     }
 
     @Override
     public List<KPI> fetchKpiList() {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method
-        // 'fetchKpiList'");
         return (List<KPI>) repository.findAll();
     }
 
     @Override
     public KPI updateKpi(KPI kpi, Long id) {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'updateKpi'");
         log.info("testing log");
         log.info(kpi);
         System.out.println("kpi " + Long.toString(id));
@@ -75,16 +66,25 @@ public class KpiServiceImpl implements KpiService {
 
     @Override
     public void deleteKpiById(Long id) {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'deleteKpiById'");
         repository.deleteById(id);
     }
 
     @Override
     public KPI findKpiById(Long id) {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'deleteKpiById'");
         return repository.findById(id).get();
     }
+
+    @Override
+    public List<String> getBureauList(){
+        return repository.getBureauList();
+    }
+
+    @Override
+    public List<String> getKpiAreasByBureau(String bureau){
+        System.out.println("%^& yay: " + bureau);
+        return repository.getKpiAreaByBureau(bureau);
+    }
+
+    
 
 }

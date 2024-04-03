@@ -10,4 +10,7 @@ public interface KpiService {
     KPI updateKpi(KPI kpi, Long id);
     void deleteKpiById(Long id);
     KPI findKpiById(Long id);
+
+    List<String> getBureauList();
+    List<String> getKpiAreasByBureau(String bureau);
 }
