@@ -434,7 +434,7 @@ crossorigin="anonymous"></script> -->
                             for (var i = 0; i < response.length; i++) {
                                 var $element = '<div class="accordion-item" data-bureau="' + response[i] + '"><h2 class="accordion-header">';
                                 $element += '<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-bureau-' + i + '" aria-expanded="false" aria-controls="panel-bureau-' + i + '">' + response[i] + '</button></h2>';
-                                $element += '<div id="panel-bureau-' + i + '" class="accordion-collapse collapse"><div class="accordion-body p-0"></div></div>';
+                                $element += '<div id="panel-bureau-' + i + '" class="accordion-collapse collapse" data-bs-parent="#bureau-list"><div class="accordion-body p-0"></div></div>';
 
                                 // $div.append('<button type="button" class="btn btn-primary bureau-load" data-bureau="' + response[i] + '">' + response[i] + '</button>');
                                 $div.append($element);
@@ -833,7 +833,7 @@ crossorigin="anonymous"></script> -->
                     dataType: 'json',
                     success: function(response) {
                         console.info(response);
-                        var $select = $("#kpi_selector").empty().append('<option selected disabled hidden>select Key Performance Indicator');
+                        var $select = $("#kpi_selector").empty().append('<option disabled hidden>select Key Performance Indicator');
                         for (var i = 0; i < response.length; i++) {
                             var record = response[i];
                             var $option = '<option value="' + record.KPI_ID + '">' + record.KPI_ID + ' | ' + record.KPI_Name + '</option>';
@@ -844,6 +844,7 @@ crossorigin="anonymous"></script> -->
                         console.error('Error fetching record list:', error);
                     }
                 });
+                $("#kpi_selector").val($('#kpi_selector option:eq(1)').val()).change();
 
             });
             
