@@ -1,7 +1,7 @@
 package gov.michigan.lara.service;
 
 import gov.michigan.lara.dao.RecordRepository;
-import gov.michigan.lara.domain.RecordCount;
+import gov.michigan.lara.domain.Record;
 
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +22,12 @@ public class RecordServiceImpl implements RecordService {
     private RecordRepository repository;
 
     @Override
-    public List<RecordCount> fetchRecordList() {
-        return (List<RecordCount>) repository.findAll();
+    public List<Record> fetchRecordList() {
+        return (List<Record>) repository.findAll();
+    }
+
+    @Override
+    public List<Record> getRecordsByKpiId(String kpiId){
+        return repository.getRecordsByKpiId(kpiId);
     }
 }

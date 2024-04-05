@@ -20,4 +20,7 @@ public interface KpiRepository extends CrudRepository<KPI,Long>{
     @Query("SELECT DISTINCT k.KPI_Area FROM KPI k where k.bureau = :bureau")
     List<String> getKpiAreaByBureau(@Param("bureau") String bureau);
 
+    @Query("SELECT DISTINCT k.KPI_ID, k.KPI_Name FROM KPI k where k.bureau = :bureau and k.KPI_Area = :area")
+    List<Object[]> getKpiIdsByArea(@Param("bureau") String bureau, @Param("area") String area);
+
 }

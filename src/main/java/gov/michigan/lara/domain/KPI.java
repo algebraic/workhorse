@@ -24,7 +24,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = "recordCounts")
+@ToString(exclude = "record")
 
 @EqualsAndHashCode(callSuper = false)
 public class KPI implements Serializable {
@@ -52,5 +52,5 @@ public class KPI implements Serializable {
 
     @OneToMany(mappedBy = "kpi", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<RecordCount> recordCounts;
+    private List<Record> record;
 }

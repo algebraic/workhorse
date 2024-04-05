@@ -119,6 +119,12 @@ crossorigin="anonymous"> -->
             border-color: rgba(0,0,0,.125);
         }
 
+        .accordion-button:not(.collapsed) {
+            color: white;
+            font-weight: bold;
+            background-color: var(--bs-success);
+        }
+
     </style>
 
 </head>
@@ -261,7 +267,8 @@ crossorigin="anonymous"> -->
         <div class="float-start" role="group" aria-label="Bureau selection">
             <div class="accordion" id="bureau-list"></div>
         </div>
-        <div class="col-xs-10">
+        <div class="col-lg-11 offset-lg-1 text-start">
+            <select id="kpi_selector" class="form-select mb-3" style="width:auto"></select>
             <div class="container" id="test-data"></div>
         </div>
     </div>
@@ -357,7 +364,6 @@ crossorigin="anonymous"> -->
                 </div>
             </div>
 
-
     <!-- footer -->
     <div class="container-fluid">
         <div class="row fixed-bottom">
@@ -426,7 +432,7 @@ crossorigin="anonymous"></script> -->
                         dataType: 'json',
                         success: function(response) {
                             for (var i = 0; i < response.length; i++) {
-                                var $element = '<div class="accordion-item"><h2 class="accordion-header">';
+                                var $element = '<div class="accordion-item" data-bureau="' + response[i] + '"><h2 class="accordion-header">';
                                 $element += '<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-bureau-' + i + '" aria-expanded="false" aria-controls="panel-bureau-' + i + '">' + response[i] + '</button></h2>';
                                 $element += '<div id="panel-bureau-' + i + '" class="accordion-collapse collapse"><div class="accordion-body p-0"></div></div>';
 
@@ -791,52 +797,86 @@ crossorigin="anonymous"></script> -->
                 $("form#kpiEditForm")[0].reset();
             });
 
-            
-            $("#bureau-list").on("click", ".accordion-button", function() {
-                var bureau = $(this).text();
-                var $container = $(this).parents(".accordion-item").find(".accordion-body").empty();
-                var $kpiareas = "";
-                console.info("!!bureau: " + bureau);
+            $("#bureau-list").on('show.bs.collapse', function(e) {
+                var $parent = $(e.target).parent();
+                var $container = $parent.find(".accordion-body").empty();
+                var bureau = $parent.attr("data-bureau");
+                
                 $.ajax({
                     url: 'kpi/bureaus/' + bureau,
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
                         for (var i = 0; i < response.length; i++) {
-                            var record = response[i];
-                            console.info("area: " + record);
-                            $container.append('<button type="button" class="btn btn-light kpi-area-btn rounded-0">' + record + '</button>');
+                            var area = response[i];
+                            $container.append('<button type="button" class="btn btn-light kpi-area-btn rounded-0" data-area="' + area + '">' + area + '</button>');
                         }
                     },
                     error: function(error) {
                         console.error('Error fetching record list:', error);
                     }
                 });
-                /*
+                
+            }).on('hide.bs.collapse', function (e) {
+                console.info("closing accordion, not sure we need this one...");
+            });
+            
+            $("#bureau-list").on("click", ".kpi-area-btn", function() {
+                var $btn = $(this);
+                var bureau = $btn.parents(".accordion-item").attr("data-bureau");
+                var area = $btn.attr("data-area");
+                $("#test-data").empty();
+
                 $.ajax({
-                    url: 'records/' + bureau,
+                    url: 'kpi/bureaus/' + bureau + '/' + area,
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
-                        var $testDiv = $('#test-data').empty();
+                        console.info(response);
+                        var $select = $("#kpi_selector").empty().append('<option selected disabled hidden>select Key Performance Indicator');
                         for (var i = 0; i < response.length; i++) {
                             var record = response[i];
-                            var recordLine = '';
-                            for (var key in record) {
-                                if (record.hasOwnProperty(key)) {
-                                    recordLine += key + ': ' + record[key] + ' | ';
-                                }
-                            }
-                            // Append the record line to the test-div
-                            console.info("recordLine=" + recordLine);
-                            $testDiv.append('<div>' + recordLine + '</div>');
+                            var $option = '<option value="' + record.KPI_ID + '">' + record.KPI_ID + ' | ' + record.KPI_Name + '</option>';
+                            $select.append($option);
                         }
                     },
                     error: function(error) {
                         console.error('Error fetching record list:', error);
                     }
                 });
-                */
+
+            });
+            
+            $("#kpi_selector").change(function() {
+                var kpiId = $(this).val()
+                console.info("** " + kpiId);
+                var $testDiv = $('#test-data').empty();
+                var html = '<table>';
+                html += '<tr><th>ID</th><th>KPI ID</th><th>Percentage Value</th><th>Entry Date</th><th>Count Value</th></tr>';
+
+                $.ajax({
+                    url: 'records/' + kpiId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        
+                        $.each(response, function(index, item) {
+                            html += '<tr>';
+                            html += '<td>' + item.id + '</td>';
+                            html += '<td>' + item.kpi_ID + '</td>';
+                            html += '<td>' + item.prct_VAL + '</td>';
+                            html += '<td>' + item.entrydate + '</td>';
+                            html += '<td>' + item.count_VAL + '</td>';
+                            html += '</tr>';
+                        });
+                
+                        html += '</table>';
+                        $testDiv.html(html);
+                    },
+                    error: function(error) {
+                        console.error('Error fetching record list:', error);
+                    }
+                });
             });
             
             // zj: end stupidly huge script block

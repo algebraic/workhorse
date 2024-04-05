@@ -2,6 +2,7 @@ package gov.michigan.lara.service;
 
 import gov.michigan.lara.domain.KPI;
 import java.util.List;
+import java.util.Map;
 
 public interface KpiService {
 
@@ -13,4 +14,7 @@ public interface KpiService {
 
     List<String> getBureauList();
     List<String> getKpiAreasByBureau(String bureau);
+    
+    List<Map<String, String>> getKpiIdsByArea(String bureau, String area);
+    
 }

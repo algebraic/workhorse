@@ -4,6 +4,8 @@ import gov.michigan.lara.domain.KPI;
 import gov.michigan.lara.service.KpiService;
 
 import java.util.List;
+import java.util.Map;
+
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +57,12 @@ public class KpiController{
     @GetMapping("/kpi/bureaus/{bureau}")
     public List<String> getKpiAreasByBureau(@PathVariable("bureau") String bureau){
         return kpiService.getKpiAreasByBureau(bureau);
+    }
+
+    // get distinct kpi ids from given bureau/area
+    @GetMapping("/kpi/bureaus/{bureau}/{area}")
+    public List<Map<String,String>> getKpiIdsByArea(@PathVariable("bureau") String bureau,@PathVariable("area") String area){
+        return kpiService.getKpiIdsByArea(bureau, area);
     }
 
 }

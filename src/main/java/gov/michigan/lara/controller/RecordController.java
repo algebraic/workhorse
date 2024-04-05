@@ -1,10 +1,12 @@
 package gov.michigan.lara.controller;
 
-import gov.michigan.lara.domain.RecordCount;
+import gov.michigan.lara.domain.Record;
 import gov.michigan.lara.service.RecordService;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 
-public class RecordCountController{
+public class RecordController{
 
     private static Logger log=LogManager.getLogger();
 
@@ -29,10 +31,10 @@ public class RecordCountController{
 
     // Read operation
     @GetMapping("/records")
-    public List<RecordCount> fetchRecordCounts(){
-        List<RecordCount> testlist = recordService.fetchRecordList();
+    public List<Record> fetchRecordCounts(){
+        List<Record> testlist = recordService.fetchRecordList();
 
-        for (RecordCount record : testlist) {
+        for (Record record : testlist) {
             Class<?> recordClass = record.getClass();
             Field[] fields = recordClass.getDeclaredFields();
             for (Field field : fields) {
@@ -48,6 +50,25 @@ public class RecordCountController{
         return testlist;
     }
 
+    @GetMapping("/records/{kpiId}")
+    public List<Record> getKpiIdsByArea(@PathVariable("kpiId") String kpiId){
+        List<Record> testlist = recordService.getRecordsByKpiId(kpiId);
+
+        for (Record record : testlist) {
+            Class<?> recordClass = record.getClass();
+            Field[] fields = recordClass.getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true); // Allows accessing private fields
+                try {
+                    Object value = field.get(record);
+                    // log.info(field.getName() + ": " + value);
+                } catch (IllegalAccessException e) {
+                    log.error("Error accessing field: " + field.getName(), e);
+                }
+            }
+        }
+        return testlist;
+    }
 
     // // Update operation
     // @PutMapping("/kpi/{id}")
@@ -69,6 +90,3 @@ public class RecordCountController{
     // }
 
 }
-
-// well i'll be a son of a bitch...the fetchKpiList method works at least, hell
-// yeah!!!

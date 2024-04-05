@@ -27,7 +27,7 @@ import lombok.ToString;
 
 
 @EqualsAndHashCode(callSuper = false)
-public class RecordCount implements Serializable {
+public class Record implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
