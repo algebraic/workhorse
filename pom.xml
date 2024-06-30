@@ -102,6 +102,14 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>12.6.2.jre8</version>
+        </dependency>
+
+
         <!-- zj: apache poi for excel -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -204,7 +212,7 @@
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>4.6.0</version>            <!-- Adjust version as needed -->
+            <version>4.6.0</version>
         </dependency>
 
     </dependencies>

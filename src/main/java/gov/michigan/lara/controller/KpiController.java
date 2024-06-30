@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,21 +31,30 @@ public class KpiController{
 
     // Update operation
     @PutMapping("/kpi/{id}")
-    public KPI updateKpi(@RequestBody KPI kpi,@PathVariable("id") Long id){
+    public KPI updateKpi(@RequestBody KPI kpi,@PathVariable("id") String id){
         return kpiService.updateKpi(kpi,id);
     }
 
     // Delete operation
     @DeleteMapping("/kpi/{id}")
-    public String deleteKpiById(@PathVariable("id") Long id){
+    public String deleteKpiById(@PathVariable("id") String id){
         kpiService.deleteKpiById(id);
         return "Deleted Successfully";
     }
 
     // Find by ID operation
     @GetMapping("/kpi/{id}")
-    public KPI findKpiById(@PathVariable("id") Long id){
+    public KPI findKpiById(@PathVariable("id") String id){
         return kpiService.findKpiById(id);
+    }
+
+    // get KPI's data type
+    @ResponseBody
+    @GetMapping("/kpi/{kpiId}/data")
+    public ResponseEntity<String> getKpiDataType(@PathVariable("kpiId") String kpiId){
+        String dataType = kpiService.getKpiDataType(kpiId);
+        System.out.println("@@@ kpiService.getKpiDataType(kpiId) = " + dataType);
+        return ResponseEntity.ok(dataType);
     }
 
     // get distinct bureau's from entered kpi's
@@ -62,7 +72,7 @@ public class KpiController{
     // get distinct kpi ids from given bureau/area
     @GetMapping("/kpi/bureaus/{bureau}/{area}")
     public List<Map<String,String>> getKpiIdsByArea(@PathVariable("bureau") String bureau,@PathVariable("area") String area){
-        return kpiService.getKpiIdsByArea(bureau, area);
+        return kpiService.getKpiIdsByArea(bureau,area);
     }
 
 }

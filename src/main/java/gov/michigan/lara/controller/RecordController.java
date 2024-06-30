@@ -31,61 +31,42 @@ public class RecordController{
 
     // Read operation
     @GetMapping("/records")
-    public List<Record> fetchRecordCounts(){
-        List<Record> testlist = recordService.fetchRecordList();
-
-        for (Record record : testlist) {
-            Class<?> recordClass = record.getClass();
-            Field[] fields = recordClass.getDeclaredFields();
-            for (Field field : fields) {
-                field.setAccessible(true); // Allows accessing private fields
-                try {
-                    Object value = field.get(record);
-                    // log.info(field.getName() + ": " + value);
-                } catch (IllegalAccessException e) {
-                    log.error("Error accessing field: " + field.getName(), e);
-                }
-            }
-        }
-        return testlist;
+    public List<Record> getAllRecords(){
+        return recordService.getAllRecords();
     }
 
     @GetMapping("/records/{kpiId}")
-    public List<Record> getKpiIdsByArea(@PathVariable("kpiId") String kpiId){
-        List<Record> testlist = recordService.getRecordsByKpiId(kpiId);
+    public List<Record> getRecordsByKpiId(@PathVariable("kpiId") String kpiId){
+        return recordService.getRecordsByKpiId(kpiId);
+    }
 
-        for (Record record : testlist) {
-            Class<?> recordClass = record.getClass();
-            Field[] fields = recordClass.getDeclaredFields();
-            for (Field field : fields) {
-                field.setAccessible(true); // Allows accessing private fields
-                try {
-                    Object value = field.get(record);
-                    // log.info(field.getName() + ": " + value);
-                } catch (IllegalAccessException e) {
-                    log.error("Error accessing field: " + field.getName(), e);
-                }
-            }
-        }
-        return testlist;
+    @GetMapping("/records/{kpiId}/{year}")
+    public List<Record> getRecordsByKpiYear(@PathVariable("kpiId") String kpiId, @PathVariable("year") int year){
+        return recordService.getRecordsByKpiYear(kpiId, year);
+    }
+
+    @GetMapping("/records/{kpiId}/years")
+    public List<Integer> getKpiYears(@PathVariable("kpiId") String kpiId){
+        System.out.println("### getKpiYears?");
+        return recordService.getKpiYears(kpiId);
     }
 
     // // Update operation
     // @PutMapping("/kpi/{id}")
-    // public KPI updateKpi(@RequestBody KPI kpi,@PathVariable("id") Long id){
+    // public KPI updateKpi(@RequestBody KPI kpi,@PathVariable("id") String id){
     // return kpiService.updateKpi(kpi,id);
     // }
 
     // // Delete operation
     // @DeleteMapping("/kpi/{id}")
-    // public String deleteKpiById(@PathVariable("id") Long id){
+    // public String deleteKpiById(@PathVariable("id") String id){
     // kpiService.deleteKpiById(id);
     // return "Deleted Successfully";
     // }
 
     // // Find by ID operation
     // @GetMapping("/kpi/{id}")
-    // public KPI findKpiById(@PathVariable("id") Long id){
+    // public KPI findKpiById(@PathVariable("id") String id){
     // return kpiService.findKpiById(id);
     // }
 

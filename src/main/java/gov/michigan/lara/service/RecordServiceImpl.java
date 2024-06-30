@@ -22,12 +22,22 @@ public class RecordServiceImpl implements RecordService {
     private RecordRepository repository;
 
     @Override
-    public List<Record> fetchRecordList() {
+    public List<Record> getAllRecords() {
         return (List<Record>) repository.findAll();
     }
 
     @Override
     public List<Record> getRecordsByKpiId(String kpiId){
         return repository.getRecordsByKpiId(kpiId);
+    }
+
+    @Override
+    public List<Record> getRecordsByKpiYear(String kpiId, int year) {
+        return repository.getRecordsByKpiYear(kpiId, year);
+    }
+
+    @Override
+    public List<Integer> getKpiYears(String kpiId) {
+        return repository.getKpiYears(kpiId);
     }
 }

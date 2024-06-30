@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 @org.springframework.stereotype.Repository
 
 // Interface extending CrudRepository
-public interface KpiRepository extends CrudRepository<KPI,Long>{
+public interface KpiRepository extends CrudRepository<KPI,String>{
 
     @Query("SELECT DISTINCT k.bureau FROM KPI k order by bureau")
     List<String> getBureauList();
@@ -23,4 +23,8 @@ public interface KpiRepository extends CrudRepository<KPI,Long>{
     @Query("SELECT DISTINCT k.KPI_ID, k.KPI_Name FROM KPI k where k.bureau = :bureau and k.KPI_Area = :area")
     List<Object[]> getKpiIdsByArea(@Param("bureau") String bureau, @Param("area") String area);
 
+    // @Query("SELECT DISTINCT k.KPI_ID, k.KPI_Name FROM KPI k where k.bureau = :bureau and k.KPI_Area = :area")
+    @Query("select k.dataType FROM KPI k where k.KPI_ID = :kpiId")
+    String getKpiDataType(@Param("kpiId") String kpiId);
+    
 }

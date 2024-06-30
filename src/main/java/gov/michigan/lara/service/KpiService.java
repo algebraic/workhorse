@@ -8,13 +8,13 @@ public interface KpiService {
 
     KPI saveKpi(KPI kpi);
     List<KPI> fetchKpiList();
-    KPI updateKpi(KPI kpi, Long id);
-    void deleteKpiById(Long id);
-    KPI findKpiById(Long id);
-
+    KPI updateKpi(KPI kpi, String id);
+    void deleteKpiById(String id);
+    KPI findKpiById(String id);
+    
+    String getKpiDataType(String kpiId);
     List<String> getBureauList();
     List<String> getKpiAreasByBureau(String bureau);
-    
     List<Map<String, String>> getKpiIdsByArea(String bureau, String area);
     
 }

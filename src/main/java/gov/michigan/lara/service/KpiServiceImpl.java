@@ -36,10 +36,10 @@ public class KpiServiceImpl implements KpiService{
     }
 
     @Override
-    public KPI updateKpi(KPI kpi,Long id){
+    public KPI updateKpi(KPI kpi,String id){
         log.info("testing log");
         log.info(kpi);
-        System.out.println("kpi "+Long.toString(id));
+        System.out.println("kpi: "+id);
         System.out.println(kpi);
 
         KPI kpiDB=repository.findById(id).get();
@@ -58,7 +58,6 @@ public class KpiServiceImpl implements KpiService{
         kpiDB.setSourceSystem(kpi.getSourceSystem());
         kpiDB.setDataFeed(kpi.getDataFeed());
         kpiDB.setComments(kpi.getComments());
-        kpiDB.setDevComments(kpi.getDevComments());
 
         // if (Objects.nonNull(kpi.getKPI_Name()) &&
         // !"".equalsIgnoreCase(kpi.getKPI_Name())) {
@@ -70,13 +69,18 @@ public class KpiServiceImpl implements KpiService{
     }
 
     @Override
-    public void deleteKpiById(Long id){
+    public void deleteKpiById(String id){
         repository.deleteById(id);
     }
 
     @Override
-    public KPI findKpiById(Long id){
+    public KPI findKpiById(String id){
         return repository.findById(id).get();
+    }
+
+    @Override
+    public String getKpiDataType(String kpiId){
+        return repository.getKpiDataType(kpiId);
     }
 
     @Override
@@ -91,14 +95,14 @@ public class KpiServiceImpl implements KpiService{
 
     @Override
     public List<Map<String,String>> getKpiIdsByArea(String bureau,String area){
-        
-        List<Object[]> results = repository.getKpiIdsByArea(bureau, area);
-        List<Map<String, String>> keyValuePairs = new ArrayList<>();
 
-        for (Object[] result : results) {
-            Map<String, String> pair = new HashMap<>();
-            pair.put("KPI_ID", result[0].toString());
-            pair.put("KPI_Name", result[1].toString());
+        List<Object[]> results=repository.getKpiIdsByArea(bureau,area);
+        List<Map<String,String>> keyValuePairs=new ArrayList<>();
+
+        for(Object[] result:results){
+            Map<String,String> pair=new HashMap<>();
+            pair.put("KPI_ID",result[0].toString());
+            pair.put("KPI_Name",result[1].toString());
             keyValuePairs.add(pair);
         }
 
