@@ -36,6 +36,13 @@
             <AppenderRef ref="RollingFile"/>
             <AppenderRef ref="LogToConsole"/>
         </Logger>
+
+        <Logger name="org.springframework.boot.autoconfigure.security" level="info" additivity="false">
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="SecurityLog"/>
+        </Logger>
+
+
         <Logger name="org.hibernate" level="error" additivity="false">
             <AppenderRef ref="RollingFile"/>
             <AppenderRef ref="LogToConsole"/>

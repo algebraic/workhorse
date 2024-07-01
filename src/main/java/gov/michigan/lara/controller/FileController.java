@@ -44,7 +44,7 @@ public class FileController {
     public FileService fileService = new FileService();
 
     @ModelAttribute
-    @GetMapping(value = "/")
+    @GetMapping(value = "/index")
     public ModelAndView test(HttpServletRequest request) {
         log.info("index mapping");
         
