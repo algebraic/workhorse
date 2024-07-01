@@ -178,6 +178,7 @@ crossorigin="anonymous"> -->
                                         data-bs-target="#apiListModal">API Endpoint List</a>
                                 </li>
                                 <li><a class="dropdown-item section" id="analyzeDb" href="#">Analyze Database</a></li>
+                                <li><a class="dropdown-item" href="logout" disabled>logout <c:out value="${username}" /></a></li>
                                 <!-- <li><a class="dropdown-item" id="exportTest" href="#">Export Test</a></li> -->
                                 <!-- <li><a class="dropdown-item" id="testData" href="#">load test data</a></li> -->
                                 <!-- <li><a class="dropdown-item" id="storageTest" href="#" disabled>Storage Test</a></li> -->
@@ -513,7 +514,7 @@ crossorigin="anonymous"></script> -->
                         }
                     });
                     // zj: auto-click something on page load
-                    $("a.section").eq(3).click();
+                    // $("a.section").eq(3).click();
 
                     // get current year
                     var currentYear = new Date().getFullYear();
@@ -1192,9 +1193,18 @@ crossorigin="anonymous"></script> -->
                     var xhr = new XMLHttpRequest();
                     xhr.open('GET', url, true);
                     xhr.onreadystatechange = function() {
-                        if (xhr.readyState === 4 && xhr.status === 200) {
-                            $($output).val(xhr.responseText);
+                        if (xhr.readyState === 4) {
+                            if (xhr.status === 200) {
+                                $($output).val(xhr.responseText);
+                            } else if (xhr.status === 403) {
+                                $($output).val("Access denied. You do not have permission to execute this query.");
+                            } else {
+                                $($output).val("Error: " + xhr.status + " - " + xhr.statusText);
+                            }
                         }
+                        // if (xhr.readyState === 4 && xhr.status === 200) {
+                        //     $($output).val(xhr.responseText);
+                        // }
                     };
                     xhr.send();
                 }

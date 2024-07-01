@@ -44,7 +44,7 @@ public class FileController {
     public FileService fileService = new FileService();
 
     @ModelAttribute
-    @GetMapping(value = "/index")
+    @GetMapping(value = "/")
     public ModelAndView test(HttpServletRequest request) {
         log.info("index mapping");
         
@@ -53,8 +53,9 @@ public class FileController {
 
         // Retrieve the user principal
         Principal principal = request.getUserPrincipal();
+        String username = null;
         if (principal != null) {
-            String username = principal.getName();
+            username = principal.getName();
             System.out.println("User principal name: " + username);
         } else {
             System.out.println("User principal is null");
@@ -68,6 +69,8 @@ public class FileController {
         this.count = 0;
         mav.addObject("count", count);
         mav.addObject("size", size);
+        mav.addObject("username", username);
+        
         return mav;
     }
 

@@ -1,6 +1,7 @@
 package gov.michigan.lara.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.sql.DataSource;
@@ -10,6 +11,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/sql")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class SQLController {
 
     @Autowired
