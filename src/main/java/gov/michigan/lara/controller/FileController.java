@@ -73,7 +73,7 @@ public class FileController {
 
     @ResponseBody
     @PostMapping(value = "check")
-    public int uploadMultipart(@RequestParam("file") MultipartFile file) {
+    public int uploadMultipart(@RequestParam MultipartFile file) {
         int rowcount = 0;
         try {
             Workbook workbook = new XSSFWorkbook(file.getInputStream());
@@ -119,7 +119,7 @@ public class FileController {
 
     @ResponseBody
     @PostMapping(value = "load")
-    public String load(@RequestParam("file") MultipartFile file, @RequestParam(name = "rowcount") Integer rowcount, HttpServletRequest request) throws IOException, InterruptedException, ExecutionException {
+    public String load(@RequestParam MultipartFile file, @RequestParam Integer rowcount, HttpServletRequest request) throws IOException, InterruptedException, ExecutionException {
         this.size = rowcount;
         String filename = file.getOriginalFilename();
 

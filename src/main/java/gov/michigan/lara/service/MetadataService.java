@@ -5,7 +5,6 @@ import gov.michigan.lara.domain.TableMetadata;
 import gov.michigan.lara.domain.ColumnMetadata;
 import gov.michigan.lara.domain.ForeignKeyMetadata;
 import gov.michigan.lara.domain.IndexMetadata;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,6 @@ public class MetadataService {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public MetadataService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

@@ -7,6 +7,9 @@
                 <ThresholdFilter level="info"/>
             </Filters>
         </Console>
+        <Console name="SecurityLog" target="SYSTEM_OUT">
+            <PatternLayout pattern="\n### SECURITY: %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
         <!-- Rolling File Appender -->
         <RollingFile name="RollingFile">
             <FileName>/u01/applogs/lara/workhorse/workhorse.log</FileName>
@@ -41,5 +44,9 @@
             <AppenderRef ref="RollingFile"/>
             <AppenderRef ref="LogToConsole"/>
         </Root>
+        <!-- Spring Security debug logging -->
+        <Logger name="org.springframework.security" level="info" additivity="false">
+            <AppenderRef ref="SecurityLog" />
+        </Logger>
     </Loggers>
 </Configuration>

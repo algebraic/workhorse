@@ -6,7 +6,6 @@ import gov.michigan.lara.service.MetadataService;
 
 import java.sql.SQLException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +15,6 @@ public class MetadataController {
 
     private final MetadataService metadataService;
 
-    @Autowired
     public MetadataController(MetadataService metadataService) {
         this.metadataService = metadataService;
     }

@@ -36,17 +36,17 @@ public class RecordController{
     }
 
     @GetMapping("/records/{kpiId}")
-    public List<Record> getRecordsByKpiId(@PathVariable("kpiId") String kpiId){
+    public List<Record> getRecordsByKpiId(@PathVariable String kpiId){
         return recordService.getRecordsByKpiId(kpiId);
     }
 
     @GetMapping("/records/{kpiId}/{year}")
-    public List<Record> getRecordsByKpiYear(@PathVariable("kpiId") String kpiId, @PathVariable("year") int year){
+    public List<Record> getRecordsByKpiYear(@PathVariable String kpiId, @PathVariable int year){
         return recordService.getRecordsByKpiYear(kpiId, year);
     }
 
     @GetMapping("/records/{kpiId}/years")
-    public List<Integer> getKpiYears(@PathVariable("kpiId") String kpiId){
+    public List<Integer> getKpiYears(@PathVariable String kpiId){
         System.out.println("### getKpiYears?");
         return recordService.getKpiYears(kpiId);
     }
