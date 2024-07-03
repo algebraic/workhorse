@@ -162,9 +162,7 @@ crossorigin="anonymous"> -->
                             <ul class="dropdown-menu" data-bs-theme="dark">
                                 <li><a class="dropdown-item section" id="manual_entry" href="#">Data Entry</a></li>
                                 <!-- zj: disabled pending resolution of weblogic upload problems-->
-                                <li><a class="dropdown-item section hidden" id="file_operation" href="#">File
-                                        Operation</a></li>
-
+                                <li><a class="dropdown-item section hidden" id="file_operation" href="#">File Operation</a></li>
                                 <li><a class="dropdown-item section" id="kpi_edit" href="#">KPI Data</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
@@ -188,9 +186,14 @@ crossorigin="anonymous"> -->
                             </ul>
                         </li>
                     </ul>
-                    <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        
-    </div> -->
+                    <div class="dropdown me-3">
+                        <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <c:out value="${username}" />
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="logout">logout</a></li>
+                        </ul>
+                    </div>
                 </div>
             </nav>
 
@@ -1185,11 +1188,11 @@ crossorigin="anonymous"></script> -->
                     var $input = $("textarea#input");
                     var $output = $("textarea#output");
                     var query = $input.val();
-                    alert("query = " + query);
+                    // alert("query = " + query);
                     var encodedQuery = encodeURIComponent(query);
-                    alert("encodedQuery = " + encodedQuery);
+                    // alert("encodedQuery = " + encodedQuery);
                     var url = 'http://127.0.0.1:8080/workhorse/sql/execute?query=' + encodedQuery;
-                    alert("url: " + url);
+                    // alert("url: " + url);
                     var xhr = new XMLHttpRequest();
                     xhr.open('GET', url, true);
                     xhr.onreadystatechange = function() {
@@ -1202,9 +1205,6 @@ crossorigin="anonymous"></script> -->
                                 $($output).val("Error: " + xhr.status + " - " + xhr.statusText);
                             }
                         }
-                        // if (xhr.readyState === 4 && xhr.status === 200) {
-                        //     $($output).val(xhr.responseText);
-                        // }
                     };
                     xhr.send();
                 }
