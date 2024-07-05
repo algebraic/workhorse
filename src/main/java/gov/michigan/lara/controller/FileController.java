@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import gov.michigan.lara.config.CustomUserDetails;
+import gov.michigan.lara.config.UserDetailsUtil;
 import gov.michigan.lara.service.FileService;
 
 
@@ -48,27 +49,9 @@ public class FileController {
     public ModelAndView test(HttpServletRequest request) {
         log.info("index mapping");
         
-        // // String user=request.getUserPrincipal().getName();
-        // System.out.println("Logging before calling getUserPrincipal()");
-
-        // // Retrieve the user principal
-        // Principal principal = request.getUserPrincipal();
-        // String username = null;
-        // if (principal != null) {
-        //     username = principal.getName();
-        //     System.out.println("User principal name: " + username);
-        //     System.out.println(principal.toString());
-        // } else {
-        //     System.out.println("User principal is null");
-        // }
-
-        // // Log after calling getUserPrincipal()
-        // System.out.println("Logging after calling getUserPrincipal()");
-
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = userDetails.getUsername();
-        String displayname = userDetails.getDisplayName();
-        String userbureau = userDetails.getBureau();
+        String username = UserDetailsUtil.getCurrentUsername();
+        String userbureau = UserDetailsUtil.getCurrentUserBureau();
+        String displayname = UserDetailsUtil.getCurrentUserDisplayName();
         System.out.println("username = " + username);
         System.out.println("displayname = " + displayname);
         System.out.println("userbureau = " + userbureau);

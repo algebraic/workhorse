@@ -1,5 +1,6 @@
 package gov.michigan.lara.service;
 
+import gov.michigan.lara.config.UserDetailsUtil;
 import gov.michigan.lara.dao.KpiRepository;
 import gov.michigan.lara.domain.KPI;
 
@@ -13,11 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-// Annotation
 @Service
-
-
-// Class
 public class KpiServiceImpl implements KpiService{
 
     private static Logger log=LogManager.getLogger();
