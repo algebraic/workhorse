@@ -39,19 +39,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        // Define multiple users
-        UserDetails user1 = User.withUsername("user1").password("{noop}password").roles("USER").build();
-        UserDetails user2 = User.withUsername("user2").password("{noop}password").roles("USER").build();
-        UserDetails admin = User.withUsername("admin").password("{noop}password").roles("ADMIN").build();
-        
-        UserDetails userDetails = User.withDefaultPasswordEncoder()
-                .username("user1").password("password").roles("USER")
-                .username("user2").password("password").roles("USER")
-                .username("admin").password("password").roles("ADMIN")
-                .build();
-
-        // Use an InMemoryUserDetailsManager to manage the users
-        return new InMemoryUserDetailsManager(Arrays.asList(user1, user2, admin));
+        return new CustomInMemoryUserDetailsManager();
     }
 
     @Bean

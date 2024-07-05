@@ -176,7 +176,6 @@ crossorigin="anonymous"> -->
                                         data-bs-target="#apiListModal">API Endpoint List</a>
                                 </li>
                                 <li><a class="dropdown-item section" id="analyzeDb" href="#">Analyze Database</a></li>
-                                <li><a class="dropdown-item" href="logout" disabled>logout <c:out value="${username}" /></a></li>
                                 <!-- <li><a class="dropdown-item" id="exportTest" href="#">Export Test</a></li> -->
                                 <!-- <li><a class="dropdown-item" id="testData" href="#">load test data</a></li> -->
                                 <!-- <li><a class="dropdown-item" id="storageTest" href="#" disabled>Storage Test</a></li> -->
@@ -188,7 +187,7 @@ crossorigin="anonymous"> -->
                     </ul>
                     <div class="dropdown me-3">
                         <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <c:out value="${username}" />
+                            <c:out value="${displayname}" /> (<c:out value="${userbureau}" />)
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="logout">logout</a></li>
@@ -987,10 +986,8 @@ crossorigin="anonymous"></script> -->
                         var kpi = $this.attr("data-kpi");
                         var year = $this.val();
 
-
-
                         // Generate calendar grid
-                        var calendarContainer = $(".calendar-container").empty();
+                        var $calendarContainer = $(".calendar-container").empty();
                         var months = {
                             1: "January",
                             2: "February",
@@ -1009,18 +1006,12 @@ crossorigin="anonymous"></script> -->
                         Object.keys(months).forEach(function(monthNumber) {
                             var dataType = "";
                             $.get("kpi/" + kpi + "/data", function(data) {
-                                console.info("dataType = " + typeof data);
+                                console.info("dataType = " + data);
                                 dataType = data;
                             }).fail(function() {
                                 console.error("Error occurred while fetching datatype");
                             });
                             console.info("?? " + dataType);
-                            var monthName = months[monthNumber];
-                            var monthCell = $('<div class="col-lg-3 col-md-4 col-sm-6 month-cell"></div>');
-                            var html = '<div class="card"><div class="card-body text-center"><h5 class="card-title">' + monthName + '</h5>';
-                            html += '<input type="text" class="form-control month-input" placeholder="0" id="data_' + monthNumber + '-1-' + year + '"><span class="sign">%</span></div></div>';
-                            monthCell.append(html);
-                            $('.calendar-container').append(monthCell);
                             // zj: check the kpi.dataType = COUNT/PRCT & adjust input accordingly
                         });
 
@@ -1031,34 +1022,10 @@ crossorigin="anonymous"></script> -->
                             dataType: 'json',
                             success: function(response) {
                                 console.info(response);
-                                console.info("yay!");
                                 $.each(response, function(index, item) {
-                                    var value = null;
-                                    var date = item.entrydate.replace(/\//g, "-");
-                                    var $elememnt = $("#data_" + date);
-
-                                    if (item.prct_VAL !== null) {
-                                        value = (item.prct_VAL * 100).toFixed(2);
-                                        $elememnt.attr("data-type", "%").val(value);
-                                    }
-                                    if (item.count_VAL !== null) {
-                                        value = item.count_VAL;
-                                        $elememnt.attr("data-type", "#").val(value);
-                                    }
-                                });
-                                var $emptyMonthInputs = $(".month-input").filter(function() {
-                                    return $(this).val() === "";
-                                });
-                                $emptyMonthInputs.each(function() {
-                                    var $this = $(this);
-                                    var type = $this.attr("data-type");
-                                    if ($this.attr("data-type") == "%") {
-                                        console.info($this.attr("id") + " -- %%% -- " + type);
-                                        // $this.numeric(3, 2);
-                                    } else {
-                                        console.info($this.attr("id") + " -- ### " + type);
-                                        // $this.numeric();
-                                    }
+                                    console.info("item::");
+                                    console.info(item);
+                                    $calendarContainer.append(JSON.stringify(item) + "<br>");
                                 });
                             },
                             error: function(error) {

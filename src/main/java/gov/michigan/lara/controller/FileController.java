@@ -18,7 +18,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.logging.log4j.*;
-
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import gov.michigan.lara.config.CustomUserDetails;
 import gov.michigan.lara.service.FileService;
 
 
@@ -48,21 +49,30 @@ public class FileController {
     public ModelAndView test(HttpServletRequest request) {
         log.info("index mapping");
         
-        // String user=request.getUserPrincipal().getName();
-        System.out.println("Logging before calling getUserPrincipal()");
+        // // String user=request.getUserPrincipal().getName();
+        // System.out.println("Logging before calling getUserPrincipal()");
 
-        // Retrieve the user principal
-        Principal principal = request.getUserPrincipal();
-        String username = null;
-        if (principal != null) {
-            username = principal.getName();
-            System.out.println("User principal name: " + username);
-        } else {
-            System.out.println("User principal is null");
-        }
+        // // Retrieve the user principal
+        // Principal principal = request.getUserPrincipal();
+        // String username = null;
+        // if (principal != null) {
+        //     username = principal.getName();
+        //     System.out.println("User principal name: " + username);
+        //     System.out.println(principal.toString());
+        // } else {
+        //     System.out.println("User principal is null");
+        // }
 
-        // Log after calling getUserPrincipal()
-        System.out.println("Logging after calling getUserPrincipal()");
+        // // Log after calling getUserPrincipal()
+        // System.out.println("Logging after calling getUserPrincipal()");
+
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+        String displayname = userDetails.getDisplayName();
+        String userbureau = userDetails.getBureau();
+        System.out.println("username = " + username);
+        System.out.println("displayname = " + displayname);
+        System.out.println("userbureau = " + userbureau);
 
         ModelAndView mav = new ModelAndView("index");
         this.size = 0;
@@ -70,6 +80,8 @@ public class FileController {
         mav.addObject("count", count);
         mav.addObject("size", size);
         mav.addObject("username", username);
+        mav.addObject("displayname", displayname);
+        mav.addObject("userbureau", userbureau);
         
         return mav;
     }
