@@ -2,8 +2,6 @@ package gov.michigan.lara.config;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

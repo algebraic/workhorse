@@ -3,12 +3,7 @@ package gov.michigan.lara.controller;
 import gov.michigan.lara.domain.Record;
 import gov.michigan.lara.service.RecordService;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

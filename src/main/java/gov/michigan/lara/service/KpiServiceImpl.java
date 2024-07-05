@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 // Annotation
 @Service
-@SuppressWarnings("null")
+
 
 // Class
 public class KpiServiceImpl implements KpiService{
