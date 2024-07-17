@@ -12,8 +12,5 @@ public interface RecordService {
     List<Integer> getKpiYears(String kpiId);
     Record saveRecord(Record record);
     Record getRecordByKpiDate(String id, String date) throws ParseException;
-    void deleteRecord(Record record);
-    // KPI updateKpi(KPI kpi, String id);
-    // void deleteKpiById(String id);
-    // KPI findKpiById(String id);
+    Boolean deleteRecord(Record record);
 }

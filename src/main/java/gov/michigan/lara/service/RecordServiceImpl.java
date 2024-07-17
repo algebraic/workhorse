@@ -59,14 +59,24 @@ public class RecordServiceImpl implements RecordService {
         System.out.println("getRecordByKpiDate date=" + date);
         System.out.println("getRecordByKpiDate datestring=" + datestring);
         Record existingRecord = repository.getRecordByKpiDate(id, date);
-        System.out.println("existingRecord:" + existingRecord.toString());
+        if (existingRecord != null) {
+            System.out.println("existingRecord:" + existingRecord.toString());
+        }
         return existingRecord;
     }
 
     @Override
-    public void deleteRecord(Record record){
-        System.out.println("deleteRecord: " + record.toString());
+    public Boolean deleteRecord(Record record){
         RecordId recordId = new RecordId(record.getKpiId(), record.getEntryDate());
-        repository.deleteById(recordId);
+        try {
+            log.info("deleting record: " + record.toString());
+            repository.deleteById(recordId);
+            return true;
+          }
+          catch(Exception e) {
+            e.printStackTrace();
+            return false;
+          }
+            
     }
 }

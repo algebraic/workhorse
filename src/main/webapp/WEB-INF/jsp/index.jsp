@@ -139,6 +139,34 @@ crossorigin="anonymous"> -->
                 input.changed {
                     border-color: var(--bs-warning);
                 }
+            
+                .entry_select {
+                    color: black;
+                    border: none;
+                    font-weight: bold;
+                    font-size: x-large;
+                    width: 100%;
+                    background: none;
+                    cursor: pointer;
+                }
+                #kpi_title {
+                    font-variant: small-caps;
+                    font-size: large;
+                }
+                #saveRecord {
+                    width:100px;
+                }
+                .record-data {
+                    background: none;
+                    border: none;
+                    padding: 4px;
+                }
+                tr td:first-child {
+                    vertical-align: middle;
+                }
+                table#kpi_table_entry {
+                    /* width: 45% !important; */
+                }
             </style>
 
         </head>
@@ -504,8 +532,8 @@ crossorigin="anonymous"></script> -->
                                     // admin user, show all bureaus
                                     for (var i = 0; i < response.length; i++) {
                                         var $element = '<div class="accordion-item" data-bureau="' + response[i] + '"><h2 class="accordion-header">';
-                                        $element += '<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-bureau-' + i + '" aria-expanded="false" aria-controls="panel-bureau-' + i + '">' + response[i] + '</button></h2>';
-                                        $element += '<div id="panel-bureau-' + i + '" class="accordion-collapse collapse" data-bs-parent="#bureau-list"><div class="accordion-body p-0"></div></div>';
+                                        $element += '<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panel-bureau-' + i + '" aria-expanded="false" aria-controls="panel-bureau-' + i + '">' + response[i] + '</button></h2>';
+                                        $element += '<div id="panel-bureau-' + i + '" class="accordion-collapse" data-bs-parent="#bureau-list"><div class="accordion-body p-0"></div></div>';
                                         $div.append($element);
                                     }
                                     // $div.append('<label for="raw-data" class="raw-data-checkbox mt-1 ms-2"><input type="checkbox" id="raw-data" name="raw-data"><small>raw data</small></label>');
@@ -516,6 +544,15 @@ crossorigin="anonymous"></script> -->
                             });
                             ///////////////////////////////////////////////////////////
                         }
+
+                        // hacky junk to open accordion on page load
+                        setTimeout(function() {
+                            $("button.accordion-button:eq(0)").click();
+                        }, 1000);
+                        setTimeout(function() {
+                            $('.accordion-body button:first').click();
+                        }, 1500);
+
                     });
                     // zj: auto-click something on page load
                     $("a.section").eq(0).click();
@@ -922,11 +959,11 @@ crossorigin="anonymous"></script> -->
                                     var monthNumber = (i + 1).toString().padStart(2, '0'); // Convert month number to two-digit format
                                     var inputId = monthNumber + '-01'; // Create the id in the format "MM-01"
                                     var row = '<tr><td>' + months[i] + '</td>';
-                                    row += '<td>' + '<input type="text" class="record-data" data-month="' + inputId + '">' + '</td>';
+                                    row += '<td>' + '<input type="text" class="form-control record-data" data-month="' + inputId + '">' + '</td>';
                                     row += '</tr>';
                                     $kpiTable += row;
                                 }
-                                $kpiTable += '<tr><td colspan=2 class="text-center"><button type="button" id="saveRecord" class="btn btn-outline-success">Save</button></td></tr></tbody></table>';
+                                $kpiTable += '<tr><td colspan=2><button type="button" id="saveRecord" class="btn btn-outline-success" disabled="disabled">Save</button></td></tr></tbody></table>';
                                 $parent.append($kpiTable);
 
                                 // populate years
@@ -943,6 +980,7 @@ crossorigin="anonymous"></script> -->
                                                 $options += "<option value='" + item + "'>" + item + "</option>";
                                             });
                                         }
+                                        $options += '<option id="newYear" value="~new~">add new year</option>';
                                         $yearSelect.append($options);
                                     },
                                     error: function(error) {
@@ -1026,7 +1064,6 @@ crossorigin="anonymous"></script> -->
                         $testDiv.append('<input type="text" placeholder="testing">');
                     });
 
-                    
                     $("body").on("click", "#saveRecord", function() {
                         // Save button click event
                         var recordsToSave = [];
@@ -1054,34 +1091,59 @@ crossorigin="anonymous"></script> -->
                         } else {
                             $this.removeClass('changed');
                         }
+                        var count = $(".changed").length;
+                        if (count > 0) {
+                            $("#saveRecord").prop("disabled", false);
+                        } else {
+                            $("#saveRecord").prop("disabled", true);
+                        }
                     });
 
                     $("body").on("change", ".entry_select", function() {
-                        labelInputs();
-                        var kpi = $("#kpi_testing").val();
-                        var year = $("#year_testing").val();
-                        $("#kpi_title").text($('#kpi_testing option:selected').attr("data-title"));
-                        $("input.record-data").val("");
-                        $.ajax({
-                            url: 'records/' + kpi + "/" + year,
-                            type: 'GET',
-                            dataType: 'json',
-                            success: function(response) {
-                                console.info(response);
-                                $.each(response, function(index, record) {
-                                    var value = record["prct_VAL"] !== null ? record["prct_VAL"] : record["count_VAL"];
-                                    $("#" + record["entryDate"]).val(value).attr("data-ogvalue", value);
-                                });
-                            },
-                            error: function(error) {
-                                console.error('Error fetching record list:', error);
+                        var val = $(this).val();
+                        if (val == "~new~") {
+                            var currentYear = new Date().getFullYear();
+                            var year;
+                            var valid = false;
+                            while (!valid) {
+                                year = prompt("Please enter a 4-digit year:");
+
+                                if (year === null) {
+                                    // User pressed cancel
+                                    alert("No year entered. Exiting.");
+                                    return;
+                                }
+                                if (/^\d{4}$/.test(year) && year >= 1900 && year <= (currentYear+1)) {
+                                    valid = true;
+                                    $("#year_testing").prepend('<option value="' + year + '">' + year + "</option>");
+                                    $("#year_testing").val($("#year_testing option:first").val()).change();
+                                    labelInputs(true);
+                                } else {
+                                    alert("Invalid input. Please enter a 4-digit year between 1900 and " + (currentYear+1) + ".");
+                                }
                             }
-                        });
-                       // ok, so it loads great, need saving still
-                       // cosmetics? show %'s and stuff
-                       // 
-
-
+                        } else {
+                            labelInputs();
+                            var kpi = $("#kpi_testing").val();
+                            var year = $("#year_testing").val();
+                            $("#kpi_title").text($('#kpi_testing option:selected').attr("data-title"));
+                            $("input.record-data").val("");
+                            $.ajax({
+                                url: 'records/' + kpi + "/" + year,
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(response) {
+                                    console.info(response);
+                                    $.each(response, function(index, record) {
+                                        var value = record["prct_VAL"] !== null ? record["prct_VAL"] : record["count_VAL"];
+                                        $("#" + record["entryDate"]).val(value).attr("data-ogvalue", value);
+                                    });
+                                },
+                                error: function(error) {
+                                    console.error('Error fetching record list:', error);
+                                }
+                            });
+                        }
                     });
 
                     $("body").on("click", ".year-button", function() {
@@ -1234,6 +1296,11 @@ crossorigin="anonymous"></script> -->
                             // Optionally reset the form and original values
                             $('.changed').removeClass("changed");
                             $("#kpi_testing").change();
+                            // remove new tag on save
+                            $("input[data-ogvalue='~new~']").removeAttr("data-ogvalue");
+                            // remove ogval's on any deleted items
+                            $('input').filter(function() { return !this.value; }).removeAttr('data-ogvalue');
+
                         },
                         error: function(error) {
                             console.error('Error saving/updating records:', error);
@@ -1241,13 +1308,19 @@ crossorigin="anonymous"></script> -->
                     });
                 }
 
-                function labelInputs() {
+                function labelInputs(isNew) {
+                    if (typeof isNew === 'undefined') {
+                        isNew = false; // Set your default value here
+                    }
                     $(".changed").removeClass('changed')
                     var year = $("#year_testing").val();
                     $("input.record-data").each(function() {
                         var $this = $(this);
                         var id = $this.attr("data-month");
                         $this.attr("id", year + "-" + id);
+                        if (isNew) {
+                            $this.attr("data-ogvalue", "~new~");
+                        }
                     });
                 }
 
