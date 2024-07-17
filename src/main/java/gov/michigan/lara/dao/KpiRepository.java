@@ -1,5 +1,6 @@
 package gov.michigan.lara.dao;
 
+import gov.michigan.lara.config.UserDetailsUtil;
 import gov.michigan.lara.domain.KPI;
 
 import java.util.List;
@@ -14,8 +15,9 @@ import org.springframework.data.repository.query.Param;
 // Interface extending CrudRepository
 public interface KpiRepository extends CrudRepository<KPI,String>{
 
-    @Query("SELECT DISTINCT k.bureau FROM KPI k order by bureau")
-    List<String> getBureauList();
+    // @Query("SELECT DISTINCT k.bureau FROM KPI k order by bureau")
+    @Query("SELECT DISTINCT k.bureau FROM KPI k WHERE :userbureau = '*' OR k.bureau LIKE CONCAT(:userbureau, '%') ORDER BY k.bureau")
+    List<String> getBureauList(@Param("userbureau") String userbureau);
 
     @Query("SELECT DISTINCT k.KPI_Area FROM KPI k where k.bureau = :bureau")
     List<String> getKpiAreaByBureau(@Param("bureau") String bureau);

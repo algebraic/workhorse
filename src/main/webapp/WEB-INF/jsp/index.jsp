@@ -135,6 +135,10 @@ crossorigin="anonymous"> -->
                     width: 600px;
                     height: 150px;
                 }
+
+                input.changed {
+                    border-color: var(--bs-warning);
+                }
             </style>
 
         </head>
@@ -197,8 +201,8 @@ crossorigin="anonymous"> -->
             </nav>
 
             <!-- section title -->
-            <div class="container-fluid my-5">
-                <h3 id="section-title"></h3>
+            <div class="container-fluid mt-5">
+                <h3 id="section-title hidden"></h3>
                 <div class="instructions">
                     <p><b><u>BPL Reporting Data Entry proof-of-concept</u></b></p>
                     <p>The main idea is a web-based form for data collection. Click the menu above and click "<b>BPL
@@ -287,9 +291,6 @@ crossorigin="anonymous"> -->
                     <div class="accordion" id="bureau-list"></div>
                 </div>
                 <div class="col-lg-11 offset-lg-1 text-start">
-                    <div class="form-wrapper">
-                        <select id="kpi_selector" class="form-select mb-3" style="width:auto"></select>
-                    </div>
                     <div class="row">
                         <div class="container mx-0" id="test-data"></div>
                     </div>
@@ -500,13 +501,14 @@ crossorigin="anonymous"></script> -->
                                 type: 'GET',
                                 dataType: 'json',
                                 success: function(response) {
+                                    // admin user, show all bureaus
                                     for (var i = 0; i < response.length; i++) {
                                         var $element = '<div class="accordion-item" data-bureau="' + response[i] + '"><h2 class="accordion-header">';
                                         $element += '<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-bureau-' + i + '" aria-expanded="false" aria-controls="panel-bureau-' + i + '">' + response[i] + '</button></h2>';
                                         $element += '<div id="panel-bureau-' + i + '" class="accordion-collapse collapse" data-bs-parent="#bureau-list"><div class="accordion-body p-0"></div></div>';
                                         $div.append($element);
                                     }
-                                    $div.append('<label for="raw-data" class="raw-data-checkbox mt-1 ms-2"><input type="checkbox" id="raw-data" name="raw-data"><small>raw data</small></label>');
+                                    // $div.append('<label for="raw-data" class="raw-data-checkbox mt-1 ms-2"><input type="checkbox" id="raw-data" name="raw-data"><small>raw data</small></label>');
                                 },
                                 error: function(error) {
                                     console.error('Error fetching record list:', error);
@@ -516,7 +518,7 @@ crossorigin="anonymous"></script> -->
                         }
                     });
                     // zj: auto-click something on page load
-                    // $("a.section").eq(3).click();
+                    $("a.section").eq(0).click();
 
                     // get current year
                     var currentYear = new Date().getFullYear();
@@ -900,15 +902,58 @@ crossorigin="anonymous"></script> -->
                             type: 'GET',
                             dataType: 'json',
                             success: function(response) {
-                                console.info(response);
-                                var $select = $("#kpi_selector").empty().append('<option disabled hidden>select Key Performance Indicator');
-
+                                //zj: print month table here
+                                var $parent = $('#test-data').empty();
+                                //assemble header row
+                                var $kpiTable = "<table id='kpi_table_entry' class='table table-fixed text-nowrap table-striped-columns'><thead><tr><th scope='col'><select id='year_testing' class='entry_select'></select></th>";
+                                $kpiTable += '<th scope="col" title="select KPI"><select id="kpi_testing" class="entry_select">';
                                 for (var i = 0; i < response.length; i++) {
-                                    var record = response[i];
-                                    var $option = '<option value="' + record.KPI_ID + '">' + record.KPI_ID + ' | ' + record.KPI_Name + '</option>';
-                                    $select.append($option);
+                                    $kpiTable+='<option value="' + response[i].KPI_ID + '" data-title="' + response[i].KPI_Name + '">' + response[i].KPI_ID + "</option>";
                                 }
-                                $("#kpi_selector").val($('#kpi_selector option:eq(1)').val()).change();
+                                $kpiTable += '</select></th></tr><tr><th colspan=2 id="kpi_title"></th></tr>';
+                                $kpiTable += '</thead><tbody class="table-group-divider">';
+                                
+                                //assemble month rows
+                                var months = [
+                                    'January', 'February', 'March', 'April', 'May', 'June',
+                                    'July', 'August', 'September', 'October', 'November', 'December'
+                                ];
+                                for (var i = 0; i < months.length; i++) {
+                                    var monthNumber = (i + 1).toString().padStart(2, '0'); // Convert month number to two-digit format
+                                    var inputId = monthNumber + '-01'; // Create the id in the format "MM-01"
+                                    var row = '<tr><td>' + months[i] + '</td>';
+                                    row += '<td>' + '<input type="text" class="record-data" data-month="' + inputId + '">' + '</td>';
+                                    row += '</tr>';
+                                    $kpiTable += row;
+                                }
+                                $kpiTable += '<tr><td colspan=2 class="text-center"><button type="button" id="saveRecord" class="btn btn-outline-success">Save</button></td></tr></tbody></table>';
+                                $parent.append($kpiTable);
+
+                                // populate years
+                                var $yearSelect = $("#year_testing").empty();
+                                var currentYear = new Date().getFullYear();
+                                var $options = "";
+                                $.ajax({
+                                    url: 'records/' + bureau + "/years",
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    success: function(response) {
+                                        if (response.length > 0) {
+                                            $.each(response, function(index, item) {
+                                                $options += "<option value='" + item + "'>" + item + "</option>";
+                                            });
+                                        }
+                                        $yearSelect.append($options);
+                                    },
+                                    error: function(error) {
+                                        console.error('Error fetching record list:', error);
+                                    }
+                                });
+
+                                // fire change to populate data on load
+                                setTimeout(function() {
+                                    $("#kpi_testing").trigger('change');
+                                }, 500);
                             },
                             error: function(error) {
                                 console.error('Error fetching record list:', error);
@@ -981,41 +1026,68 @@ crossorigin="anonymous"></script> -->
                         $testDiv.append('<input type="text" placeholder="testing">');
                     });
 
-                    $("#test-data").on("change", "#yearSelect", function() {
-                        var $this = $(this);
-                        var kpi = $this.attr("data-kpi");
-                        var year = $this.val();
+                    
+                    $("body").on("click", "#saveRecord", function() {
+                        // Save button click event
+                        var recordsToSave = [];
 
-                        // Generate calendar grid
-                        var $calendarContainer = $(".calendar-container").empty();
-                        var months = {
-                            1: "January",
-                            2: "February",
-                            3: "March",
-                            4: "April",
-                            5: "May",
-                            6: "June",
-                            7: "July",
-                            8: "August",
-                            9: "September",
-                            10: "October",
-                            11: "November",
-                            12: "December"
-                        };
-
-                        Object.keys(months).forEach(function(monthNumber) {
-                            var dataType = "";
-                            $.get("kpi/" + kpi + "/data", function(data) {
-                                console.info("dataType = " + data);
-                                dataType = data;
-                            }).fail(function() {
-                                console.error("Error occurred while fetching datatype");
-                            });
-                            console.info("?? " + dataType);
-                            // zj: check the kpi.dataType = COUNT/PRCT & adjust input accordingly
+                        $('.changed').each(function() {
+                            let $record = $(this);
+                            recordsToSave.push({
+                                    value: $record.val(),
+                                    ogvalue: $record.attr("data-ogvalue"),
+                                    date: $record.attr("id"),
+                                    kpi: $("#kpi_testing").val()
+                                });
                         });
 
+                        // Send a single AJAX request to save all changed records
+                        saveRecords(recordsToSave);
+                    });
 
+                    $("body").on("input", ".record-data", function() {
+                        // Detect changes and highlight the fields
+                        var $this = $(this);
+                        var ogval = $this.attr('data-ogvalue');
+                        if (($this.val() !== ogval) && (ogval !== undefined || $this.val() !== "")) {
+                            $this.addClass('changed');
+                        } else {
+                            $this.removeClass('changed');
+                        }
+                    });
+
+                    $("body").on("change", ".entry_select", function() {
+                        labelInputs();
+                        var kpi = $("#kpi_testing").val();
+                        var year = $("#year_testing").val();
+                        $("#kpi_title").text($('#kpi_testing option:selected').attr("data-title"));
+                        $("input.record-data").val("");
+                        $.ajax({
+                            url: 'records/' + kpi + "/" + year,
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(response) {
+                                console.info(response);
+                                $.each(response, function(index, record) {
+                                    var value = record["prct_VAL"] !== null ? record["prct_VAL"] : record["count_VAL"];
+                                    $("#" + record["entryDate"]).val(value).attr("data-ogvalue", value);
+                                });
+                            },
+                            error: function(error) {
+                                console.error('Error fetching record list:', error);
+                            }
+                        });
+                       // ok, so it loads great, need saving still
+                       // cosmetics? show %'s and stuff
+                       // 
+
+
+                    });
+
+                    $("body").on("click", ".year-button", function() {
+                        var $this = $(this);
+                        var year = $this.text();
+                        alert("year=" + year);
                         $.ajax({
                             url: 'records/' + kpi + "/" + year,
                             type: 'GET',
@@ -1150,6 +1222,34 @@ crossorigin="anonymous"></script> -->
                     // zj: end stupidly huge script block
                 });
 
+                function saveRecords(recordsToSave) {
+                    console.info(recordsToSave);
+                    $.ajax({
+                        type: 'POST',
+                        url: 'saveOrUpdateRecords',
+                        contentType: 'application/json',
+                        data: JSON.stringify(recordsToSave),
+                        success: function(response) {
+                            console.log('Records saved/updated:', response);
+                            // Optionally reset the form and original values
+                            $('.changed').removeClass("changed");
+                            $("#kpi_testing").change();
+                        },
+                        error: function(error) {
+                            console.error('Error saving/updating records:', error);
+                        }
+                    });
+                }
+
+                function labelInputs() {
+                    $(".changed").removeClass('changed')
+                    var year = $("#year_testing").val();
+                    $("input.record-data").each(function() {
+                        var $this = $(this);
+                        var id = $this.attr("data-month");
+                        $this.attr("id", year + "-" + id);
+                    });
+                }
 
                 function executeSql() {
                     var $input = $("textarea#input");

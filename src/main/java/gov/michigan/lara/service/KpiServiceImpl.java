@@ -82,7 +82,7 @@ public class KpiServiceImpl implements KpiService{
 
     @Override
     public List<String> getBureauList(){
-        return repository.getBureauList();
+        return repository.getBureauList(UserDetailsUtil.getCurrentUserBureau());
     }
 
     @Override

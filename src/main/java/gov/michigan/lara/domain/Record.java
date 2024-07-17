@@ -3,16 +3,16 @@ package gov.michigan.lara.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
+@IdClass(RecordId.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,7 +35,7 @@ public class Record implements Serializable {
 
     @Id
     @Column(name = "KPI_ID")
-    private String KPI_ID;
+    private String kpiId;
     
     @Column(name = "PRCT_Val")
     private BigDecimal PRCT_VAL;
@@ -42,9 +43,10 @@ public class Record implements Serializable {
     @Column(name = "COUNT_Val")
     private Integer COUNT_VAL;
 
+    @Id
     @Column(name = "Date")
     @Temporal(TemporalType.DATE)
-    private Date ENTRYDATE;
+    private Date entryDate;
 
     @Column(name = "Created Date")
     private Date createdDate;
