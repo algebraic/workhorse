@@ -69,6 +69,12 @@ public class FileController {
     }
 
     @ResponseBody
+    @GetMapping(value = "/isAdmin")
+    public Boolean isAdmin(HttpServletRequest request) {
+        return UserDetailsUtil.isAdmin();
+    }
+
+    @ResponseBody
     @PostMapping(value = "check")
     public int uploadMultipart(@RequestParam MultipartFile file) {
         int rowcount = 0;

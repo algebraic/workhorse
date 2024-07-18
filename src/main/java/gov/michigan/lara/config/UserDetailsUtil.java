@@ -1,5 +1,6 @@
 package gov.michigan.lara.config;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserDetailsUtil {
@@ -22,5 +23,12 @@ public class UserDetailsUtil {
     public static String getCurrentUserBureau() {
         CustomUserDetails userDetails = getCurrentUserDetails();
         return userDetails != null ? userDetails.getBureau() : null;
+    }
+
+    public static Boolean isAdmin() {
+        // CustomUserDetails userDetails = getCurrentUserDetails();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = auth.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+        return isAdmin;
     }
 }

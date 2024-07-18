@@ -786,15 +786,24 @@ crossorigin="anonymous"></script> -->
                                         }
                                     ],
                                     initComplete: function() {
-                                        // add edit buttons to table row
-                                        $("div.toolbar").html('<button type="button" class="btn btn-outline-success btn-sm" id="kpi_addNew" title="add new KPI" data-bs-toggle="modal" data-bs-target="#kpiModal"><i class="fa-solid fa-plus"></i> KPI</button>');
-                                        // attach click event to addNew button
-                                        $("div.toolbar").on("click", "#kpi_addNew", function() {
-                                            // if actions need to happen on add...
-                                            $(":checkbox", "#kpiEditForm").attr("checked", false);
-
-                                            // for the whole "add new" thing we'll need to do some validation...
-                                            // diff between editing adn adding...
+                                        // add buttons to table row
+                                        var isAdmin = "blarg";
+                                        $.ajax({
+                                            url: 'isAdmin',
+                                            type: 'GET',
+                                            success: function(isAdmin) {
+                                                if (isAdmin) {
+                                                    $("div.toolbar").html('<button type="button" class="btn btn-outline-success btn-sm" id="kpi_addNew" title="add new KPI" data-bs-toggle="modal" data-bs-target="#kpiModal"><i class="fa-solid fa-plus"></i> KPI</button>');
+                                                    // attach click event to addNew button
+                                                    $("div.toolbar").on("click", "#kpi_addNew", function() {
+                                                        // if actions need to happen on add...
+                                                        $(":checkbox", "#kpiEditForm").attr("checked", false);
+                                                    });
+                                                }
+                                            },
+                                            error: function() {
+                                                console.error('Error checking admin role');
+                                            }
                                         });
                                     }
                                 });
