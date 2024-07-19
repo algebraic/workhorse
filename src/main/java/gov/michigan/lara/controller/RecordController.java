@@ -4,24 +4,18 @@ import gov.michigan.lara.config.UserDetailsUtil;
 import gov.michigan.lara.domain.KPI;
 import gov.michigan.lara.domain.Record;
 import gov.michigan.lara.service.KpiService;
-import gov.michigan.lara.service.KpiServiceImpl;
 import gov.michigan.lara.service.RecordService;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

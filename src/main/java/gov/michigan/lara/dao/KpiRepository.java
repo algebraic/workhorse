@@ -1,6 +1,5 @@
 package gov.michigan.lara.dao;
 
-import gov.michigan.lara.config.UserDetailsUtil;
 import gov.michigan.lara.domain.KPI;
 
 import java.util.List;
