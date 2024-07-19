@@ -231,7 +231,7 @@ crossorigin="anonymous"> -->
             <!-- section title -->
             <div class="container-fluid mt-5">
                 <h3 id="section-title hidden"></h3>
-                <div class="instructions">
+                <div class="instructions hidden">
                     <p><b><u>BPL Reporting Data Entry proof-of-concept</u></b></p>
                     <p>The main idea is a web-based form for data collection. Click the menu above and click "<b>BPL
                             Data Entry</b>" to test the form.
@@ -1147,6 +1147,13 @@ crossorigin="anonymous"></script> -->
                                         var value = record["prct_VAL"] !== null ? record["prct_VAL"] : record["count_VAL"];
                                         $("#" + record["entryDate"]).val(value).attr("data-ogvalue", value);
                                     });
+                                    // reset the data-ogvalue attributes
+                                    $("input.record-data").each(function() {
+                                        var $input = $(this);
+                                        if ($input.val() == "") {
+                                            $input.removeAttr("data-ogvalue");
+                                        }
+                                    });
                                 },
                                 error: function(error) {
                                     console.error('Error fetching record list:', error);
@@ -1321,7 +1328,7 @@ crossorigin="anonymous"></script> -->
                     if (typeof isNew === 'undefined') {
                         isNew = false; // Set your default value here
                     }
-                    $(".changed").removeClass('changed')
+                    $(".changed").removeClass('changed');
                     var year = $("#year_testing").val();
                     $("input.record-data").each(function() {
                         var $this = $(this);
