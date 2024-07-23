@@ -137,7 +137,7 @@ crossorigin="anonymous"> -->
                 }
 
                 input.changed {
-                    border-color: var(--bs-warning);
+                    box-shadow: inset 0 0 0 2px var(--bs-warning);
                 }
             
                 .entry_select {
@@ -165,8 +165,9 @@ crossorigin="anonymous"> -->
                     vertical-align: middle;
                 }
                 table#kpi_table_entry {
-                    /* width: 45% !important; */
+                    width: 720px !important;
                 }
+
             </style>
 
         </head>
