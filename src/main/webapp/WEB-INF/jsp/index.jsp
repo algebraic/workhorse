@@ -788,7 +788,6 @@ crossorigin="anonymous"></script> -->
                                     ],
                                     initComplete: function() {
                                         // add buttons to table row
-                                        var isAdmin = "blarg";
                                         $.ajax({
                                             url: 'isAdmin',
                                             type: 'GET',

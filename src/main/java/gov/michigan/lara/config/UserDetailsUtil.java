@@ -26,7 +26,6 @@ public class UserDetailsUtil {
     }
 
     public static Boolean isAdmin() {
-        // CustomUserDetails userDetails = getCurrentUserDetails();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = auth.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
         return isAdmin;

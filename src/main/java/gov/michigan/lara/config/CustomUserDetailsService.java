@@ -8,10 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import gov.michigan.lara.dao.UserRepository;
-import gov.michigan.lara.domain.Role;
 import gov.michigan.lara.domain.User;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 @Service
@@ -29,10 +28,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        for (Role role : user.getRoles()) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getRole()));
-        }
+        // Determine role based on the bureau field
+        String role = "*".equals(user.getBureau()) ? "ROLE_ADMIN" : "ROLE_USER";
+        GrantedAuthority authority = new SimpleGrantedAuthority(role);
+        Set<GrantedAuthority> grantedAuthorities = Collections.singleton(authority);
+        
         return new CustomUserDetails(user.getUsername(), user.getPassword(), user.getFullName(), user.getBureau(), grantedAuthorities);
     }
 }

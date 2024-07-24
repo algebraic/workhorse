@@ -1,6 +1,5 @@
 package gov.michigan.lara.domain;
 
-import java.util.Set;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +25,4 @@ public class User {
     private String password;
     private String fullName;
     private String bureau;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<Role> roles;
-    
 }
