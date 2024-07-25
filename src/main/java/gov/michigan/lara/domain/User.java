@@ -25,4 +25,7 @@ public class User {
     private String password;
     private String fullName;
     private String bureau;
+    
+    @Column(nullable = false)
+    private boolean enabled;
 }

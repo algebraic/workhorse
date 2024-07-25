@@ -383,7 +383,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" id="deleteKpi">Delete</button>
+                        <!-- <button type="button" class="btn btn-danger" id="deleteKpi">Delete</button> -->
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary" id="saveKpi">Save</button>
                     </div>
@@ -413,10 +413,12 @@
                         <label for="bureau">bureau</label>
                         <input type="text" id="bureau" name="bureau" class="required">
                         <br>
+                        <label for="enabled">enabled</label>
+                        <input class="form-check-input" type="checkbox" value="true" id="enabled" name="enabled" checked>
+                        <br>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" id="deleteUser">Delete</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="saveUser">Save</button>
                 </div>
@@ -472,14 +474,12 @@
             $(function() {
                 // section buttons
                 $("a.section").click(function() {
-                    $("div.instructions").addClass("hidden");
                     $("div[data-section]").addClass("hidden");
                     var $this = $(this);
                     var section = $this.attr("id");
                     $('div[data-section="' + section + '"]').removeClass("hidden");
-                    
-                    var $textElement = $("#section-title");
-                    $textElement.text($this.text());
+                    // set title
+                    $("#section-title").text($this.text());
                     
                     // section-specific actions
                     if ($this.text() == "KPI Data") {
@@ -490,7 +490,6 @@
                         $("#userSubmit").click();
                     }
                     if ($this.text() == "Data Entry") {
-                        ///////////////////////////////////////////////////////////
                         var $div = $("#bureau-list").empty();
 
                         $.ajax({
@@ -505,22 +504,19 @@
                                     $element += '<div id="panel-bureau-' + i + '" class="accordion-collapse" data-bs-parent="#bureau-list"><div class="accordion-body p-0"></div></div>';
                                     $div.append($element);
                                 }
-                                // $div.append('<label for="raw-data" class="raw-data-checkbox mt-1 ms-2"><input type="checkbox" id="raw-data" name="raw-data"><small>raw data</small></label>');
+                                // hacky junk to open accordion on page load
+                                setTimeout(function() {
+                                    $("button.accordion-button:eq(0)").click();
+                                }, 1000);
+                                setTimeout(function() {
+                                    $('.accordion-body button:first').click();
+                                }, 1500);
                             },
                             error: function(error) {
                                 console.error('Error fetching record list:', error);
                             }
                         });
-                        ///////////////////////////////////////////////////////////
                     }
-
-                    // hacky junk to open accordion on page load
-                    setTimeout(function() {
-                        $("button.accordion-button:eq(0)").click();
-                    }, 1000);
-                    setTimeout(function() {
-                        $('.accordion-body button:first').click();
-                    }, 1500);
 
                 });
                 // zj: auto-click something on page load
@@ -530,23 +526,6 @@
                 var currentYear = new Date().getFullYear();
                 var $yearInput = $('#year-input');
                 $yearInput.val(currentYear);
-
-                // arrow buttons for year select
-                $('.year-btn').click(function() {
-                    var action = $(this).attr("data-action");
-                    if (action === "-") {
-                        currentYear--;
-                    } else {
-                        currentYear++;
-                    }
-                    $yearInput.val(currentYear);
-                    highlight($(this));
-                    setFieldAttributes();
-                    populateData($("#kpiName").val(), currentYear);
-                    analyzeData();
-                }).focus(function() {
-                    $yearInput.focus();
-                });
 
                 // modify on select
                 $("#kpiName").change(function() {
@@ -561,24 +540,6 @@
                     analyzeData();
                 });
 
-                $("#storageTest").click(function() {
-                    // get previously saved data
-                    $("#displayData div").empty();
-                    var savedData = JSON.parse(localStorage.getItem('formData'));
-                    kpi = $("#kpiName").val();
-                    if (savedData.hasOwnProperty(kpi)) {
-                        var years = Object.keys(savedData[kpi]);
-                        $.each(years, function(index, year) {
-                            $("#displayData div").append("<a class='btn btn-sm year-badge btn-outline-success mx-1' title='load " + year + " data'>" + year + "</a>");
-                        });
-                        $("a.year-badge").click(function() {
-                            var year = $(this).text();
-                            $("#year-input").val(year);
-                            setFieldAttributes();
-                            populateData(kpi, year);
-                        });
-                    }
-                });
 
                 // submit
                 $("form#manualEntry").submit(function(e) {
@@ -613,21 +574,6 @@
                     alert('Form data serialized and saved to local storage.');
                 });
 
-                // Keyboard arrow key event listeners
-                $("#year-input").keydown(function(e) {
-                    if (e.which === 37 || e.which === 40) { // left & up arrow keys
-                        $('.year-btn').eq(0).click();
-                    } else if (e.which === 39 || e.which === 38) { // right & down arrow key
-                        $('.year-btn').eq(1).click();
-                    } else if (e.which === 9 && e.shiftKey) { // tab key
-                        e.preventDefault();
-                        $("#kpiName").focus();
-                    } else if (e.which === 9) { // tab key
-                        e.preventDefault();
-                        $("input[type='text']").eq(0).focus();
-                        // zj: fix that ^
-                    }
-                });
 
                 // set field attributes on load
                 setFieldAttributes();
@@ -639,47 +585,6 @@
                     showApiList();
                 });
 
-                $("#onedrive").click(function() {
-                    console.log("onedrive auth 3");
-                    // Your application's client ID
-                    var clientId = "ddcaa0f6-2021-494f-9680-d924aeb7eacd";
-
-                    // Your OneDrive API scope
-                    var scope = "onedrive.readwrite";
-
-                    // Your redirect URI
-                    var redirectUri = "http://localhost:8080/workhorse/";
-
-                    // The authorization endpoint
-                    var authEndpoint = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
-
-                    // Build the authorization URL
-                    var authUrl = authEndpoint +
-                        "?client_id=" + encodeURIComponent(clientId) +
-                        "&scope=" + encodeURIComponent(scope) +
-                        "&response_type=token" +
-                        "&redirect_uri=" + encodeURIComponent(redirectUri);
-
-                    var testurl = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=ddcaa0f6-2021-494f-9680-d924aeb7eacd&scope=onedrive.readwrite&response_type=token&redirect_uri=http://localhost:8080/workhorse/";
-                    $.ajax({
-                        type: 'GET',
-                        crossDomain: true,
-                        dataType: 'json',
-                        url: testurl,
-                        success: function(jsondata) {
-                            console.log("success");
-                            console.log(JSON.stringify(djsondataata));
-                        },
-                        error: function(xhr, status, error) {
-                            console.error("Error:", status, error);
-                        }
-                    });
-                });
-
-                $("#onedriveAuth").click(function() {
-                    checkSignIn();
-                    console.info("checking signin...");
-                });
 
                 // zj: kpi editing
                 $("#kpiSubmit").click(function(e) {
@@ -759,7 +664,7 @@
                                         type: 'GET',
                                         success: function(isAdmin) {
                                             if (isAdmin) {
-                                                $("div.toolbar").html('<button type="button" class="btn btn-outline-success btn-sm" id="kpi_addNew" title="add new KPI" data-bs-toggle="modal" data-bs-target="#kpiModal"><i class="fa-solid fa-plus"></i> KPI</button>');
+                                                $("div.toolbar").html('<button type="button" class="btn btn-outline-success btn-sm" id="kpi_addNew" title="add new KPI" data-bs-toggle="modal" data-bs-target="#Modal"><i class="fa-solid fa-plus"></i> KPI</button>');
                                                 // attach click event to addNew button
                                                 $("div.toolbar").on("click", "#kpi_addNew", function() {
                                                     // if actions need to happen on add...
@@ -777,6 +682,7 @@
                             $("ul.pagination", "#kpi_table_paginate").addClass("pagination-sm");
                             $("table#kpi_table").on("click", "i.fa-regular", function() {
                                 var id = $(this).parent().attr("data-id");
+                                console.info("kpi edit: " + id);
                                 editKpi(id);
                             });
 
@@ -816,7 +722,7 @@
                                 $.each(item, function(key, value) {
                                     // Add the scope="row" attribute to the first <td> element
                                     if (key === Object.keys(item)[0]) {
-                                        tableHtml += '<td scope="row" data-id="' + value + '"><i class="fa-regular fa-pen-to-square" alt="edit" data-bs-toggle="modal" data-bs-target="#kpiModal"></i></td>';
+                                        tableHtml += '<td scope="row" data-id="' + value + '"><i class="fa-regular fa-pen-to-square" alt="edit" data-bs-toggle="modal" data-bs-target="#userModal"></i></td>';
                                     } else {
                                         tableHtml += '<td>' + value + '</td>';
                                     }
@@ -859,7 +765,8 @@
                             $("ul.pagination", "#user_table_paginate").addClass("pagination-sm");
                             $("table#user_table").on("click", "i.fa-regular", function() {
                                 var id = $(this).parent().attr("data-id");
-                                editKpi(id);
+                                console.info("user edit: " + id);
+                                editUser(id);
                             });
 
                         },
@@ -956,9 +863,75 @@
 
                 });
 
-                $("#kpiModal").on('hidden.bs.modal', function() {
+                // save user
+                $("#saveUser").click(function() {
+                    $(".error").removeClass("error");
+                    var $form = $("form#userEditForm");
+                    var id = $("#id", $form).val();
+                    var userData = {};
+
+                    // validate required fields
+                    $("input.required", $form).each(function() {
+                        if ($(this).val().trim() === '') {
+                            $(this).addClass('error');
+                        } else {
+                            $(this).removeClass('error');
+                        }
+                    });
+                    if ($(".error").length > 0) {
+                        return;
+                    }
+                    $form.serializeArray().forEach(function(item) {
+                        userData[item.name] = item.value;
+                    });
+                    console.info("userData: " + JSON.stringify(userData));
+
+                    var operationType = $("#id", $form).val() ? "update" : "new";
+
+                    // zj: left off here - differentiate between controller methods
+                    if (operationType == "update") {
+                        console.info("updating user");
+                        // $.ajax({
+                        //     type: 'PUT',
+                        //     url: 'kpi/' + id,
+                        //     contentType: 'application/json',
+                        //     data: JSON.stringify(kpiData),
+                        //     success: function(response) {
+                        //         console.log('KPI updated successfully:', response);
+                        //         showSuccess('KPI updated successfully:', response);
+                        //         // Handle success, e.g., show a success message
+                        //     },
+                        //     error: function(error) {
+                        //         alert('Error updating KPI:', error);
+                        //         // Handle error, e.g., show an error message
+                        //     }
+                        // });
+                    } else if (operationType == "new") {
+                        console.info("saving new user");
+                        $.ajax({
+                            type: 'POST',
+                            url: 'user',
+                            contentType: 'application/json',
+                            data: JSON.stringify(userData),
+                            success: function(response) {
+                                console.log('user added successfully:', response);
+                                showSuccess('user added successfully:', response);
+                                // Handle success, e.g., show a success message
+                            },
+                            error: function(error) {
+                                alert('Error saving user:', error);
+                                // alert("balls");
+                                // Handle error, e.g., show an error message
+                            }
+                        });
+                    }
+                    alert("all done?");
+                });
+
+                $(".modal").on('hidden.bs.modal', function() {
                     console.info("closing modal, reset form");
-                    $("form#kpiEditForm")[0].reset();
+                    var $form = $(this).find("form");
+                    $form[0].reset();
                 });
 
                 $("#bureau-list").on('show.bs.collapse', function(e) {
@@ -1443,6 +1416,37 @@
                 });
             }
 
+            // edit user
+            function editUser(id) {
+                $.ajax({
+                    url: 'user/' + id,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $.each(data, function(key, value) {
+                            // handle booleans
+                            if (value === true || value === false) {
+                                console.info(key + " -- " + value + " (BOOLEAN)");
+                                $("#" + key).attr("checked", value);
+                            } else {
+                                console.info(key + " -- " + value);
+                                console.info('$("#' + key + '").val("' + value + '");');
+                                $("#" + key, "#userEditForm").val(value);
+                                // zj: fix the couple broken fields
+                            }
+                            // var $element = "<input id='" + key + "' name='" + key + "' value='" + value + "'>";
+                            // $("div.modal-body", "#kpiModal").append($element + "<br>");
+                        });
+
+                    },
+                    error: function(xhr, status, error) {
+                        alert("ERROR");
+                        console.error('Error retrieving JSON data:', error);
+                        // Handle error response
+                    }
+                });
+            }
+
             function showSuccess(message) {
                 $('#kpiModal').modal('hide');
                 $("#kpiSubmit").click();
@@ -1460,55 +1464,6 @@
                 toast.on('hidden.bs.toast', function() {
                     toast.remove();
                 });
-            }
-
-            // zj: msal stuff
-            function checkSignIn() {
-                console.info("starting checkSignIn function");
-                // Configuration for MSAL using the common endpoint
-                const msalConfig = {
-                    auth: {
-                        // clientId: 'your-client-id', // This is required but can be any valid client ID
-                        clientId: 'ddcaa0f6-2021-494f-9680-d924aeb7eacd',
-                        authority: 'https://login.microsoftonline.com/common',
-                        redirectUri: 'http://localhost:8080/workhorse/',
-                    },
-                    cache: {
-                        cacheLocation: 'localStorage',
-                    }
-                };
-
-                // Instantiate MSAL
-                const myMSALObj = new Msal.UserAgentApplication(msalConfig);
-
-                // Check if user is signed in
-                const user = myMSALObj.getAccount();
-
-                if (user) {
-                    // User is signed in
-                    alert('Signed in as ' + user.username);
-                } else {
-                    // User is not signed in, prompt for login
-                    signIn(myMSALObj);
-                }
-            }
-
-            // Sign in function
-            function signIn(msalObj) {
-                msalObj.loginPopup().then(response => {
-                    // Successful login
-                    alert('Signed in as ' + response.account.username);
-                }).catch(error => {
-                    // Handle errors
-                    console.error(error);
-                });
-            }
-
-            // zj: end msal stuff
-
-
-            function exportTest() {
-                console.info("hi");
             }
 
             function analyzeData() {
