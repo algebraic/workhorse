@@ -57,6 +57,11 @@
                 top: -31px;
                 left: 226px;
             }
+            #user_addNew {
+                position: relative;
+                top: -31px;
+                left: 232px;
+            }
 
             /* font-awesome styles */
             i.fa-regular {
@@ -137,14 +142,27 @@
             }
         
             .entry_select {
-                color: black;
-                border: none;
                 font-weight: bold;
                 font-size: x-large;
                 width: 100%;
-                background: none;
                 cursor: pointer;
+                background: none;
+                /* padding: 10px; */
+                border: none;
+                border-radius: 5px;
+                box-shadow: inset 0 0 0 2px transparent;
+                transition: box-shadow 0.3s ease, background-color 0.3s ease;
             }
+
+            .entry_select:focus {
+                box-shadow: 0 0 8px 4px rgba(0, 123, 255, 0.5);
+                outline: none;
+            }
+
+            .entry_select:hover {
+                box-shadow: 0 0 6px 3px rgba(0, 123, 255, 0.3);
+            }
+
             #kpi_title {
                 font-variant: small-caps;
                 font-size: large;
@@ -164,6 +182,13 @@
                 width: 720px !important;
             }
 
+            h3#section-title {
+                color: white;
+                width: 100%;
+                text-align: center;
+                padding-top:4px;
+            }
+
         </style>
 
     </head>
@@ -178,6 +203,7 @@
                             <a class="nav-link" id="buildId"></a></small>
                     </span>
                 </a>
+                <h3 id="section-title"></h3>
                 <ul class="navbar-nav mb-2 mb-lg-0 ms-auto me-5">
                     <li class="nav-item dropdown float-end">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -186,6 +212,7 @@
                         <ul class="dropdown-menu" data-bs-theme="dark">
                             <li><a class="dropdown-item section" id="manual_entry" href="#">Data Entry</a></li>
                             <li><a class="dropdown-item section" id="kpi_edit" href="#">KPI Data</a></li>
+                            <li><a class="dropdown-item section" id="user_edit" href="#">User Data</a></li>
                             <hr class="dropdown-divider">
                             <li><a class="dropdown-item" id="apiList" href="#" data-bs-toggle="modal" data-bs-target="#apiListModal">API Endpoint List</a></li>
                             <li><a class="dropdown-item section" id="analyzeDb" href="#">Analyze Database</a></li>
@@ -197,90 +224,7 @@
             </div>
         </nav>
 
-        <!-- section title -->
-        <div class="container-fluid mt-5">
-            <h3 id="section-title hidden"></h3>
-            <div class="instructions hidden">
-                <p><b><u>BPL Reporting Data Entry proof-of-concept</u></b></p>
-                <p>The main idea is a web-based form for data collection. Click the menu above and click "<b>BPL
-                        Data Entry</b>" to test the form.
-                    <br>Saving data saves to the browser's local storage, no data is currently being trasnsmitted or
-                    saved in any way.
-                </p>
-                <p>
-                    The "<b>KPI Data</b>" action will show all the currently loaded KPI's once the database is
-                    loaded.<br>
-                    <small>(KPI input is currently disabled for testing)</small>
-                </p>
-                <p>
-                    The "<b>load test data</b>" action will load the data used to set up the initial reports
-                </p>
-                <p>
-                    <a href="/workhorse/h2" target="_blank">h2 testing</a>
-                </p>
-            </div>
-        </div>
-
-        <!-- file operation section -->
-        <div class="container-fluid hidden" data-section="file_operation">
-            <div id="overlay" class="d-none">
-                <div class="lds-grid" id="load-icon">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-                <div id="completed-msg" class="alert d-none" role="alert">
-                    <h4 class="alert-heading">Process Completed</h4>
-                    <p>File <span id="filename"></span> has been successfully uploaded</p>
-                    <hr>
-                    <button id="close" class="btn">Close</button>
-                </div>
-            </div>
-
-            <br>
-            <div class="page-content hide">
-                <div class="container">
-                    <form>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h6 class="my-4">Select data file:</h6>
-                                        <div class="form-group">
-                                            <input type="file" name="fileinput" id="fileinput"
-                                                class="form-control-file">
-                                            <div class="lds-hourglass-sm d-none" id="loading">
-                                                <div></div>
-                                                <div></div>
-                                            </div>
-                                            <small id="result" class="d-none"></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <br>
-
-                        <div class="row my-5">
-                            <div class="col-lg-12 text-center mb-1">
-                                <input type="hidden" id="rowcount" name="rowcount">
-                                <button type="button" id="submit" class="btn btn-dark">Submit</button>
-                                <button type="reset" id="reset" class="btn btn-dark">Reset</button>
-                            </div>
-                        </div>
-                    </form>
-
-
-                </div>
-            </div>
-        </div>
+        <br>
 
         <!-- data entry section -->
         <div class="container-fluid hidden" data-section="manual_entry">
@@ -311,7 +255,23 @@
                 </div>
             </div>
         </div>
-        <!-- zj: new stuff -->
+        
+        <!-- users entry section -->
+        <div class="container-fluid hidden" data-section="user_edit">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <form id="userEdit" class="floatLabels">
+                        <input type="hidden" id="username" name="username">
+                        <div class="row justify-content-center" id="userEditDiv"></div>
+                            user data
+                        <br>
+                        <div class="col-xs-1">
+                            <button type="button" class="btn btn-sm btn-secondary" id="userSubmit">reload</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <!-- database analyzer -->
         <div class="container-fluid hidden" data-section="analyzeDb" id="tableNames">
@@ -431,6 +391,39 @@
             </div>
         </div>
 
+        <!-- user modal edit -->
+        <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="userModalLabel">User Entry</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="userEditForm">
+                        <label for="username">username</label>
+                        <input type="text" id="username" name="username" class="required">
+                        <br>
+                        <label for="password">password</label>
+                        <input type="text" id="password" name="password" class="required">
+                        <br>
+                        <label for="fullName">fullName</label>
+                        <input type="text" id="fullName" name="fullName" class="required">
+                        <br>
+                        <label for="bureau">bureau</label>
+                        <input type="text" id="bureau" name="bureau" class="required">
+                        <br>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="deleteUser">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveUser">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
         <!-- footer -->
         <div class="container-fluid">
             <div class="row fixed-bottom">
@@ -484,10 +477,17 @@
                     var $this = $(this);
                     var section = $this.attr("id");
                     $('div[data-section="' + section + '"]').removeClass("hidden");
-                    $("#section-title").text($this.text());
+                    
+                    var $textElement = $("#section-title");
+                    $textElement.text($this.text());
+                    
                     // section-specific actions
                     if ($this.text() == "KPI Data") {
                         $("#kpiSubmit").click();
+                    }
+                    // section-specific actions
+                    if ($this.text() == "User Data") {
+                        $("#userSubmit").click();
                     }
                     if ($this.text() == "Data Entry") {
                         ///////////////////////////////////////////////////////////
@@ -681,12 +681,7 @@
                     console.info("checking signin...");
                 });
 
-                // zj: kpi editing stuff
-                $("#kpiSelector").change(function() {
-                    var kpiId = $(this).val();
-                    console.info("kpiId=" + kpiId);
-                });
-
+                // zj: kpi editing
                 $("#kpiSubmit").click(function(e) {
                     e.preventDefault();
                     $("#testdiv").text("database not loaded");
@@ -735,6 +730,9 @@
                                 ],
                                 stateSave: true,
                                 dom: 'Bf<"toolbar">rtip',
+                                language: {
+                                    search: 'filter:'
+                                },
                                 buttons: [
                                     {
                                         extend: 'colvis',
@@ -791,6 +789,88 @@
 
                 });
 
+                //////////////// zj: user datatables //////////////////////////////////////
+                $("#userSubmit").click(function(e) {
+                    e.preventDefault();
+                    $("#userEditDiv").text("database not loaded");
+
+                    $.ajax({
+                        url: 'users',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            // Build the HTML table
+                            var tableHtml = '<table class="table table-striped data-tables" id="user_table"><thead><tr>';
+                            // Iterate over the fields of the first item to get column names
+                            $.each(Object.keys(data[0]), function(index, fieldName) {
+                                var colName = (index > 0) ? fieldName : '';
+                                tableHtml += '<th scope="col">' + colName + '</th>';
+                            });
+                            tableHtml += '</tr></thead><tbody>';
+
+                            // Iterate over each item in the JSON data and append a table row
+                            $.each(data, function(index, item) {
+                                tableHtml += '<tr>';
+
+                                // Iterate over each field in the item and append a table cell
+                                $.each(item, function(key, value) {
+                                    // Add the scope="row" attribute to the first <td> element
+                                    if (key === Object.keys(item)[0]) {
+                                        tableHtml += '<td scope="row" data-id="' + value + '"><i class="fa-regular fa-pen-to-square" alt="edit" data-bs-toggle="modal" data-bs-target="#kpiModal"></i></td>';
+                                    } else {
+                                        tableHtml += '<td>' + value + '</td>';
+                                    }
+                                });
+                                tableHtml += '</tr>';
+                            });
+
+                            tableHtml += '</tbody></table>';
+                            $('#userEditDiv').html(tableHtml);
+                            $("table#user_table").DataTable({
+                                columnDefs: [
+                                    { "targets": [0], orderable: false }
+                                ],
+                                stateSave: true,
+                                dom: 'f<"toolbar">rtip',
+                                language: {
+                                    search: 'filter:'
+                                },
+                                initComplete: function() {
+                                    // add buttons to table row
+                                    $.ajax({
+                                        url: 'isAdmin',
+                                        type: 'GET',
+                                        success: function(isAdmin) {
+                                            if (isAdmin) {
+                                                $("div.toolbar").html('<button type="button" class="btn btn-outline-success btn-sm" id="user_addNew" title="add new user" data-bs-toggle="modal" data-bs-target="#userModal"><i class="fa-solid fa-user-plus"></i></button>');
+                                                // attach click event to addNew button
+                                                $("div.toolbar").on("click", "#user_addNew", function() {
+                                                    console.info("add new user");
+                                                });
+                                            }
+                                        },
+                                        error: function() {
+                                            console.error('Error checking admin role');
+                                        }
+                                    });
+                                }
+                            });
+                            // post datatables-init actions
+                            $("ul.pagination", "#user_table_paginate").addClass("pagination-sm");
+                            $("table#user_table").on("click", "i.fa-regular", function() {
+                                var id = $(this).parent().attr("data-id");
+                                editKpi(id);
+                            });
+
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error retrieving JSON data:', error);
+                            // Handle error response
+                        }
+                    });
+
+                });
+                //////////////// zj: user datatables //////////////////////////////////////
 
                 $("#saveKpi").click(function() {
                     $(".error").removeClass("error");
