@@ -36,16 +36,10 @@ public class CustomUserDetailsService implements UserDetailsService {
             // Determine role based on the bureau field
             String role = "*".equals(user.getBureau()) ? "ROLE_ADMIN" : "ROLE_USER";
             log.info("setting " + user.getUsername() + "'s role to " + role);
+            
             GrantedAuthority authority = new SimpleGrantedAuthority(role);
             Set<GrantedAuthority> grantedAuthorities = Collections.singleton(authority);
-            // zj: testing shiz
-            log.info("** " + user.getId());
-            log.info("** " + user.getUsername());
-            log.info("** " + user.getPassword());
-            log.info("** " + user.getFullName());
-            log.info("** " + user.getBureau());
-            log.info("** " + grantedAuthorities);
-            ///////////////////
+            
             return new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getFullName(), user.getBureau(), grantedAuthorities);
         }
     }

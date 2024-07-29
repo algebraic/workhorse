@@ -30,32 +30,6 @@ import java.util.Map;
 @EnableMethodSecurity // Enable method level security annotations
 public class SecurityConfig {
 
-    // @Bean
-    // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    //     http
-    //         .authorizeHttpRequests(requests -> requests
-    //             .requestMatchers("/commitId/**", "/resources/**").permitAll()
-    //             .requestMatchers("/**", "/index/**").authenticated()  // Secure paths starting with "/empapp/api/v1/"
-    //             .anyRequest().permitAll())
-    //         .httpBasic(withDefaults())
-    //             .formLogin(withDefaults()).csrf(csrf -> csrf.disable()
-    //             // .formLogin(form -> form
-    //             //     .loginPage("/login")
-    //             //     .defaultSuccessUrl("/workhorse", true) // Redirect to the base "workhorse/" URL after login
-    //             //     .permitAll()
-    //         )
-    //         .logout(logout -> logout
-    //             .logoutUrl("/logout") // Default logout URL
-    //             .logoutSuccessUrl("/login?logout") // URL to redirect to after logout
-    //             .invalidateHttpSession(true) // Invalidate the HTTP session
-    //             .deleteCookies("JSESSIONID") // Delete the session cookie
-    //             .clearAuthentication(true) // Clear the authentication object
-    //             .addLogoutHandler(new SecurityContextLogoutHandler()) // Ensure context is cleared
-    //         )
-    //         .csrf(csrf -> csrf.disable());
-    //     return http.build();
-    // }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
          http
@@ -83,10 +57,9 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        // Map<String,PasswordEncoder> encoders=new HashMap<>();
-        // // encoders.put("bcrypt",new BCryptPasswordEncoder());
-        // encoders.put("noop",NoOpPasswordEncoder.getInstance());
-        // return new DelegatingPasswordEncoder("bcrypt",encoders);
+        Map<String,PasswordEncoder> encoders=new HashMap<>();
+        encoders.put("bcrypt",new BCryptPasswordEncoder());
+        encoders.put("noop",NoOpPasswordEncoder.getInstance());
+        return new DelegatingPasswordEncoder("bcrypt",encoders);
     }
 }

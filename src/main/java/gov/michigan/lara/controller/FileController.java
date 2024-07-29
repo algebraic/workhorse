@@ -50,9 +50,6 @@ public class FileController {
         String username = UserDetailsUtil.getCurrentUsername();
         String userbureau = UserDetailsUtil.getCurrentUserBureau();
         String displayname = UserDetailsUtil.getCurrentUserDisplayName();
-        System.out.println("username = " + username);
-        System.out.println("displayname = " + displayname);
-        System.out.println("userbureau = " + userbureau);
 
         ModelAndView mav = new ModelAndView("index");
         this.size = 0;
