@@ -5,32 +5,44 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserDetailsUtil {
 
-    private static final CustomUserDetails userDetails=(CustomUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    private static CustomUserDetails getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+            return (CustomUserDetails) authentication.getPrincipal();
+        }
+        return null;
+    }
 
     public static CustomUserDetails getCurrentUserDetails() {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userDetails;
+        return getAuthenticatedUser();
     }
 
     public static String getCurrentUsername() {
+        CustomUserDetails userDetails = getAuthenticatedUser();
         return userDetails != null ? userDetails.getUsername() : null;
     }
 
     public static Long getCurrentUserId() {
+        CustomUserDetails userDetails = getAuthenticatedUser();
         return userDetails != null ? userDetails.getId() : null;
     }
 
     public static String getCurrentUserDisplayName() {
+        CustomUserDetails userDetails = getAuthenticatedUser();
         return userDetails != null ? userDetails.getDisplayName() : null;
     }
 
     public static String getCurrentUserBureau() {
+        CustomUserDetails userDetails = getAuthenticatedUser();
         return userDetails != null ? userDetails.getBureau() : null;
     }
 
     public static Boolean isAdmin() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = auth.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
-        return isAdmin;
+        CustomUserDetails userDetails = getAuthenticatedUser();
+        if (userDetails != null) {
+            return userDetails.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+        }
+        return false;
     }
 }

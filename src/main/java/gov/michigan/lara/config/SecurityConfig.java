@@ -10,10 +10,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 import gov.michigan.lara.dao.UserRepository;
 
@@ -28,7 +30,33 @@ import java.util.Map;
 @EnableMethodSecurity // Enable method level security annotations
 public class SecurityConfig {
 
-     @Bean
+    // @Bean
+    // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    //     http
+    //         .authorizeHttpRequests(requests -> requests
+    //             .requestMatchers("/commitId/**", "/resources/**").permitAll()
+    //             .requestMatchers("/**", "/index/**").authenticated()  // Secure paths starting with "/empapp/api/v1/"
+    //             .anyRequest().permitAll())
+    //         .httpBasic(withDefaults())
+    //             .formLogin(withDefaults()).csrf(csrf -> csrf.disable()
+    //             // .formLogin(form -> form
+    //             //     .loginPage("/login")
+    //             //     .defaultSuccessUrl("/workhorse", true) // Redirect to the base "workhorse/" URL after login
+    //             //     .permitAll()
+    //         )
+    //         .logout(logout -> logout
+    //             .logoutUrl("/logout") // Default logout URL
+    //             .logoutSuccessUrl("/login?logout") // URL to redirect to after logout
+    //             .invalidateHttpSession(true) // Invalidate the HTTP session
+    //             .deleteCookies("JSESSIONID") // Delete the session cookie
+    //             .clearAuthentication(true) // Clear the authentication object
+    //             .addLogoutHandler(new SecurityContextLogoutHandler()) // Ensure context is cleared
+    //         )
+    //         .csrf(csrf -> csrf.disable());
+    //     return http.build();
+    // }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
          http
                  .authorizeHttpRequests(requests -> requests
@@ -55,9 +83,10 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        Map<String,PasswordEncoder> encoders=new HashMap<>();
-        encoders.put("bcrypt",new BCryptPasswordEncoder());
-        encoders.put("noop",NoOpPasswordEncoder.getInstance());
-        return new DelegatingPasswordEncoder("bcrypt",encoders);
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        // Map<String,PasswordEncoder> encoders=new HashMap<>();
+        // // encoders.put("bcrypt",new BCryptPasswordEncoder());
+        // encoders.put("noop",NoOpPasswordEncoder.getInstance());
+        // return new DelegatingPasswordEncoder("bcrypt",encoders);
     }
 }

@@ -278,6 +278,7 @@
             <button type="button" class="btn btn-outline-primary">Master_Data</button>
             <button type="button" class="btn btn-outline-primary">Data</button>
             <button type="button" class="btn btn-outline-primary">RAW_Data</button>
+            <button type="button" class="btn btn-outline-primary">users</button>
             <button type="button" class="btn btn-outline-danger" id="sqlEditorBtn">SQL Editor</button>
             <div id="tableOutput"></div>
         </div>
@@ -977,7 +978,7 @@
                             for (var i = 0; i < response.length; i++) {
                                 $kpiTable+='<option value="' + response[i].KPI_ID + '" data-title="' + response[i].KPI_Name + '">' + response[i].KPI_ID + "</option>";
                             }
-                            $kpiTable += '</select></th></tr><tr><th colspan=2 id="kpi_title"></th></tr>';
+                            $kpiTable += '</select></th></tr><tr class="table-info"><th colspan=2 id="kpi_title"></th></tr>';
                             $kpiTable += '</thead><tbody class="table-group-divider">';
                             
                             //assemble month rows
@@ -988,12 +989,12 @@
                             for (var i = 0; i < months.length; i++) {
                                 var monthNumber = (i + 1).toString().padStart(2, '0'); // Convert month number to two-digit format
                                 var inputId = monthNumber + '-01'; // Create the id in the format "MM-01"
-                                var row = '<tr><td>' + months[i] + '</td>';
+                                var row = '<tr><td class="border-start border-light-subtle">' + months[i] + '</td>';
                                 row += '<td>' + '<input type="text" class="form-control record-data" data-month="' + inputId + '">' + '</td>';
                                 row += '</tr>';
                                 $kpiTable += row;
                             }
-                            $kpiTable += '<tr><td colspan=2><button type="button" id="saveRecord" class="btn btn-outline-success" disabled="disabled">Save</button></td></tr></tbody></table>';
+                            $kpiTable += '<tr><td colspan=2 class="border-bottom-0"><button type="button" id="saveRecord" class="btn btn-outline-success" disabled="disabled">Save</button></td></tr></tbody></table>';
                             $parent.append($kpiTable);
 
                             // populate years
