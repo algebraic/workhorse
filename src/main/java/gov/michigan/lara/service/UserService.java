@@ -8,4 +8,5 @@ public interface UserService {
     List<User> getAllUsers();
     User findUserById(Long id);
     User saveUser(User user);
+    User updateUser(User user, Long id);
 }

@@ -138,7 +138,7 @@
             }
 
             input.changed {
-                box-shadow: inset 0 0 0 2px var(--bs-warning);
+                box-shadow: inset 0 0 0 2px var(--bs-warning-border-subtle);
             }
         
             .entry_select {
@@ -249,7 +249,7 @@
 
                         <br>
                         <div class="col-xs-1">
-                            <button type="button" class="btn btn-sm btn-secondary" id="kpiSubmit">reload</button>
+                            <button type="button" class="btn btn-sm btn-secondary reload-btn" id="kpiSubmit">reload</button>
                         </div>
                     </form>
                 </div>
@@ -266,7 +266,7 @@
                             user data
                         <br>
                         <div class="col-xs-1">
-                            <button type="button" class="btn btn-sm btn-secondary" id="userSubmit">reload</button>
+                            <button type="button" class="btn btn-sm btn-secondary reload-btn" id="userSubmit">reload</button>
                         </div>
                     </form>
                 </div>
@@ -402,20 +402,24 @@
                 </div>
                 <div class="modal-body">
                     <form id="userEditForm">
+                        <input type="text" id="id" name="id"><br>
                         <label for="username">username</label>
                         <input type="text" id="username" name="username" class="required">
                         <br>
                         <label for="password">password</label>
-                        <input type="text" id="password" name="password" class="required">
+                        <input type="password" id="password" name="password" class="required">
                         <br>
-                        <label for="fullName">fullName</label>
-                        <input type="text" id="fullName" name="fullName" class="required">
+                        <label for="email">email</label>
+                        <input type="text" id="email" name="email" class="required">
+                        <br>
+                        <label for="displayName">displayName</label>
+                        <input type="text" id="displayName" name="displayName" class="required">
                         <br>
                         <label for="bureau">bureau</label>
                         <input type="text" id="bureau" name="bureau" class="required">
                         <br>
-                        <label for="enabled">enabled</label>
-                        <input class="form-check-input" type="checkbox" value="true" id="enabled" name="enabled" checked>
+                        <label for="disabled">disabled</label>
+                        <input class="form-check-input" type="checkbox" value="true" id="disabled" name="disabled">
                         <br>
                     </form>
                 </div>
@@ -735,9 +739,21 @@
                             $('#userEditDiv').html(tableHtml);
                             $("table#user_table").DataTable({
                                 columnDefs: [
-                                    { "targets": [0], orderable: false }
+                                    {
+                                        target: 4,
+                                        visible: false,
+                                        searchable: false
+                                    },
+                                    {
+                                        target: 0,
+                                        orderable: false,
+                                        searchable: false
+                                    },
+                                    { width: '25%', targets: [1,2,3] }
                                 ],
-                                stateSave: true,
+                                scrollX: true,
+                                colReorder: true,
+                                // stateSave: true,
                                 dom: 'f<"toolbar">rtip',
                                 language: {
                                     search: 'filter:'
@@ -888,25 +904,25 @@
                     console.info("userData: " + JSON.stringify(userData));
 
                     var operationType = $("#id", $form).val() ? "update" : "new";
-
+                    alert("operationType=" + operationType);
                     // zj: left off here - differentiate between controller methods
                     if (operationType == "update") {
                         console.info("updating user");
-                        // $.ajax({
-                        //     type: 'PUT',
-                        //     url: 'kpi/' + id,
-                        //     contentType: 'application/json',
-                        //     data: JSON.stringify(kpiData),
-                        //     success: function(response) {
-                        //         console.log('KPI updated successfully:', response);
-                        //         showSuccess('KPI updated successfully:', response);
-                        //         // Handle success, e.g., show a success message
-                        //     },
-                        //     error: function(error) {
-                        //         alert('Error updating KPI:', error);
-                        //         // Handle error, e.g., show an error message
-                        //     }
-                        // });
+                        $.ajax({
+                            type: 'PUT',
+                            url: 'user/' + id,
+                            contentType: 'application/json',
+                            data: JSON.stringify(userData),
+                            success: function(response) {
+                                console.log('User updated successfully:', response);
+                                showSuccess('User updated successfully:', response);
+                                // Handle success, e.g., show a success message
+                            },
+                            error: function(error) {
+                                alert('Error updating user:', error);
+                                // Handle error, e.g., show an error message
+                            }
+                        });
                     } else if (operationType == "new") {
                         console.info("saving new user");
                         $.ajax({
@@ -921,12 +937,9 @@
                             },
                             error: function(error) {
                                 alert('Error saving user:', error);
-                                // alert("balls");
-                                // Handle error, e.g., show an error message
                             }
                         });
                     }
-                    alert("all done?");
                 });
 
                 $(".modal").on('hidden.bs.modal', function() {
@@ -978,7 +991,7 @@
                             for (var i = 0; i < response.length; i++) {
                                 $kpiTable+='<option value="' + response[i].KPI_ID + '" data-title="' + response[i].KPI_Name + '">' + response[i].KPI_ID + "</option>";
                             }
-                            $kpiTable += '</select></th></tr><tr class="table-info"><th colspan=2 id="kpi_title"></th></tr>';
+                            $kpiTable += '</select></th></tr><tr class="table-success"><th colspan=2 id="kpi_title"></th></tr>';
                             $kpiTable += '</thead><tbody class="table-group-divider">';
                             
                             //assemble month rows
@@ -1449,8 +1462,8 @@
             }
 
             function showSuccess(message) {
-                $('#kpiModal').modal('hide');
-                $("#kpiSubmit").click();
+                $('.modal.fade.show').modal('hide');
+                $(".reload-btn:visible").click();
 
                 // Create a new toast element
                 var toast = $('<div class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true" data-delay="8000" style="position: absolute; top: 100px; left: 50%; transform: translateX(-50%);"><div class="toast-body">' + message + '</div></div>');

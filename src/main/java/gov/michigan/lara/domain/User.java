@@ -1,5 +1,7 @@
 package gov.michigan.lara.domain;
 
+import java.sql.Timestamp;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,10 +24,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
+    private String displayName;
+    private String email;
     private String password;
-    private String fullName;
     private String bureau;
-    
     @Column(nullable = false)
-    private boolean enabled;
+    private boolean disabled;
+
+
+    private Timestamp createdOn;
+    private String createdBy;
+    private Timestamp modifiedOn;
+    private String modifiedBy;
 }
