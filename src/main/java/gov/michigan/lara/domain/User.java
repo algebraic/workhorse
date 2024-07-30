@@ -28,9 +28,12 @@ public class User {
     private String email;
     private String password;
     private String bureau;
+
     @Column(nullable = false)
     private boolean disabled;
 
+    @Column(nullable = false, name="passwordChanged")
+    private boolean passwordChanged;
 
     private Timestamp createdOn;
     private String createdBy;

@@ -39,7 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             GrantedAuthority authority = new SimpleGrantedAuthority(role);
             Set<GrantedAuthority> grantedAuthorities = Collections.singleton(authority);
             
-            return new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getDisplayName(), user.getBureau(), grantedAuthorities);
+            return new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getDisplayName(), user.getBureau(), user.isPasswordChanged(), grantedAuthorities);
         }
     }
 

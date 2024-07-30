@@ -3,6 +3,9 @@ package gov.michigan.lara.service;
 import gov.michigan.lara.config.UserDetailsUtil;
 import gov.michigan.lara.dao.UserRepository;
 import gov.michigan.lara.domain.User;
+import gov.michigan.lara.util.EmailService;
+import gov.michigan.lara.util.PasswordGenerator;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +25,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository repository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public List<User> getAllUsers(){
@@ -35,10 +40,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
-        log.info("saving user: " + user.toString());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        log.info("saving new user: " + user.toString());
+        
+        String randomPassword = PasswordGenerator.generateRandomPassword();
+        user.setPassword(passwordEncoder.encode(randomPassword));
         user.setCreatedBy(UserDetailsUtil.getCurrentUsername());
         user.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
+        // Send the email
+        String subject = "workhorse: new user email";
+        String message = "An account has been created for you on the workhorse app. Your username is " + user.getUsername() + ", and your password is " + randomPassword;
+        emailService.sendSimpleEmail(user.getEmail(), subject, message);
+
         return repository.save(user);
     }
 

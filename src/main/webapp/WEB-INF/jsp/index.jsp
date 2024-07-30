@@ -820,8 +820,6 @@
                     console.info(JSON.stringify(kpiData));
 
                     var operationType = $("#id").val() ? "update" : "new";
-
-                    // zj: left off here - differentiate between controller methods
                     if (operationType == "update") {
                         console.info("updating...");
                         $.ajax({
@@ -857,7 +855,6 @@
                             }
                         });
                     }
-
 
                 });
 
@@ -904,8 +901,6 @@
                     console.info("userData: " + JSON.stringify(userData));
 
                     var operationType = $("#id", $form).val() ? "update" : "new";
-                    alert("operationType=" + operationType);
-                    // zj: left off here - differentiate between controller methods
                     if (operationType == "update") {
                         console.info("updating user");
                         $.ajax({
@@ -1200,7 +1195,7 @@
                 $("body").on("click", ".year-button", function() {
                     var $this = $(this);
                     var year = $this.text();
-                    alert("year=" + year);
+                    
                     $.ajax({
                         url: 'records/' + kpi + "/" + year,
                         type: 'GET',
@@ -1379,11 +1374,8 @@
                 var $input = $("textarea#input");
                 var $output = $("textarea#output");
                 var query = $input.val();
-                // alert("query = " + query);
                 var encodedQuery = encodeURIComponent(query);
-                // alert("encodedQuery = " + encodedQuery);
                 var url = 'http://127.0.0.1:8080/workhorse/sql/execute?query=' + encodedQuery;
-                // alert("url: " + url);
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', url, true);
                 xhr.onreadystatechange = function() {
