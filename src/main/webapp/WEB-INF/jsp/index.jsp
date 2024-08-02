@@ -9,6 +9,10 @@
         <title>WORKHORSE</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <meta name="_csrf" content="${_csrf.token}"/>
+        <meta name="_csrf_header" content="${_csrf.headerName}"/>
+        
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
             integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg=="
             crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -45,6 +49,7 @@
                 min-width: 150px;
                 text-align: right !important;
                 font-weight: bold;
+                margin-right: 10px;
             }
 
             .modal-body input[type=text] {
@@ -217,7 +222,15 @@
                             <li><a class="dropdown-item" id="apiList" href="#" data-bs-toggle="modal" data-bs-target="#apiListModal">API Endpoint List</a></li>
                             <li><a class="dropdown-item section" id="analyzeDb" href="#">Analyze Database</a></li>
                             <hr class="dropdown-divider">
-                            <li><a class="dropdown-item" href="logout">logout</a></li>
+                            <li><a class="dropdown-item section" id="user_profile" href="#">User Profile</a></li>
+                            
+                            <!-- logout -->
+                            <li>
+                                <form id="logoutForm" action="${pageContext.request.contextPath}/logout" method="post">
+                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                    <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();">logout</a>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -256,7 +269,7 @@
             </div>
         </div>
         
-        <!-- users entry section -->
+        <!-- user data section -->
         <div class="container-fluid hidden" data-section="user_edit">
             <div class="row justify-content-center">
                 <div class="col-md-12">
@@ -271,6 +284,62 @@
                     </form>
                 </div>
             </div>
+        </div>
+
+        <!-- user profile section -->
+        <div class="container-fluid hidden" data-section="user_profile">
+            <div class="container mt-1 ms-0">
+                <div class="row">
+                    <div class="col-md-6 ps-3">
+                        <form id="userProfileForm" data-profile="true">
+                            <input type="hidden" id="id" name="id" value="<c:out value='${userDetails.id}' />">
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="text" id="email" name="email" class="form-control" value="<c:out value='${userDetails.email}' />" disabled>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" id="username" name="username" class="form-control" value="<c:out value='${userDetails.username}' />" disabled>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" id="password" name="password" class="form-control" value="<c:out value='${userDetails.password}' />">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="displayName" class="form-label">Display Name</label>
+                                <input type="text" id="displayName" name="displayName" class="form-control" value="<c:out value='${userDetails.displayName}' />">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="bureau" class="form-label">Bureau</label>
+                                <c:choose>
+                                    <c:when test="${userDetails.bureau == '*'}">
+                                        <c:set var="bureau" value="Administrator"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="bureau" value="${userDetails.bureau}"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <input type="text" id="bureau" name="bureau" class="form-control" value="<c:out value='${bureau}' />" disabled>
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input class="form-check-input" type="checkbox" value="true" id="disabled" name="disabled" disabled>
+                                <label class="form-check-label" for="disabled">Disabled</label>
+                            </div>
+                            
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-primary" id="saveUser">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
         </div>
 
         <!-- database analyzer -->
@@ -402,21 +471,20 @@
                 </div>
                 <div class="modal-body">
                     <form id="userEditForm">
-                        <input type="text" id="id" name="id"><br>
-                        <label for="username">username</label>
-                        <input type="text" id="username" name="username" class="required">
-                        <br>
-                        <label for="password">password</label>
-                        <input type="password" id="password" name="password" class="required">
-                        <br>
+                        <input type="hidden" id="id" name="id">
                         <label for="email">email</label>
                         <input type="text" id="email" name="email" class="required">
+                        <br>
+                        <label for="username">username</label>
+                        <input type="text" id="username" name="username" class="required">
                         <br>
                         <label for="displayName">displayName</label>
                         <input type="text" id="displayName" name="displayName" class="required">
                         <br>
                         <label for="bureau">bureau</label>
-                        <input type="text" id="bureau" name="bureau" class="required">
+                        <select id="bureau" name="bureau" class="required">
+                            <option value="*">Admin</option>
+                        </select>
                         <br>
                         <label for="disabled">disabled</label>
                         <input class="form-check-input" type="checkbox" value="true" id="disabled" name="disabled">
@@ -494,6 +562,10 @@
                     if ($this.text() == "User Data") {
                         $("#userSubmit").click();
                     }
+                    // section-specific actions
+                    if ($this.text() == "User Profile") {
+                        
+                    }
                     if ($this.text() == "Data Entry") {
                         var $div = $("#bureau-list").empty();
 
@@ -525,7 +597,7 @@
 
                 });
                 // zj: auto-click something on page load
-                $("a.section").eq(0).click();
+                $("a.section").eq(4).click();
 
                 // get current year
                 var currentYear = new Date().getFullYear();
@@ -767,9 +839,9 @@
                                             if (isAdmin) {
                                                 $("div.toolbar").html('<button type="button" class="btn btn-outline-success btn-sm" id="user_addNew" title="add new user" data-bs-toggle="modal" data-bs-target="#userModal"><i class="fa-solid fa-user-plus"></i></button>');
                                                 // attach click event to addNew button
-                                                $("div.toolbar").on("click", "#user_addNew", function() {
-                                                    console.info("add new user");
-                                                });
+                                                // $("div.toolbar").on("click", "#user_addNew", function() {
+                                                    // do something?
+                                                // });
                                             }
                                         },
                                         error: function() {
@@ -880,7 +952,8 @@
                 // save user
                 $("#saveUser").click(function() {
                     $(".error").removeClass("error");
-                    var $form = $("form#userEditForm");
+                    // var $form = $("form#userEditForm");
+                    var $form = $(this).parents("form");
                     var id = $("#id", $form).val();
                     var userData = {};
 
@@ -903,11 +976,24 @@
                     var operationType = $("#id", $form).val() ? "update" : "new";
                     if (operationType == "update") {
                         console.info("updating user");
+                        
+                        var token = $("meta[name='_csrf']").attr("content");
+                        var header = $("meta[name='_csrf_header']").attr("content");
+
+                        var fromProfile = $form.attr("data-profile");
+                        var url = 'user/' + id;
+                        if (typeof fromProfile !== 'undefined' && fromProfile !== false) {
+                            url += "?profileUpdate=true";
+                        }
+
                         $.ajax({
                             type: 'PUT',
-                            url: 'user/' + id,
+                            url: url,
                             contentType: 'application/json',
                             data: JSON.stringify(userData),
+                            beforeSend: function(xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
                             success: function(response) {
                                 console.log('User updated successfully:', response);
                                 showSuccess('User updated successfully:', response);
@@ -915,6 +1001,7 @@
                             },
                             error: function(error) {
                                 alert('Error updating user:', error);
+                                console.info(error);
                                 // Handle error, e.g., show an error message
                             }
                         });
@@ -937,9 +1024,28 @@
                     }
                 });
 
+                // user edit modal load event
+                $(".modal").on('shown.bs.modal', function() {
+                    $("#bureau", "#userModal").empty().append('<option value="*">Admin</option>');
+                    $.ajax({
+                        url: 'kpi/bureaus',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            for (var i = 0; i < response.length; i++) {
+                                $("#bureau", "#userModal").append('<option value="'+ response[i] + '">'+ response[i] + '</option>');
+                            }
+                        },
+                        error: function(error) {
+                            console.error('Error fetching record list:', error);
+                        }
+                    });
+                });
+
                 $(".modal").on('hidden.bs.modal', function() {
                     console.info("closing modal, reset form");
                     var $form = $(this).find("form");
+                    $(".error").removeClass("error");
                     $form[0].reset();
                 });
 
@@ -1103,10 +1209,18 @@
                     $testDiv.append('<input type="text" placeholder="testing">');
                 });
 
+                $("#userModal").on("change", "#email", function() {
+                    var $username = $("#username", "#userModal");
+                    if ($username.val() == "") {
+                        var name = $(this).val().match(/^([^@]*)@/)[1];
+                        console.info("set username to " + name);
+                        $("#username", "#userModal").val(name);
+                    }
+                });
                 $("body").on("click", "#saveRecord", function() {
                     // Save button click event
                     var recordsToSave = [];
-
+                    
                     $('.changed').each(function() {
                         let $record = $(this);
                         recordsToSave.push({
@@ -1422,7 +1536,7 @@
                 });
             }
 
-            // edit user
+            // edit user (this should probably become "load user" and go from there...?)
             function editUser(id) {
                 $.ajax({
                     url: 'user/' + id,
@@ -1440,10 +1554,12 @@
                                 $("#" + key, "#userEditForm").val(value);
                                 // zj: fix the couple broken fields
                             }
-                            // var $element = "<input id='" + key + "' name='" + key + "' value='" + value + "'>";
-                            // $("div.modal-body", "#kpiModal").append($element + "<br>");
                         });
-
+                        // disable email & username fields if admin update from user data (keeps us from breaking data)
+                        var editId = $("#id", "#userEditForm");
+                        if (editId.val() != "") {
+                            $("#username, #email", "#userEditForm").prop("disabled", true);
+                        }
                     },
                     error: function(xhr, status, error) {
                         alert("ERROR");

@@ -16,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import gov.michigan.lara.dao.UserRepository;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,15 +27,37 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-         http
-                 .authorizeHttpRequests(requests -> requests
-                         .requestMatchers("/commitId/**", "/resources/**").permitAll()
-                         .requestMatchers("/**", "/index/**").authenticated()  // Secure paths starting with "/empapp/api/v1/"
-                         .anyRequest().permitAll())
-                 .httpBasic(withDefaults())
-                 .formLogin(withDefaults()).csrf(csrf -> csrf.disable());
+        http
+            .authorizeHttpRequests(requests -> requests
+                .requestMatchers("/auth/login", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**").permitAll() // Permit access to these paths
+                .requestMatchers("/WEB-INF/jsp/**").permitAll() // Exclude JSP view paths
+                .anyRequest().authenticated()) // Require authentication for other requests
+            .formLogin(form -> form
+                .loginPage("/auth/login")
+                .permitAll())
+                .logout(logout -> logout
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/auth/login")
+                    .permitAll())
+                .csrf(csrf -> csrf
+                    .ignoringRequestMatchers("/auth/login", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**")); // Exclude CSRF for these paths
+    
         return http.build();
     }
+
+    // // zj: use default spring security login/logout, comment out other bean to swap
+    // @Bean
+    // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    //     http
+    //         .authorizeHttpRequests(requests -> requests
+    //             .requestMatchers("/commitId/**", "/resources/**").permitAll()
+    //             .requestMatchers("/testlogin/**").permitAll() // Ensure this path is permitted
+    //             .anyRequest().authenticated())
+    //         .httpBasic(withDefaults())
+    //         .formLogin(withDefaults())
+    //         .csrf(csrf -> csrf.disable());
+    //     return http.build();
+    // }
 
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {

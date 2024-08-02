@@ -7,13 +7,16 @@ import jakarta.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController{
     
+    private static Logger log = LogManager.getLogger();
+
     @Autowired
     private UserService userService;
 
@@ -44,8 +47,15 @@ public class UserController{
 
     // Update operation
     @PutMapping("/user/{id}")
-    public User updateUser(@RequestBody User user,@PathVariable Long id){
-        return userService.updateUser(user,id);
+    public User updateUser(@RequestBody User user,@PathVariable Long id, @RequestParam Optional<Boolean> profileUpdate){
+        Boolean fromProfile = profileUpdate.orElse(false);
+        if (fromProfile) {
+            log.info("updating user from user profile\n" + user.toString());
+            return userService.updateOwnUser(user,id);
+        } else {
+            log.info("updating user from user list\n" + user.toString());
+            return userService.updateUser(user,id);
+        }
     }
 
 }                    

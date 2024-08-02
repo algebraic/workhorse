@@ -48,9 +48,14 @@ public class UserServiceImpl implements UserService {
         user.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
         // Send the email
-        String subject = "workhorse: new user email";
-        String message = "An account has been created for you on the workhorse app. Your username is " + user.getUsername() + ", and your password is " + randomPassword;
-        emailService.sendSimpleEmail(user.getEmail(), subject, message);
+        emailService.sendHtmlEmail(
+            user.getEmail(),
+            "WORKHORSE: new user created",
+            user.getUsername(),
+            user.getDisplayName(),
+            randomPassword,
+            "http://127.0.0.1:8080/workhorse"
+        );
 
         return repository.save(user);
     }
@@ -64,7 +69,6 @@ public class UserServiceImpl implements UserService {
         userDB.setDisplayName(user.getDisplayName());
         userDB.setEmail(user.getEmail());
         userDB.setId(user.getId());
-        userDB.setPassword(passwordEncoder.encode(user.getPassword()));
         userDB.setUsername(user.getUsername());
 
         // Preserve createdBy and createdOn if they are null in the update
@@ -78,6 +82,17 @@ public class UserServiceImpl implements UserService {
         userDB.setModifiedBy(UserDetailsUtil.getCurrentUsername());
         userDB.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
         
+        return repository.save(userDB);
+    }
+
+    @Override
+    public User updateOwnUser(User user,Long id){
+        log.info("updating userprofile " + id);
+        User userDB=repository.findById(id).get();
+        userDB.setDisplayName(user.getDisplayName());
+        userDB.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDB.setModifiedBy(UserDetailsUtil.getCurrentUsername());
+        userDB.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
         return repository.save(userDB);
     }
 

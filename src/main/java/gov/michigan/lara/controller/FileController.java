@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import gov.michigan.lara.config.CustomUserDetails;
 import gov.michigan.lara.config.UserDetailsUtil;
 import gov.michigan.lara.service.FileService;
 
@@ -51,6 +52,8 @@ public class FileController {
         String userbureau = UserDetailsUtil.getCurrentUserBureau();
         String displayname = UserDetailsUtil.getCurrentUserDisplayName();
 
+        CustomUserDetails userDetails = UserDetailsUtil.getCurrentUserDetails();
+
         ModelAndView mav = new ModelAndView("index");
         this.size = 0;
         this.count = 0;
@@ -59,7 +62,7 @@ public class FileController {
         mav.addObject("username", username);
         mav.addObject("displayname", displayname);
         mav.addObject("userbureau", userbureau);
-        
+        mav.addObject("userDetails", userDetails);
         return mav;
     }
 
