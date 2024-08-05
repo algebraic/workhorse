@@ -47,3 +47,172 @@ small {
         transform: translate3d(4px, 0, 0);
     }
 }
+
+/* from index */
+
+/* zj: datatables css stuff */
+.dataTables_filter {
+    text-align: left !important;
+}
+
+div.dt-buttons {
+    float: right;
+}
+
+div#kpi_table_wrapper {
+    font-size: small;
+}
+
+#kpi_table_paginate {
+    position: relative;
+    top: -20px;
+}
+
+.modal-body label {
+    min-width: 150px;
+    text-align: right !important;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.modal-body input[type=text] {
+    width: 60%;
+    margin-bottom: 8px;
+}
+
+#kpi_addNew {
+    position: relative;
+    top: -31px;
+    left: 226px;
+}
+#user_addNew {
+    position: relative;
+    top: -31px;
+    left: 232px;
+}
+
+/* font-awesome styles */
+i.fa-regular {
+    font-size: large;
+}
+
+/* footer logo text */
+span.first-letter {
+    text-shadow: -1px -1px rgba(221, 135, 6, 0.432) !important;
+}
+
+.logo {
+    height: 50px;
+    width: 50px;
+}
+
+.version {
+    position: absolute;
+    left: 70px;
+    top: 45px;
+}
+
+.hidden {
+    display: none;
+}
+
+.highlight-button {
+    background: yellow;
+}
+
+.input-group-text:first-of-type {
+    width: 100px;
+    overflow: visible;
+}
+
+.input-group-text:last-of-type {
+    min-width: 25px;
+    text-align: center;
+    display: inline-block;
+    padding-left: 0px;
+    padding-right: 0;
+}
+
+.data-tables th,
+.data-tables td {
+    white-space: nowrap;
+}
+
+#apiListModal dt {
+    font-family: monospace;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 0.5em;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+#apiListModal dd {
+    padding-bottom: 20px;
+}
+
+.tableDisplay {
+    margin-bottom: 20px;
+}
+
+.tableDisplay td:first-child {
+    padding-right: 20px;
+}
+
+textarea.sql {
+    width: 600px;
+    height: 150px;
+}
+
+input.changed {
+    box-shadow: inset 0 0 0 2px var(--bs-warning-border-subtle);
+}
+
+.entry_select {
+    font-weight: bold;
+    font-size: x-large;
+    width: 100%;
+    cursor: pointer;
+    background: none;
+    /* padding: 10px; */
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0 0 0 2px transparent;
+    transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.entry_select:focus {
+    box-shadow: 0 0 8px 4px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+.entry_select:hover {
+    box-shadow: 0 0 6px 3px rgba(0, 123, 255, 0.3);
+}
+
+#kpi_title {
+    font-variant: small-caps;
+    font-size: large;
+}
+#saveRecord {
+    width:100px;
+}
+.record-data {
+    background: none;
+    border: none;
+    padding: 4px;
+}
+tr td:first-child {
+    vertical-align: middle;
+}
+table#kpi_table_entry {
+    width: 720px !important;
+}
+
+h3#section-title {
+    color: white;
+    width: 100%;
+    text-align: center;
+    padding-top:4px;
+}

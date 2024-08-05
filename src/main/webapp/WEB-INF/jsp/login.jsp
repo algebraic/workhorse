@@ -83,7 +83,7 @@
 
         <br>
 
-        <div class="container-fluid" data-section="manual_entry">
+        <div class="container-fluid">
             <div class="container login-container">
                 <div class="card">
                     <div class="card-body">

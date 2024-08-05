@@ -26,216 +26,11 @@
 
         <link rel="stylesheet" href="/workhorse/css/dataEntry.css">
 
-        <style>
-            /* zj: datatables css stuff */
-            .dataTables_filter {
-                text-align: left !important;
-            }
-
-            div.dt-buttons {
-                float: right;
-            }
-
-            div#kpi_table_wrapper {
-                font-size: small;
-            }
-
-            #kpi_table_paginate {
-                position: relative;
-                top: -20px;
-            }
-
-            .modal-body label {
-                min-width: 150px;
-                text-align: right !important;
-                font-weight: bold;
-                margin-right: 10px;
-            }
-
-            .modal-body input[type=text] {
-                width: 60%;
-                margin-bottom: 8px;
-            }
-
-            #kpi_addNew {
-                position: relative;
-                top: -31px;
-                left: 226px;
-            }
-            #user_addNew {
-                position: relative;
-                top: -31px;
-                left: 232px;
-            }
-
-            /* font-awesome styles */
-            i.fa-regular {
-                font-size: large;
-            }
-
-            /* zj: move this junk into style.css at some point */
-            span.first-letter {
-                text-shadow: -1px -1px rgba(221, 135, 6, 0.432) !important;
-            }
-
-            .logo {
-                height: 50px;
-                width: 50px;
-            }
-
-            .version {
-                position: absolute;
-                left: 70px;
-                top: 45px;
-            }
-
-            .hidden {
-                display: none;
-            }
-
-            .highlight-button {
-                background: yellow;
-            }
-
-            .input-group-text:first-of-type {
-                width: 100px;
-                overflow: visible;
-            }
-
-            .input-group-text:last-of-type {
-                min-width: 25px;
-                text-align: center;
-                display: inline-block;
-                padding-left: 0px;
-                padding-right: 0;
-            }
-
-            .data-tables th,
-            .data-tables td {
-                white-space: nowrap;
-            }
-
-            #apiListModal dt {
-                font-family: monospace;
-                background-color: #f4f4f4;
-                color: #333;
-                padding: 0.5em;
-                border-radius: 5px;
-                margin-bottom: 5px;
-                display: inline-block;
-            }
-
-            #apiListModal dd {
-                padding-bottom: 20px;
-            }
-
-            .tableDisplay {
-                margin-bottom: 20px;
-            }
-
-            .tableDisplay td:first-child {
-                padding-right: 20px;
-            }
-
-            textarea.sql {
-                width: 600px;
-                height: 150px;
-            }
-
-            input.changed {
-                box-shadow: inset 0 0 0 2px var(--bs-warning-border-subtle);
-            }
-        
-            .entry_select {
-                font-weight: bold;
-                font-size: x-large;
-                width: 100%;
-                cursor: pointer;
-                background: none;
-                /* padding: 10px; */
-                border: none;
-                border-radius: 5px;
-                box-shadow: inset 0 0 0 2px transparent;
-                transition: box-shadow 0.3s ease, background-color 0.3s ease;
-            }
-
-            .entry_select:focus {
-                box-shadow: 0 0 8px 4px rgba(0, 123, 255, 0.5);
-                outline: none;
-            }
-
-            .entry_select:hover {
-                box-shadow: 0 0 6px 3px rgba(0, 123, 255, 0.3);
-            }
-
-            #kpi_title {
-                font-variant: small-caps;
-                font-size: large;
-            }
-            #saveRecord {
-                width:100px;
-            }
-            .record-data {
-                background: none;
-                border: none;
-                padding: 4px;
-            }
-            tr td:first-child {
-                vertical-align: middle;
-            }
-            table#kpi_table_entry {
-                width: 720px !important;
-            }
-
-            h3#section-title {
-                color: white;
-                width: 100%;
-                text-align: center;
-                padding-top:4px;
-            }
-
-        </style>
-
     </head>
 
     <body>
-        <!-- navbar -->
-        <nav class="navbar navbar-expand navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/workhorse">
-                    <img class="logo" src="/workhorse/img/small-light2.png">
-                    <span class="ml-2 pt-1">WORKHORSE <small class="version">
-                            <a class="nav-link" id="buildId"></a></small>
-                    </span>
-                </a>
-                <h3 id="section-title"></h3>
-                <ul class="navbar-nav mb-2 mb-lg-0 ms-auto me-5">
-                    <li class="nav-item dropdown float-end">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-solid fa-user-gear pe-2"></i><c:out value="${displayname}" />
-                        </a>
-                        <ul class="dropdown-menu" data-bs-theme="dark">
-                            <li><a class="dropdown-item section" id="manual_entry" href="#">Data Entry</a></li>
-                            <li><a class="dropdown-item section" id="kpi_edit" href="#">KPI Data</a></li>
-                            <li><a class="dropdown-item section" id="user_edit" href="#">User Data</a></li>
-                            <hr class="dropdown-divider">
-                            <li><a class="dropdown-item" id="apiList" href="#" data-bs-toggle="modal" data-bs-target="#apiListModal">API Endpoint List</a></li>
-                            <li><a class="dropdown-item section" id="analyzeDb" href="#">Analyze Database</a></li>
-                            <hr class="dropdown-divider">
-                            <li><a class="dropdown-item section" id="user_profile" href="#">User Profile</a></li>
-                            
-                            <!-- logout -->
-                            <li>
-                                <form id="logoutForm" action="${pageContext.request.contextPath}/logout" method="post">
-                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                                    <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();">logout</a>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        
+        <jsp:include page="/WEB-INF/jsp/includes/navbar.jsp" />
 
         <br>
 
@@ -354,6 +149,26 @@
 
         <!-- // zj: modal-stuff -->
 
+        <!-- password reset Confirmation Modal -->
+        <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirm Password Reset</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2">This action is destructive and will reset the user's password - a new system-generated password will be emailed to the user.</p>
+                    <p>Are you sure you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelResetPassword">Cancel</button>
+                <button type="button" class="btn btn-danger" id="proceedResetPassword">Yes, Reset Password</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
         <!-- apiList modal -->
         <div class="modal fade" id="apiListModal" tabindex="-1" aria-labelledby="apiListModalLabel"
             aria-hidden="true">
@@ -463,37 +278,39 @@
 
         <!-- user modal edit -->
         <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="userModalLabel">User Entry</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="userEditForm">
-                        <input type="hidden" id="id" name="id">
-                        <label for="email">email</label>
-                        <input type="text" id="email" name="email" class="required">
-                        <br>
-                        <label for="username">username</label>
-                        <input type="text" id="username" name="username" class="required">
-                        <br>
-                        <label for="displayName">displayName</label>
-                        <input type="text" id="displayName" name="displayName" class="required">
-                        <br>
-                        <label for="bureau">bureau</label>
-                        <select id="bureau" name="bureau" class="required">
-                            <option value="*">Admin</option>
-                        </select>
-                        <br>
-                        <label for="disabled">disabled</label>
-                        <input class="form-check-input" type="checkbox" value="true" id="disabled" name="disabled">
-                        <br>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="saveUser">Save</button>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="userModalLabel">User Entry</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="userEditForm">
+                            <input type="hidden" id="id" name="id">
+                            <label for="email">email</label>
+                            <input type="text" id="email" name="email" class="required">
+                            <br>
+                            <label for="username">username</label>
+                            <input type="text" id="username" name="username" class="required">
+                            <br>
+                            <label for="displayName">displayName</label>
+                            <input type="text" id="displayName" name="displayName" class="required">
+                            <br>
+                            <label for="bureau">bureau</label>
+                            <select id="bureau" name="bureau" class="required">
+                                <option value="*">Admin</option>
+                            </select>
+                            <br>
+                            <label for="disabled">disabled</label>
+                            <input class="form-check-input" type="checkbox" value="true" id="disabled" name="disabled">
+                            <br>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-outline-danger" id="showResetPasswordModal">Reset Password</button>
+                        <button type="button" class="btn btn-outline-primary" id="saveUser">Save</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -539,66 +356,13 @@
         <script src="/workhorse/js/index.js"></script>
         <script src="/workhorse/js/jquery.numericInput.js"></script>
         <script src="/workhorse/js/floatLabels.js"></script>
+        <script src="/workhorse/js/navbar.js"></script>
         <script
             src="https://cdn.datatables.net/v/bs5/dt-1.13.8/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/cr-1.7.0/r-2.5.0/sr-1.3.0/datatables.min.js"></script>
         <script src="https://kit.fontawesome.com/208550a0ca.js" crossorigin="anonymous"></script>
 
         <script>
             $(function() {
-                // section buttons
-                $("a.section").click(function() {
-                    $("div[data-section]").addClass("hidden");
-                    var $this = $(this);
-                    var section = $this.attr("id");
-                    $('div[data-section="' + section + '"]').removeClass("hidden");
-                    // set title
-                    $("#section-title").text($this.text());
-                    
-                    // section-specific actions
-                    if ($this.text() == "KPI Data") {
-                        $("#kpiSubmit").click();
-                    }
-                    // section-specific actions
-                    if ($this.text() == "User Data") {
-                        $("#userSubmit").click();
-                    }
-                    // section-specific actions
-                    if ($this.text() == "User Profile") {
-                        
-                    }
-                    if ($this.text() == "Data Entry") {
-                        var $div = $("#bureau-list").empty();
-
-                        $.ajax({
-                            url: 'kpi/bureaus',
-                            type: 'GET',
-                            dataType: 'json',
-                            success: function(response) {
-                                // admin user, show all bureaus
-                                for (var i = 0; i < response.length; i++) {
-                                    var $element = '<div class="accordion-item" data-bureau="' + response[i] + '"><h2 class="accordion-header">';
-                                    $element += '<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panel-bureau-' + i + '" aria-expanded="false" aria-controls="panel-bureau-' + i + '">' + response[i] + '</button></h2>';
-                                    $element += '<div id="panel-bureau-' + i + '" class="accordion-collapse" data-bs-parent="#bureau-list"><div class="accordion-body p-0"></div></div>';
-                                    $div.append($element);
-                                }
-                                // hacky junk to open accordion on page load
-                                setTimeout(function() {
-                                    $("button.accordion-button:eq(0)").click();
-                                }, 1000);
-                                setTimeout(function() {
-                                    $('.accordion-body button:first').click();
-                                }, 1500);
-                            },
-                            error: function(error) {
-                                console.error('Error fetching record list:', error);
-                            }
-                        });
-                    }
-
-                });
-                // zj: auto-click something on page load
-                $("a.section").eq(4).click();
-
                 // get current year
                 var currentYear = new Date().getFullYear();
                 var $yearInput = $('#year-input');
@@ -839,9 +603,12 @@
                                             if (isAdmin) {
                                                 $("div.toolbar").html('<button type="button" class="btn btn-outline-success btn-sm" id="user_addNew" title="add new user" data-bs-toggle="modal" data-bs-target="#userModal"><i class="fa-solid fa-user-plus"></i></button>');
                                                 // attach click event to addNew button
-                                                // $("div.toolbar").on("click", "#user_addNew", function() {
-                                                    // do something?
-                                                // });
+                                                $("div.toolbar").on("click", "#user_addNew", function() {
+                                                    console.info("new button, reset form");
+                                                    var $form = $("form#userEditForm");
+                                                    $(".error").removeClass("error");
+                                                    $form[0].reset();
+                                                });
                                             }
                                         },
                                         error: function() {
@@ -949,6 +716,20 @@
 
                 });
 
+                // reset password stuff
+                $("#userModal").on("click", "#showResetPasswordModal", function() {
+                    $('#userModal').modal('hide');
+                    $('#resetPasswordModal').modal('show');
+                });
+                $("#resetPasswordModal").on("click", "#cancelResetPassword", function() {
+                    $('#userModal').modal('show');
+                    $('#resetPasswordModal').modal('hide');
+                });
+                $("#proceedResetPassword").click(function() {
+                    alert("?");
+
+                });
+                
                 // save user
                 $("#saveUser").click(function() {
                     $(".error").removeClass("error");
@@ -1046,7 +827,7 @@
                     console.info("closing modal, reset form");
                     var $form = $(this).find("form");
                     $(".error").removeClass("error");
-                    $form[0].reset();
+                    // $form[0].reset();
                 });
 
                 $("#bureau-list").on('show.bs.collapse', function(e) {
