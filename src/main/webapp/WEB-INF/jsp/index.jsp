@@ -608,6 +608,7 @@
                                                     var $form = $("form#userEditForm");
                                                     $(".error").removeClass("error");
                                                     $form[0].reset();
+                                                    $("#showResetPasswordModal").hide();
                                                 });
                                             }
                                         },
@@ -726,8 +727,46 @@
                     $('#resetPasswordModal').modal('hide');
                 });
                 $("#proceedResetPassword").click(function() {
-                    alert("?");
+                    var $button = $(this);
+                    // Add a loading spinner to the button text
+                    var originalText = $button.html();
+                    $button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Working...');
 
+                    var csrfToken = $("meta[name='_csrf']").attr("content");
+                    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+                    var id = $("#id", '#userModal').val();
+                    alert("id=" + id);
+                    // Make the AJAX call
+                    $.ajax({
+                        url: 'resetPassword', // Update with your endpoint URL
+                        method: 'POST',
+                        data: { id: id }, // Update with necessary data
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader(csrfHeader, csrfToken);
+                        },
+                        success: function(response) {
+                            // Handle success response
+                            console.log(response); // You can remove this
+
+                            // Restore button text and show success message
+                            $button.html(originalText);
+                            $('#successModal').modal('show');
+                            
+                            // Optional: Close the original modal if needed
+                            $('#resetPasswordModal').modal('hide');
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error response
+                            console.error(error);
+                            
+                            // Restore button text and re-enable the button
+                            $button.html(originalText);
+                            $button.prop('disabled', false);
+                            
+                            // Optionally show an error message to the user
+                            alert('An error occurred while resetting the password. Please try again.');
+                        }
+                    });
                 });
                 
                 // save user
@@ -1336,11 +1375,12 @@
                                 // zj: fix the couple broken fields
                             }
                         });
-                        // disable email & username fields if admin update from user data (keeps us from breaking data)
+                        // disable email & username fields if it's an admin update from user data (keeps us from breaking data)
                         var editId = $("#id", "#userEditForm");
                         if (editId.val() != "") {
                             $("#username, #email", "#userEditForm").prop("disabled", true);
                         }
+                        $("#showResetPasswordModal").show();
                     },
                     error: function(xhr, status, error) {
                         alert("ERROR");

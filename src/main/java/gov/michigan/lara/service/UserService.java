@@ -10,4 +10,5 @@ public interface UserService {
     User saveUser(User user);
     User updateUser(User user, Long id);
     User updateOwnUser(User user, Long id);
+    User resetPassword(User user);
 }

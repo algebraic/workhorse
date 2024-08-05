@@ -58,4 +58,14 @@ public class UserController{
         }
     }
 
+    // Update operation
+    @ResponseBody
+    @PostMapping("/resetPassword")
+    public String resetPassword(@RequestParam Long id){
+        User pwuser = userService.findUserById(id);
+        userService.resetPassword(pwuser);
+        System.out.println("############\n reset password for user " + pwuser.getUsername() + "\n############");
+        return "yay";
+    }
+
 }                    

@@ -96,4 +96,26 @@ public class UserServiceImpl implements UserService {
         return repository.save(userDB);
     }
 
+    @Override
+    public User resetPassword(User user){
+        log.info("resetting password: " + user.toString());
+        
+        String randomPassword = PasswordGenerator.generateRandomPassword();
+        user.setPassword(passwordEncoder.encode(randomPassword));
+        user.setModifiedBy(UserDetailsUtil.getCurrentUsername());
+        user.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
+
+        // Send the email
+        emailService.sendPWEmail(
+            user.getEmail(),
+            "WORKHORSE: password reset",
+            user.getUsername(),
+            user.getDisplayName(),
+            randomPassword,
+            "http://127.0.0.1:8080/workhorse"
+        );
+
+        return repository.save(user);
+    }
+
 }
