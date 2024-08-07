@@ -735,7 +735,7 @@
                     var csrfToken = $("meta[name='_csrf']").attr("content");
                     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
                     var id = $("#id", '#userModal').val();
-                    alert("id=" + id);
+                    
                     // Make the AJAX call
                     $.ajax({
                         url: 'resetPassword', // Update with your endpoint URL
@@ -770,10 +770,12 @@
                 });
                 
                 // save user
-                $("#saveUser").click(function() {
+                $("#userModal").on("click", "#saveUser", function() {
+                // $("#saveUser").click(function() {
                     $(".error").removeClass("error");
-                    // var $form = $("form#userEditForm");
-                    var $form = $(this).parents("form");
+                    var $form = $("form#userEditForm");
+                    var $btn = $(this);
+                    // var $form = $(this).parents("form");
                     var id = $("#id", $form).val();
                     var userData = {};
 
@@ -793,13 +795,13 @@
                     });
                     console.info("userData: " + JSON.stringify(userData));
 
+                    var token = $("meta[name='_csrf']").attr("content");
+                    var header = $("meta[name='_csrf_header']").attr("content");
+
                     var operationType = $("#id", $form).val() ? "update" : "new";
                     if (operationType == "update") {
                         console.info("updating user");
                         
-                        var token = $("meta[name='_csrf']").attr("content");
-                        var header = $("meta[name='_csrf_header']").attr("content");
-
                         var fromProfile = $form.attr("data-profile");
                         var url = 'user/' + id;
                         if (typeof fromProfile !== 'undefined' && fromProfile !== false) {
@@ -827,18 +829,29 @@
                         });
                     } else if (operationType == "new") {
                         console.info("saving new user");
+                        // Add a loading spinner to the button text
+                        var originalText = $btn.html();
+                        $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Working...').prop("disabled", "disabled");
+
                         $.ajax({
                             type: 'POST',
                             url: 'user',
                             contentType: 'application/json',
                             data: JSON.stringify(userData),
+                            beforeSend: function(xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
                             success: function(response) {
                                 console.log('user added successfully:', response);
-                                showSuccess('user added successfully:', response);
+                                showSuccess('user added successfully', response);
                                 // Handle success, e.g., show a success message
                             },
                             error: function(error) {
                                 alert('Error saving user:', error);
+                            },
+                            always: function() {
+                                // Restore button text and show success message
+                                $button.html(originalText).prop("disabled",false);
                             }
                         });
                     }

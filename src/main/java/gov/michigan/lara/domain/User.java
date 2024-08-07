@@ -32,8 +32,8 @@ public class User {
     @Column(nullable = false)
     private boolean disabled;
 
-    @Column(nullable = false, name="passwordChanged")
-    private boolean passwordChanged;
+    @Column(nullable = false, name="passwordExpired")
+    private boolean passwordExpired;
 
     private Timestamp createdOn;
     private String createdBy;

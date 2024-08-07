@@ -1,4 +1,4 @@
-package gov.michigan.lara.config;
+package gov.michigan.lara.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import gov.michigan.lara.dao.UserRepository;
 import gov.michigan.lara.domain.User;
+import gov.michigan.lara.exception.AccountDisabledException;
+import gov.michigan.lara.exception.PasswordExpiredException;
+
 import org.apache.logging.log4j.*;
 import java.util.Collections;
 import java.util.Set;
@@ -33,13 +36,25 @@ public class CustomUserDetailsService implements UserDetailsService {
         } else {
             log.info("found user: " + user.getDisplayName());
             // Determine role based on the bureau field
+
+            // Check if user is disabled
+            if (user.isDisabled()) {
+                throw new AccountDisabledException("User account is disabled, please contact your system administrator.");
+            }
+
+            // Check if password needs to be changed
+            if (user.isPasswordExpired()) {
+                throw new PasswordExpiredException(user.getId());
+            }
+
+
             String role = "*".equals(user.getBureau()) ? "ROLE_ADMIN" : "ROLE_USER";
             log.info("setting " + user.getUsername() + "'s role to " + role);
             
             GrantedAuthority authority = new SimpleGrantedAuthority(role);
             Set<GrantedAuthority> grantedAuthorities = Collections.singleton(authority);
             
-            return new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getDisplayName(), user.getBureau(), user.getEmail(), user.isPasswordChanged(), grantedAuthorities);
+            return new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getDisplayName(), user.getBureau(), user.getEmail(), user.isPasswordExpired(), grantedAuthorities);
         }
     }
 

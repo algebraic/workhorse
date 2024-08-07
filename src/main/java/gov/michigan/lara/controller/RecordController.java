@@ -1,8 +1,8 @@
 package gov.michigan.lara.controller;
 
-import gov.michigan.lara.config.UserDetailsUtil;
 import gov.michigan.lara.domain.KPI;
 import gov.michigan.lara.domain.Record;
+import gov.michigan.lara.security.UserDetailsUtil;
 import gov.michigan.lara.service.KpiService;
 import gov.michigan.lara.service.RecordService;
 

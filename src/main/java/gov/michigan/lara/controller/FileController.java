@@ -18,7 +18,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.logging.log4j.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,13 +26,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import gov.michigan.lara.config.CustomUserDetails;
-import gov.michigan.lara.config.UserDetailsUtil;
+import gov.michigan.lara.security.CustomUserDetails;
+import gov.michigan.lara.security.UserDetailsUtil;
 import gov.michigan.lara.service.FileService;
 
 
 @Controller
-@ControllerAdvice
 public class FileController {
 	private static Logger log = LogManager.getLogger(FileController.class);
 

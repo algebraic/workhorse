@@ -1,4 +1,4 @@
-package gov.michigan.lara.config;
+package gov.michigan.lara.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
 import gov.michigan.lara.dao.UserRepository;
 
 import java.util.Arrays;
@@ -29,19 +30,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(requests -> requests
-                .requestMatchers("/auth/login", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**").permitAll() // Permit access to these paths
+                .requestMatchers("/auth/*", "/logout", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**").permitAll() // Permit access to these paths
                 .requestMatchers("/WEB-INF/jsp/**").permitAll() // Exclude JSP view paths
                 .anyRequest().authenticated()) // Require authentication for other requests
             .formLogin(form -> form
                 .loginPage("/auth/login")
+                .failureHandler(new CustomAuthenticationFailureHandler())
                 .permitAll())
-                .logout(logout -> logout
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/auth/login")
-                    .permitAll())
-                .csrf(csrf -> csrf
-                    .ignoringRequestMatchers("/auth/login", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**")); // Exclude CSRF for these paths
-    
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/auth/login")
+                .permitAll())
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/auth/*", "/logout", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**")); // Exclude CSRF for these paths
+
         return http.build();
     }
 
@@ -72,6 +74,7 @@ public class SecurityConfig {
         return new ProviderManager(Arrays.asList(authenticationProvider));
     }
 
+    @SuppressWarnings("deprecation")
     @Bean
     public PasswordEncoder passwordEncoder(){
         Map<String,PasswordEncoder> encoders=new HashMap<>();

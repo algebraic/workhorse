@@ -83,61 +83,57 @@
 
         <br>
 
+        <c:choose>
+            <c:when test="${title == 'Login'}">
+                <c:set var="formAction" value="login"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="formAction" value="changePassword"/>
+            </c:otherwise>
+        </c:choose>
+
         <div class="container-fluid">
             <div class="container login-container">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="card-title text-center">${title}</h3>
-                        <form action="login" method="post">
-                            <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
-                            <div class="d-grid">
-                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                <button type="submit" class="btn btn-primary">Login</button>
-                            </div>
-                        </form>
-                        <!-- 350*150
-                        <br><hr><br>
-                        <div class="container text-center">
-                            <img src="/workhorse/img/dtmb-full.jpg" width="250" height="auto">
-                            <img src="/workhorse/img/dtmb.svg" width="100" height="auto">
-                        </div>
-                        <br><hr><br>
-                        -->
+                        <c:choose>
+                            <c:when test="${title == 'Login'}">
+                                <h3 class="card-title text-center">${title}</h3>
+                                <form action="login" method="post">
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="password" name="password" required>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Login</button>
+                                    </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="callout callout-warning"><strong>${title}</strong></div>
+                                <form action="changePassword" method="post">
+                                    <div class="mb-3">
+                                        <label for="newPassword" class="form-label">New Password</label>
+                                        <input type="password" id="newPassword" name="newPassword" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                                        <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control" required>
+                                    </div>
+                                    <div class="d-grid">
+                                        <input type="hidden" name="userId" value="${id}">
+                                        <button type="submit" class="btn btn-primary">Change Password</button>
+                                    </div>
+                            </c:otherwise>
+                        </c:choose>
+                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                </form>
                     </div>
                 </div>
             </div>
-            <!-- <div class="row">
-                <form action="${pageContext.request.contextPath}/login" method="post">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username">
-                      </div>
-                      <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password">
-                      </div>
-
-                    <div>
-                        <label for="username">Username:</label>
-                        <input type="text" id="username" name="username"/>
-                    </div>
-                    <div>
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password"/>
-                    </div>
-                    <div>
-                        <button type="submit" class="btn btn-primary">Login</button>
-
-                    </div>
-                </form>
-            </div> -->
         </div>
 
         <!-- footer -->
@@ -171,11 +167,6 @@
 
         <script src="https://kit.fontawesome.com/208550a0ca.js" crossorigin="anonymous"></script>
 
-        <script>
-            $(function() {
-                console.info("change password");
-            });
-        </script>
 
     </body>
 

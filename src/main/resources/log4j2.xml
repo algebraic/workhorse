@@ -5,12 +5,14 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Filters>
                 <ThresholdFilter level="info"/>
+                <RegexFilter regex=".*InternalAuthenticationServiceException.*" onMatch="DENY" onMismatch="NEUTRAL"/>
             </Filters>
         </Console>
         <Console name="SecurityLog" target="SYSTEM_OUT">
             <PatternLayout pattern="\n### SECURITY: %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
             <Filters>
-                <ThresholdFilter level="info"/>
+                <ThresholdFilter level="debug"/>
+                <RegexFilter regex=".*InternalAuthenticationServiceException.*" onMatch="DENY" onMismatch="NEUTRAL"/>
             </Filters>
         </Console>
         <!-- Rolling File Appender -->

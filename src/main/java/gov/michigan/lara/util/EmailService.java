@@ -53,7 +53,7 @@ public class EmailService {
                 "<div style='max-width: 600px; margin: auto; padding: 20px; background-color: #f8f9fa; border-radius: 5px;'>" +
                 "<div style='text-align: center;'>" +
                 "<h2 style='color: #343a40;'>Welcome to WORKHORSE</h2>" +
-                "<p style='color: #6c757d;'>The Web-based Organization and Reporting Kit for High-level Operations and Reliable Systematic Extraction (that's WORKHORSE for short) is here to power up your data entry for the dashboards project!</p>" +
+                "<p style='color: #6c757d;'>The Web-based Organization and Reporting Kit for High-level Operations and Reliable Systematic Extraction (that's WORKHORSE for short) is here to power up your data entry for the LARAStat Dashboard!</p>" +
                 "</div>" +
                 "<div style='color: #6c757d; margin-bottom: 20px;'>" +
                 "<p>Dear <strong>" + displayName + "</strong>,</p>" +
@@ -62,12 +62,13 @@ public class EmailService {
                 "<li>Username: <strong>" + username + "</strong></li>" +
                 "<li>Password: <strong>" + password + "</strong></li>" +
                 "</ul>" +
+                "<p>You'll be prompted to change your password on your first login, so you can set it to something secure.</p>" +
                 "<p>You can access WORKHORSE using the following link:</p>" +
                 "<p><a href='" + appUrl + "'>Go to WORKHORSE</a></p>" +
-                "<p>Don't forget to change your password on your first login, because we all love good security policy!<br><small>(password change functionality not yet available)</small></p>" +
-                "<p>If you need any help or have questions, just hit up our support team. They're awesome and here for you.</p>" +
+                "<p>For instructions on how to use WORKHORSE, click <a href='\" + appUrl + \"'>here</a>.</p>" +
+                "<p>If you need any help or have questions, please email <a href='mailto:LARA-BSS @michigan.gov'>LARA/FAS Support</a> for assistance.</p>" +
                 "</div>" +
-                "<div style='text-align: center; margin-top: 20px;'>" +
+                "<div style='text-align: center; margin-top: 50px;'>" +
                 "<img src='cid:logoImage' alt='WORKHORSE Logo' style='width: 150px;'>" +
                 "</div>" +
                 "<div style='text-align: center; margin-top: 20px; color: #6c757d;'>" +
@@ -122,7 +123,7 @@ public class EmailService {
                 "<img src='cid:logoImage' alt='WORKHORSE Logo' style='width: 150px;'>" +
                 "</div>" +
                 "<div style='text-align: center; margin-top: 20px; color: #6c757d;'>" +
-                "<p>Warmest regards,<br>the DTMB team</p>" +
+                "<p>Best wishes,<br>the DTMB team</p>" +
                 "</div>" +
                 "</div>" +
                 "</body>" +

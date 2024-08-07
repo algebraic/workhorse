@@ -1,8 +1,8 @@
 package gov.michigan.lara.service;
 
-import gov.michigan.lara.config.UserDetailsUtil;
 import gov.michigan.lara.dao.KpiRepository;
 import gov.michigan.lara.domain.KPI;
+import gov.michigan.lara.security.UserDetailsUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;

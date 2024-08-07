@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import gov.michigan.lara.config.UserDetailsUtil;
+import gov.michigan.lara.security.UserDetailsUtil;
 import gov.michigan.lara.util.EmailService;
 import gov.michigan.lara.util.PasswordGenerator;
 

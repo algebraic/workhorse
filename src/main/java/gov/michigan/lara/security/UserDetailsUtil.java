@@ -1,11 +1,11 @@
-package gov.michigan.lara.config;
+package gov.michigan.lara.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserDetailsUtil {
 
-    private static CustomUserDetails getAuthenticatedUser() {
+    public static CustomUserDetails getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
             return (CustomUserDetails) authentication.getPrincipal();

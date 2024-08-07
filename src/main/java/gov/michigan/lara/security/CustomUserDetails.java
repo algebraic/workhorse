@@ -1,8 +1,9 @@
-package gov.michigan.lara.config;
+package gov.michigan.lara.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import gov.michigan.lara.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,13 +20,16 @@ import java.util.Collection;
 @ToString()
 @EqualsAndHashCode(callSuper=false)
 public class CustomUserDetails implements UserDetails {
+    public CustomUserDetails(User user){
+        //Auto-generated constructor stub
+    }
     private Long id;
     private String username;
     private String password;
     private String displayName;
     private String bureau;
     private String email;
-    private Boolean passwordChanged;
+    private Boolean passwordExpired;
     private Collection<? extends GrantedAuthority> authorities;
 
 }

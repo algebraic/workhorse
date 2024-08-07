@@ -1,8 +1,8 @@
 package gov.michigan.lara.service;
 
-import gov.michigan.lara.config.UserDetailsUtil;
 import gov.michigan.lara.dao.UserRepository;
 import gov.michigan.lara.domain.User;
+import gov.michigan.lara.security.UserDetailsUtil;
 import gov.michigan.lara.util.EmailService;
 import gov.michigan.lara.util.PasswordGenerator;
 
@@ -46,6 +46,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(randomPassword));
         user.setCreatedBy(UserDetailsUtil.getCurrentUsername());
         user.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+        user.setPasswordExpired(true);
 
         // Send the email
         emailService.sendHtmlEmail(
@@ -102,6 +103,7 @@ public class UserServiceImpl implements UserService {
         
         String randomPassword = PasswordGenerator.generateRandomPassword();
         user.setPassword(passwordEncoder.encode(randomPassword));
+        user.setPasswordExpired(true);
         user.setModifiedBy(UserDetailsUtil.getCurrentUsername());
         user.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
 
