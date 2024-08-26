@@ -39,7 +39,14 @@
             <div class="float-start" role="group" aria-label="Bureau selection">
                 <div class="accordion" id="bureau-list"></div>
             </div>
-            <div class="col-lg-11 offset-lg-1 text-start">
+            <div class="col-lg-11 offset-lg-1">
+                <!-- Centering spinner inside the parent container -->
+                <div class="row position-relative hidden" style="width: 747px; height: 200px;" id="loadingSpinner"> <!-- Adjust height as needed -->
+                    <!-- Spinner element -->
+                    <div class="spinner-grow text-success position-absolute top-50 start-50 translate-middle" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="container mx-0" id="test-data"></div>
                 </div>
@@ -288,7 +295,7 @@
                         <form id="userEditForm">
                             <input type="hidden" id="id" name="id">
                             <label for="email">email</label>
-                            <input type="text" id="email" name="email" class="required">
+                            <input type="email" id="email" name="email" class="required" data-bs-toggle="popover" data-bs-trigger="manual" data-bs-custom-class="error-popover" data-bs-placement="top" data-bs-content="">
                             <br>
                             <label for="username">username</label>
                             <input type="text" id="username" name="username" class="required">
@@ -771,11 +778,13 @@
                 
                 // save user
                 $("#userModal").on("click", "#saveUser", function() {
-                // $("#saveUser").click(function() {
                     $(".error").removeClass("error");
-                    var $form = $("form#userEditForm");
                     var $btn = $(this);
+                    
                     // var $form = $(this).parents("form");
+                    var $form = $("form#userEditForm");
+                    // zj: not sure if this was broken or something...
+
                     var id = $("#id", $form).val();
                     var userData = {};
 
@@ -833,27 +842,77 @@
                         var originalText = $btn.html();
                         $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Working...').prop("disabled", "disabled");
 
-                        $.ajax({
-                            type: 'POST',
-                            url: 'user',
-                            contentType: 'application/json',
-                            data: JSON.stringify(userData),
-                            beforeSend: function(xhr) {
-                                xhr.setRequestHeader(header, token);
-                            },
-                            success: function(response) {
-                                console.log('user added successfully:', response);
-                                showSuccess('user added successfully', response);
-                                // Handle success, e.g., show a success message
-                            },
-                            error: function(error) {
-                                alert('Error saving user:', error);
-                            },
-                            always: function() {
-                                // Restore button text and show success message
-                                $button.html(originalText).prop("disabled",false);
-                            }
-                        });
+                        // check if email exists before saving user
+                        var $email = $("#email", $form).popover('hide').popover('dispose');
+                        var duplicateEmail = false;
+                        var email = $email.val();
+                        if (email) {
+                            $.ajax({
+                                url: 'users/exists',
+                                type: 'GET',
+                                data: { email: email },
+                                success: function(response) {
+                                    if (response) {
+                                        $email.addClass('error');
+                                        $email.attr('data-bs-content', 'address already in use');
+                                        $email.popover('show');
+                                        $btn.html(originalText).prop("disabled", false);
+                                        // Auto-hide the popover after 5 seconds
+                                        setTimeout(function() {
+                                            $email.popover('hide');
+                                        }, 5000);
+
+                                        // Hide the popover when the field is changed
+                                        $email.on('input', function() {
+                                            $email.popover('hide');
+                                        });
+                                    } else {
+                                        $email.removeClass('error');
+                                        $email.popover('hide').popover('dispose');
+                                        // cover form with semi-transparent overlay during saving
+                                        var overlay = $('<div id="loadingOverlay" class="position-absolute w-100 h-100 bg-light" style="opacity: 0.7; top: 0; left: 0; z-index: 10;">' +
+                                                        '<div class="d-flex justify-content-center align-items-center h-100">' +
+                                                        '<div class="spinner-grow" role="status">' +
+                                                        '<span class="sr-only">Loading...</span>' +
+                                                        '</div></div></div>');
+                                        $(".modal-body", "#userModal").append(overlay); // Append overlay to modal body
+                                        
+                                        // do the thing
+                                        if (!duplicateEmail) {
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: 'user',
+                                                contentType: 'application/json',
+                                                data: JSON.stringify(userData),
+                                                beforeSend: function(xhr) {
+                                                    xhr.setRequestHeader(header, token);
+                                                },
+                                                success: function(response) {
+                                                    console.log('user added successfully:', response.toString());
+                                                    showSuccess('user added successfully: ' + response.toString());
+                                                    // Handle success, e.g., show a success message
+                                                },
+                                                error: function(error) {
+                                                    alert('Error saving user:', error);
+                                                },
+                                                complete: function() {
+                                                    // Restore button text and show success message
+                                                    $("#loadingOverlay").remove(); // Remove the overlay
+                                                    $btn.html(originalText).prop("disabled", false);
+                                                }
+                                            });
+                                        } else {
+                                            console.info("don't save");
+                                        }
+                                    }
+                                },
+                                error: function() {
+                                    $email.addClass('error');
+                                    $email.attr('data-bs-content', 'An error occurred');
+                                    $email.popover('show');
+                                }
+                            });
+                        }
                     }
                 });
 
@@ -876,10 +935,8 @@
                 });
 
                 $(".modal").on('hidden.bs.modal', function() {
-                    console.info("closing modal, reset form");
                     var $form = $(this).find("form");
                     $(".error").removeClass("error");
-                    // $form[0].reset();
                 });
 
                 $("#bureau-list").on('show.bs.collapse', function(e) {
@@ -907,6 +964,10 @@
                 });
 
                 $("#bureau-list").on("click", ".kpi-area-btn", function() {
+                    // prevent fouc
+                    $("#test-data").hide();
+                    $("#loadingSpinner").show();
+
                     var $btn = $(this);
                     var bureau = $btn.parents(".accordion-item").attr("data-bureau");
                     var area = $btn.attr("data-area");
@@ -937,11 +998,12 @@
                                 var monthNumber = (i + 1).toString().padStart(2, '0'); // Convert month number to two-digit format
                                 var inputId = monthNumber + '-01'; // Create the id in the format "MM-01"
                                 var row = '<tr><td class="border-start border-light-subtle">' + months[i] + '</td>';
-                                row += '<td>' + '<input type="text" class="form-control record-data" data-month="' + inputId + '">' + '</td>';
+                                row += '<td class="p-1">' + '<div class="input-group"><span class="input-group-text">#</span><input type="text" inputmode="numeric" class="form-control record-data" data-month="' + inputId + '"></div>' + '</td>';
                                 row += '</tr>';
                                 $kpiTable += row;
                             }
-                            $kpiTable += '<tr><td colspan=2 class="border-bottom-0"><button type="button" id="saveRecord" class="btn btn-outline-success" disabled="disabled">Save</button></td></tr></tbody></table>';
+
+                            $kpiTable += '<tr><td colspan=2 class="border-bottom-0 text-center"><button type="button" id="saveRecord" class="btn btn-outline-success" disabled="disabled">Save</button></td></tr></tbody></table>';
                             $parent.append($kpiTable);
 
                             // populate years
@@ -1086,6 +1148,10 @@
                 });
 
                 $("body").on("change", ".entry_select", function() {
+                    // prevent fouc
+                    $("#test-data").hide();
+                    $("#loadingSpinner").show();
+
                     var val = $(this).val();
                     if (val == "~new~") {
                         var currentYear = new Date().getFullYear();
@@ -1097,6 +1163,10 @@
                             if (year === null) {
                                 // User pressed cancel
                                 alert("No year entered. Exiting.");
+                                // prevent fouc
+                                $("#test-data").show();
+                                $("#loadingSpinner").hide();
+                                $("#year_testing").val($("#year_testing option:first").val()).change();
                                 return;
                             }
                             if (/^\d{4}$/.test(year) && year >= 1900 && year <= (currentYear+1)) {
@@ -1134,6 +1204,11 @@
                             },
                             error: function(error) {
                                 console.error('Error fetching record list:', error);
+                            },
+                            complete: function() {
+                                // prevent fouc
+                                $("#test-data").show();
+                                $("#loadingSpinner").hide();
                             }
                         });
                     }
@@ -1274,6 +1349,11 @@
                     // end
                 });
 
+                // show message onload if present
+                if ("${successMessage}") {
+                    showSuccess("${successMessage}");
+                } 
+                
                 // zj: end stupidly huge script block
             });
 
@@ -1307,14 +1387,44 @@
                 }
                 $(".changed").removeClass('changed');
                 var year = $("#year_testing").val();
-                $("input.record-data").each(function() {
-                    var $this = $(this);
-                    var id = $this.attr("data-month");
-                    $this.attr("id", year + "-" + id);
-                    if (isNew) {
-                        $this.attr("data-ogvalue", "~new~");
+
+                // check datatype
+                var kpiId = $("#kpi_testing").val();
+                var datatype = "";
+                $.ajax({
+                    url: '/workhorse/kpi/' + kpiId + '/data', // Adjust if your context-path is different
+                    type: 'GET',
+                    success: function(response) {
+                        datatype = response;
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error fetching KPI Data Type: " + error);
+                        alert("Error fetching KPI Data Type: " + error);
+                    },
+                    complete: function() {
+                        // set datatype
+                        var dataSymbol = "?";
+                        if (datatype === "PRCT") {
+                            dataSymbol = "%";
+                        } else if (datatype === "COUNT") {
+                            dataSymbol = "#";
+                        } else {
+                            console.info("Unexpected KPI Data Type: " + datatype);
+                            alert("Unexpected KPI Data Type: " + datatype);
+                        }
+
+                        $("input.record-data").each(function() {
+                            var $this = $(this).numeric();
+                            var id = $this.attr("data-month");
+                            $this.attr("id", year + "-" + id);
+                            $this.prev(".input-group-text").html(dataSymbol);
+                            if (isNew) {
+                                $this.attr("data-ogvalue", "~new~");
+                            }
+                        });
                     }
                 });
+
             }
 
             function executeSql() {
@@ -1350,10 +1460,8 @@
                         $.each(data, function(key, value) {
                             // handle booleans
                             if (value === true || value === false) {
-                                console.info(key + " -- " + value + " (BOOLEAN)");
                                 $("#" + key).attr("checked", value);
                             } else {
-                                console.info(key + " -- " + value);
                                 $("#" + key).val(value);
                             }
                             // var $element = "<input id='" + key + "' name='" + key + "' value='" + value + "'>";
@@ -1408,7 +1516,7 @@
                 $(".reload-btn:visible").click();
 
                 // Create a new toast element
-                var toast = $('<div class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true" data-delay="8000" style="position: absolute; top: 100px; left: 50%; transform: translateX(-50%);"><div class="toast-body">' + message + '</div></div>');
+                var toast = $('<div class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true" data-delay="8000" style="position: absolute; top: 100px; left: 50%; transform: translateX(-50%);"><div class="toast-body text-center">' + message + '</div></div>');
 
                 // Append the toast to the body
                 $('body').append(toast);
@@ -1420,6 +1528,19 @@
                 toast.on('hidden.bs.toast', function() {
                     toast.remove();
                 });
+
+                // Clear the session variable via AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "auth/reset",
+                    success: function() {
+                        console.log("Success message cleared from session.");
+                    },
+                    error: function() {
+                        console.error("Failed to clear success message from session.");
+                    }
+                });
+
             }
 
             function analyzeData() {

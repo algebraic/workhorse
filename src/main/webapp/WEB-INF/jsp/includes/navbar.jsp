@@ -36,9 +36,3 @@
         </ul>
     </div>
 </nav>
-
-<script>
-    $(function() {
-
-    });
-</script>

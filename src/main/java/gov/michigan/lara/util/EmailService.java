@@ -23,6 +23,8 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String fromAddress;
 
+    private String fromName = "WORKHORSE Support";
+
     public void sendSimpleEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -38,7 +40,7 @@ public class EmailService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(to);
-            helper.setFrom(fromAddress);
+            helper.setFrom(fromAddress, fromName);
             helper.setSubject(subject);
     
             String htmlContent = "<!DOCTYPE html>" +
@@ -57,7 +59,7 @@ public class EmailService {
                 "</div>" +
                 "<div style='color: #6c757d; margin-bottom: 20px;'>" +
                 "<p>Dear <strong>" + displayName + "</strong>,</p>" +
-                "<p>We're thrilled to have you join our team. Here's a quick rundown of your login details:</p>" +
+                "<p>We're thrilled to have you join our team! Here's a quick rundown of your login details:</p>" +
                 "<ul style='list-style: none; padding: 0;'>" +
                 "<li>Username: <strong>" + username + "</strong></li>" +
                 "<li>Password: <strong>" + password + "</strong></li>" +
@@ -92,7 +94,7 @@ public class EmailService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(to);
-            helper.setFrom(fromAddress);
+            helper.setFrom(fromAddress, fromName);
             helper.setSubject(subject);
     
             String htmlContent = "<!DOCTYPE html>" +
@@ -137,6 +139,53 @@ public class EmailService {
             log.info("Email sent to {}", to);
         } catch (Exception e) {
             log.error("Failed to send email", e);
+        }
+    }
+
+    public void sendForgotPasswordEmail(String email, String resetUrl, String displayName){
+        
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(email);
+            helper.setFrom(fromAddress, fromName);
+            helper.setSubject("Need to reset your password?");
+    
+            String htmlContent = "<!DOCTYPE html>" +
+            "<html lang='en'>" +
+            "<head>" +
+            "<meta charset='UTF-8'>" +
+            "<meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+            "<title>Password Reset - WORKHORSE</title>" +
+            "<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'>" +
+            "</head>" +
+            "<body style='font-family: Arial, sans-serif; background-color: #f8f9fa;'>" +
+            "<div style='max-width: 600px; margin: auto; padding: 20px; background-color: #f8f9fa; border-radius: 5px;'>" +
+            "<div style='text-align: center;'>" +
+            "<h2 style='color: #343a40;'>Your new password is just a few clicks away.</h2>" +
+            "</div>" +
+            "<div style='color: #6c757d; margin-bottom: 20px;'>" +
+            "<p>Dear <strong>" + displayName + "</strong>,</p>" +
+            "<p>We received a request to reset your password. To proceed with resetting your password, please click the link below:</p>" +
+            "<p><a href='" + resetUrl + "'>Reset My Password</a></p>" +
+            "<p>Please note that this link will expire in 60 minutes. If you did not request a password reset, please ignore this email or contact our support team if you have any questions.</p>" +
+            "</div>" +
+            "<div style='text-align: center; margin-top: 20px;'>" +
+            "<img src='cid:logoImage' alt='WORKHORSE Logo' style='width: 150px;'>" +
+            "</div>" +
+            "<div style='text-align: center; margin-top: 20px; color: #6c757d;'>" +
+            "<p>Warmest regards,<br>the DTMB team</p>" +
+            "</div>" +
+            "</div>" +
+            "</body>" +
+            "</html>";
+
+            helper.setText(htmlContent, true);
+            helper.addInline("logoImage", new File("src/main/resources/static/img/small-light2.png"));
+            mailSender.send(message);
+            log.info("Forgot password email sent to {}", email);
+        } catch (Exception e) {
+            log.error("Failed to send forgot password email", e);
         }
     }
 

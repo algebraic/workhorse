@@ -23,7 +23,7 @@ public class MailController {
 
         emailService.sendHtmlEmail(
             to,
-            "WORKHORSE: new user created",
+            "new user created",
             username,
             UserDetailsUtil.getCurrentUserDisplayName(),
             randomPassword,

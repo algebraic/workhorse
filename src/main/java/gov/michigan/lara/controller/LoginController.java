@@ -1,6 +1,8 @@
 package gov.michigan.lara.controller;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,12 +17,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import gov.michigan.lara.dao.PasswordResetTokenRepository;
+import gov.michigan.lara.domain.PasswordResetToken;
 import gov.michigan.lara.domain.User;
 import gov.michigan.lara.security.CustomUserDetails;
-import gov.michigan.lara.security.UserDetailsUtil;
+import gov.michigan.lara.service.PasswordResetService;
 import gov.michigan.lara.service.UserService;
+import gov.michigan.lara.util.EmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 
 @Controller
 @RequestMapping("/auth")
@@ -32,20 +39,74 @@ public class LoginController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserDetailsService customUserDetailsService;
+    @Autowired
+    private PasswordResetService passwordResetService;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private PasswordResetTokenRepository tokenRepository;
+
 
     @GetMapping("/login")
     public String showLoginPage(HttpServletRequest request, @RequestParam(value = "error", required = false) String error, @RequestParam(value = "id", required = false) Long id, Model model) {
 
-        System.out.println("@@@ showLoginPage: " + error);
-        System.out.println("UserDetailsUtil.getCurrentUserId() = " + UserDetailsUtil.getCurrentUserId());
         if (error == null) {
             model.addAttribute("title", "Login");
-        } else {
+        } else if (error.equals("passwordExpired")) {
+            Long userId = (Long) request.getSession().getAttribute("expiredUserId");
             model.addAttribute("title", "Your password has expired and must be changed");
-            Long userId = (Long) request.getSession().getAttribute("passwordExpiredUserId");
             model.addAttribute("id", userId);
+        } else {
+            System.out.println("invalid username/password");
+            System.err.println("invalid username/password");
+            model.addAttribute("errorMsg", "invalid username/password");
+            model.addAttribute("title", "Login");
         }
+
         model.addAttribute("error", error);
+        return "login";
+    }
+
+    @GetMapping("/forgotPassword")
+    public String forgotPassword(HttpServletRequest request, Model model) {
+        model.addAttribute("title", "Forgot Password");
+        return "login";
+    }
+
+    @PostMapping("/forgotPassword")
+    public String forgotPasswordSend(@RequestParam String email){
+        // Validate the email address
+        Optional<User> user=userService.findUserByEmail(email);
+        User pwuser = user.orElseThrow(() -> new IllegalArgumentException("User not found for the provided token"));
+
+        if(pwuser != null){
+            PasswordResetToken token = passwordResetService.createPasswordResetToken(email);
+            String resetUrl = "http://127.0.0.1:8080/workhorse/auth/resetPassword?token=" + token.getToken();
+            emailService.sendForgotPasswordEmail(email, resetUrl, pwuser.getDisplayName());
+            return "yay";
+        }
+        return "boo";
+    }
+
+    @GetMapping("/resetPassword")
+    public String showResetPasswordPage(HttpServletRequest request, @RequestParam("token") String token, Model model) {
+        // Validate the token and check its expiration
+        PasswordResetToken resetToken = tokenRepository.findByToken(token)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid or expired reset token"));
+
+        // Add the token to the model so it can be used in the JSP page
+        model.addAttribute("token", token);
+        model.addAttribute("title", "Please set a new password");
+        
+        // find user by email in token
+        Optional<User> user=userService.findUserByEmail(resetToken.getEmail());
+        User rpUser = user.orElseThrow(() -> new IllegalArgumentException("User not found for the provided token"));
+
+        Long userId = rpUser.getId();
+        System.out.println("resetting pw for user id " + userId);
+        model.addAttribute("id", userId);
+
+        // Return the login view
         return "login";
     }
 
@@ -65,13 +126,11 @@ public class LoginController {
         return "access-denied"; // This refers to the access-denied.jsp view
     }
 
+    @Transactional
     @PostMapping("/changePassword")
     // public String changePassword(@RequestParam("userId") Long userId, @RequestParam("newPassword") String newPassword, Model model){
-    public String changePassword(@RequestParam("userId") Long userId, @RequestParam("newPassword") String newPassword, HttpServletRequest request, HttpServletResponse response, Model model) {
+    public String changePassword(@RequestParam("userId") Long userId, @RequestParam("newPassword") String newPassword, HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "token", required = false) String token) {
 
-        System.out.println("userId: " + userId);
-        System.out.println("newPassword: " + newPassword);
-        
         User user = userService.findUserById(userId);
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setPasswordExpired(false);
@@ -79,7 +138,6 @@ public class LoginController {
 
         // Load the updated user details
         CustomUserDetails userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(user.getUsername());
-        System.out.println("###\n" + userDetails.toString());
 
         // Re-authenticate the user with the new password
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, newPassword, userDetails.getAuthorities());
@@ -88,20 +146,23 @@ public class LoginController {
         // Manually update the session to avoid any invalidation issues
         request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
 
-        // Check if the user is correctly authenticated
-        Authentication newAuth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("### ## newAuth.isAuthenticated() = " + newAuth.isAuthenticated());
-
-        String username = UserDetailsUtil.getCurrentUsername();
-        String userbureau = UserDetailsUtil.getCurrentUserBureau();
-        String displayname = UserDetailsUtil.getCurrentUserDisplayName();
+        // If token is present, delete it
+        if (token != null && !token.isEmpty()) {
+            tokenRepository.deleteByToken(token);
+        } else {
+            System.out.println("no token found");
+        }
         
-        System.out.println("### ## username = " + username);
-        System.out.println("### ## userbureau = " + userbureau);
-        System.out.println("### ## displayname = " + displayname);
+        request.getSession().setAttribute("successMessage", "Your password has been changed!");
 
-        System.out.println("### password changed, go to index");
         return "redirect:/";
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<Void> clearSuccessMessage(HttpServletRequest request) {
+        request.getSession().removeAttribute("successMessage");
+        request.getSession().removeAttribute("expiredUserId");
+        return ResponseEntity.ok().build();
     }
 
 }

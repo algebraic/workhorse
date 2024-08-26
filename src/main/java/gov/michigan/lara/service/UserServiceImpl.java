@@ -9,6 +9,7 @@ import gov.michigan.lara.util.PasswordGenerator;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,8 +41,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
+        // check if email already exists before saving
+        if (repository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Email already in use");
+        }
+
         log.info("saving new user: " + user.toString());
-        
         String randomPassword = PasswordGenerator.generateRandomPassword();
         user.setPassword(passwordEncoder.encode(randomPassword));
         user.setCreatedBy(UserDetailsUtil.getCurrentUsername());
@@ -51,7 +56,7 @@ public class UserServiceImpl implements UserService {
         // Send the email
         emailService.sendHtmlEmail(
             user.getEmail(),
-            "WORKHORSE: new user created",
+            "Your account has been created!",
             user.getUsername(),
             user.getDisplayName(),
             randomPassword,
@@ -110,7 +115,7 @@ public class UserServiceImpl implements UserService {
         // Send the email
         emailService.sendPWEmail(
             user.getEmail(),
-            "WORKHORSE: password reset",
+            "Here's your temporary password",
             user.getUsername(),
             user.getDisplayName(),
             randomPassword,
@@ -118,6 +123,23 @@ public class UserServiceImpl implements UserService {
         );
 
         return repository.save(user);
+    }
+
+    @Override
+    public Optional<User> findUserByEmail(String email){
+        return repository.findByEmail(email);
+    }
+
+    @Override
+    public void updateUserPassword(User user, String encodedPassword){
+        // TODO Auto-generated method stub
+        System.out.println("Unimplemented method 'updateUserPassword'");
+        throw new UnsupportedOperationException("Unimplemented method 'updateUserPassword'");
+    }
+
+    @Override
+    public boolean existsByEmail(String email){
+        return repository.existsByEmail(email);
     }
 
 }

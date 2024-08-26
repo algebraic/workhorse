@@ -35,7 +35,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         } else {
             log.info("found user: " + user.getDisplayName());
-            // Determine role based on the bureau field
 
             // Check if user is disabled
             if (user.isDisabled()) {
@@ -47,7 +46,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 throw new PasswordExpiredException(user.getId());
             }
 
-
+            // Determine role based on the bureau field
             String role = "*".equals(user.getBureau()) ? "ROLE_ADMIN" : "ROLE_USER";
             log.info("setting " + user.getUsername() + "'s role to " + role);
             

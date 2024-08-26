@@ -75,9 +75,14 @@ div#kpi_table_wrapper {
     margin-right: 10px;
 }
 
-.modal-body input[type=text] {
+.modal-body input[type=text], .modal-body input[type=email] {
     width: 60%;
     margin-bottom: 8px;
+}
+
+/* popover form error class*/
+.error-popover {
+    --bs-popover-border-color: red !important;
 }
 
 #kpi_addNew {
@@ -121,7 +126,7 @@ span.first-letter {
 }
 
 .input-group-text:first-of-type {
-    width: 100px;
+    width: 40px;
     overflow: visible;
 }
 
@@ -199,9 +204,7 @@ input.changed {
     width:100px;
 }
 .record-data {
-    background: none;
-    border: none;
-    padding: 4px;
+    max-width:100px;
 }
 tr td:first-child {
     vertical-align: middle;
@@ -238,8 +241,13 @@ h3#section-title {
     --bd-callout-bg: var(--bs-info-bg-subtle);
     --bd-callout-border: var(--bs-info-border-subtle);
 }
-.bd-callout-danger {
+.callout-danger {
     --bd-callout-color: var(--bs-danger-text-emphasis);
     --bd-callout-bg: var(--bs-danger-bg-subtle);
     --bd-callout-border: var(--bs-danger-border-subtle);
+}
+.callout-success {
+    --bd-callout-color: var(--bs-success-text-emphasis);
+    --bd-callout-bg: var(--bs-success-bg-subtle);
+    --bd-callout-border: var(--bs-success-border-subtle);
 }

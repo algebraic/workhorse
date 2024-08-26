@@ -9,17 +9,26 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler{
+public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request,HttpServletResponse response,AuthenticationException exception) throws IOException,ServletException{
-        if(exception.getCause() instanceof PasswordExpiredException){
-            Long userId = ((PasswordExpiredException) exception.getCause()).getUserId();
-            request.getSession().setAttribute("passwordExpiredUserId", userId);
-            System.out.println("change password prompt, userid = " + userId);
-            response.sendRedirect(request.getContextPath()+"/auth/login?error=passwordExpired");
-        }else{
-            response.sendRedirect(request.getContextPath()+"/auth/login?error=true");
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+        Throwable cause = exception;
+        
+        // Check if it's the PasswordExpiredException or if it's wrapped inside another exception
+        while (cause != null) {
+            if (cause instanceof PasswordExpiredException) {
+                Long userId = ((PasswordExpiredException) cause).getUserId();
+                request.getSession().setAttribute("expiredUserId", userId);
+                response.sendRedirect("login?error=passwordExpired");
+                return;
+            }
+            cause = cause.getCause(); // Move to the next cause in the chain
         }
+        
+        // Handle other exceptions
+        System.out.println("exception cause: " + exception.toString());
+        response.sendRedirect("login?error=invalid");
+        
     }
 }

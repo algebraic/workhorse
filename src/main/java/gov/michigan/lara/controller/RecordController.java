@@ -47,7 +47,6 @@ public class RecordController{
 
     @GetMapping("/records/{kpiId}/years")
     public List<Integer> getKpiYears(@PathVariable String kpiId){
-        System.out.println("### getKpiYears?");
         return recordService.getKpiYears(kpiId);
     }
 

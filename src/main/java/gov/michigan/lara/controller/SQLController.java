@@ -19,7 +19,6 @@ public class SQLController {
 
     @GetMapping("/execute")
     public Map<String, Object> executeSQLQuery(@RequestParam String query) {
-        System.out.println("### query = " + query);
         Map<String, Object> response = new HashMap<>();
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {

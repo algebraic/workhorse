@@ -25,7 +25,10 @@ public class User {
     private Long id;
     private String username;
     private String displayName;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
     private String password;
     private String bureau;
 

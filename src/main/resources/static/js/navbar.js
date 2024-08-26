@@ -51,5 +51,5 @@ $(function() {
 
     });
     // zj: auto-click something on page load
-    $("a.section").eq(2).click();
+    $("a.section").eq(0).click();
 });

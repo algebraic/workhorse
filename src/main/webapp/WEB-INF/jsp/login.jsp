@@ -83,23 +83,34 @@
 
         <br>
 
-        <c:choose>
-            <c:when test="${title == 'Login'}">
-                <c:set var="formAction" value="login"/>
-            </c:when>
-            <c:otherwise>
-                <c:set var="formAction" value="changePassword"/>
-            </c:otherwise>
-        </c:choose>
-
         <div class="container-fluid">
             <div class="container login-container">
+                <div class="hidden text-center" id="successMessage">
+                    <div class="callout callout-success">
+                        <strong>Success!</strong><br>
+                        <p>If an account with that email exists, a password reset link will be sent to it</p>
+                    </div>
+                    <a type="button" class="btn btn-primary" href="/workhorse">Return to Login</a>
+                </div>
                 <div class="card">
                     <div class="card-body">
                         <c:choose>
-                            <c:when test="${title == 'Login'}">
+                            <c:when test="${title == 'Forgot Password'}">
                                 <h3 class="card-title text-center">${title}</h3>
-                                <form action="login" method="post">
+                                <form id="forgotPassword" action="forgotPassword" method="post">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                            </c:when>
+                            <c:otherwise>
+                                <c:choose>
+                                    <c:when test="${empty error || error == 'invalid'}">
+                                        <h3 class="card-title text-center">${title}</h3>
+                                        <form action="login" method="post">
                                     <div class="mb-3">
                                         <label for="username" class="form-label">Username</label>
                                         <input type="text" class="form-control" id="username" name="username" required>
@@ -110,29 +121,36 @@
                                     </div>
                                     <div class="d-grid">
                                         <button type="submit" class="btn btn-primary">Login</button>
+                                                <div class="row text-center pt-2"><small class="w-100"><a href="forgotPassword">forgot password?</a></small></div>
                                     </div>
                             </c:when>
-                            <c:otherwise>
+                                    <c:when test="${error == 'passwordExpired'}">
                                 <div class="callout callout-warning"><strong>${title}</strong></div>
-                                <form action="changePassword" method="post">
+                                        <form id="changePassword" action="changePassword" method="post">
                                     <div class="mb-3">
                                         <label for="newPassword" class="form-label">New Password</label>
                                         <input type="password" id="newPassword" name="newPassword" class="form-control" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
-                                        <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control" required>
+                                                <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control"
+                                                    required>
                                     </div>
                                     <div class="d-grid">
                                         <input type="hidden" name="userId" value="${id}">
                                         <button type="submit" class="btn btn-primary">Change Password</button>
                                     </div>
+                                            <input type="hidden" name="token" value="${token}" />
+                                    </c:when>
+                                </c:choose>
                             </c:otherwise>
                         </c:choose>
                                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                 </form>
                     </div>
                 </div>
+                <c:if test="${error == 'invalid'}"><div class="text-danger text-center">${errorMsg}</div></c:if>
+                <div id="changePasswordError" class="text-danger text-center hidden">Passwords do not match, please try again</div>
             </div>
         </div>
 
@@ -142,8 +160,7 @@
                 <div class="col-lg-12 text-center">
                     <div class="alert-dark bg-dark my-0 p-0" id="footer">
                         <small style="top: 10px; position: relative;" class="flash-text" id="footer-text">
-                            Web-based Organization and Reporting Kit for High-level Operations and Reliable
-                            Systematic Extraction
+                            Web-based Organization and Reporting Kit for High-level Operations and Reliable Systematic Extraction
                         </small>
                         <!-- <h6 class="card-title flash-text"></h6> -->
                         <div class="progress d-none" id="progress" style="height: 50px">
@@ -167,6 +184,63 @@
 
         <script src="https://kit.fontawesome.com/208550a0ca.js" crossorigin="anonymous"></script>
 
+        <script>
+            $(function() {
+                $("input:visible:first").focus();
+
+                $("form#forgotPassword").on("submit", function(e) {
+                    e.preventDefault();
+                    var $form = $(this).hide();
+                    $(".card").hide();
+                    $("#successMessage").removeClass("hidden");
+
+                    $.ajax({
+                        url: $form.attr('action'),
+                        type: 'POST',
+                        data: $form.serialize(),
+                        success: function(response) {
+                            console.info("yay, email sent");
+                        },
+                        error: function(xhr, status, error) {
+                            console.info('Form submission failed:', error);
+                        },
+                        complete: function() {
+                            console.info('all done  :)');
+                        }
+                    });
+                });
+
+                $("form#changePassword").on("submit", function(e) {
+                    e.preventDefault();
+                    var $form = $(this);
+                    $("#changePasswordError").addClass("hidden");
+                    var $password = $("#newPassword").removeClass("error");
+                    var $confirmPassword = $("#confirmNewPassword").removeClass("error");
+
+                    if ($password.val() !== $confirmPassword.val()) {
+                        $("#changePasswordError").removeClass("hidden");
+                        $password.addClass("error");
+                        $confirmPassword.addClass("error");
+                        return;
+                    }
+
+                    $.ajax({
+                        url: $form.attr('action'),
+                        type: 'POST',
+                        data: $form.serialize(),
+                        success: function(response) {
+                            window.location.href = "/workhorse";
+                        },
+                        error: function(xhr, status, error) {
+                            console.info('Form submission failed:', error);
+                        },
+                        complete: function() {
+                            console.info('password change call completed');
+                        }
+                    });
+                });
+            });
+        </script>
 
     </body>
 

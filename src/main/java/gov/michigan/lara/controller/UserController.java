@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,16 +33,20 @@ public class UserController{
         return userlist;
     }
 
+    @GetMapping("/users/exists")
+    public ResponseEntity<Boolean> emailExists(@RequestParam("email") String email) {
+        boolean exists = userService.existsByEmail(email);
+        return ResponseEntity.ok(exists);
+    }
+
     @GetMapping("/user/{id}")
     public User findUsersById(@PathVariable Long id){
-        System.out.println("trying find user by id...");
         return userService.findUserById(id);
     }
 
     // Save operation
     @PostMapping("/user")
     public User saveUser(@Valid @RequestBody User user){
-        System.out.println("$$$ saving user $$$");
         return userService.saveUser(user);
     }
 
@@ -64,7 +69,7 @@ public class UserController{
     public String resetPassword(@RequestParam Long id){
         User pwuser = userService.findUserById(id);
         userService.resetPassword(pwuser);
-        System.out.println("############\n reset password for user " + pwuser.getUsername() + "\n############");
+        System.out.println("reset password for user " + pwuser.getUsername());
         return "yay";
     }
 

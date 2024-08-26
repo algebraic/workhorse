@@ -53,7 +53,6 @@ public class KpiController{
     @GetMapping("/kpi/{kpiId}/data")
     public ResponseEntity<String> getKpiDataType(@PathVariable String kpiId){
         String dataType = kpiService.getKpiDataType(kpiId);
-        System.out.println("@@@ kpiService.getKpiDataType(kpiId) = " + dataType);
         return ResponseEntity.ok(dataType);
     }
 
