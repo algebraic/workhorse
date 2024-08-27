@@ -2,9 +2,11 @@ package gov.michigan.lara.service;
 
 import gov.michigan.lara.dao.UserRepository;
 import gov.michigan.lara.domain.User;
+import gov.michigan.lara.security.CustomUserDetails;
 import gov.michigan.lara.security.UserDetailsUtil;
 import gov.michigan.lara.util.EmailService;
 import gov.michigan.lara.util.PasswordGenerator;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -14,8 +16,15 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,6 +37,8 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private UserDetailsService customUserDetailsService;
 
     @Override
     public List<User> getAllUsers(){
@@ -140,6 +151,32 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByEmail(String email){
         return repository.existsByEmail(email);
+    }
+
+    @Override
+    public User updateDisplayName(String displayName,Long id){
+        User userDB=repository.findById(id).get();
+        userDB.setDisplayName(displayName);
+        userDB.setModifiedBy(UserDetailsUtil.getCurrentUsername());
+        userDB.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
+        
+        User updatedUser = repository.save(userDB);
+
+        // Load the updated user details
+        CustomUserDetails userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(updatedUser.getUsername());
+        
+        // Re-authenticate the user with the new display name
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // Retrieve the current request
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
+
+        // Manually update the session to avoid any invalidation issues
+        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+
+        return updatedUser;
     }
 
 }

@@ -95,6 +95,11 @@
                             <input type="hidden" id="id" name="id" value="<c:out value='${userDetails.id}' />">
                             
                             <div class="mb-3">
+                                <label for="displayName" class="form-label">Display Name</label>
+                                <input type="text" id="displayName" name="displayName" class="form-control" value="<c:out value='${userDetails.displayName}' />">
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="text" id="email" name="email" class="form-control" value="<c:out value='${userDetails.email}' />" disabled>
                             </div>
@@ -104,14 +109,9 @@
                                 <input type="text" id="username" name="username" class="form-control" value="<c:out value='${userDetails.username}' />" disabled>
                             </div>
                             
-                            <div class="mb-3">
+                            <div class="mb-3 hidden">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" id="password" name="password" class="form-control" value="<c:out value='${userDetails.password}' />">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="displayName" class="form-label">Display Name</label>
-                                <input type="text" id="displayName" name="displayName" class="form-control" value="<c:out value='${userDetails.displayName}' />">
                             </div>
                             
                             <div class="mb-3">
@@ -133,7 +133,8 @@
                             </div>
                             
                             <div class="d-flex">
-                                <button type="button" class="btn btn-primary" id="saveUser">Save</button>
+                                <button type="button" class="btn btn-primary me-2" id="updateDisplayName">Save</button>
+                                <a type="button" class="btn btn-outline-success" id="changePassword" href="auth/changePassword">Change Password</a>
                             </div>
                         </form>
                     </div>
@@ -175,8 +176,7 @@
         </div>
 
         <!-- apiList modal -->
-        <div class="modal fade" id="apiListModal" tabindex="-1" aria-labelledby="apiListModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="apiListModal" tabindex="-1" aria-labelledby="apiListModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -1345,6 +1345,27 @@
                     }
 
                     // end
+                });
+
+                $("#updateDisplayName").click(function() {
+                    var id = $("#userProfileForm #id").val();
+                    var displayName = $("#userProfileForm #displayName").val();
+                    var csrfToken = $("meta[name='_csrf']").attr("content");
+                    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+                    $.ajax({
+                        url: 'updateDisplayName/' + id,
+                        type: 'PUT',
+                        data: { displayName: displayName },
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader(csrfHeader, csrfToken);
+                        },
+                        success: function(user) {
+                            showSuccess("Updated successfully");
+                        },
+                        error: function() {
+                            alert('ERROR: failed to update display name');
+                        }
+                    });
                 });
 
                 // show message onload if present

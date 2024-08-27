@@ -11,6 +11,7 @@ public interface UserService {
     User saveUser(User user);
     User updateUser(User user, Long id);
     User updateOwnUser(User user, Long id);
+    User updateDisplayName(String displayName, Long id);
     User resetPassword(User user);
     Optional<User> findUserByEmail(String email);
     void updateUserPassword(User user,String encodedPassword);

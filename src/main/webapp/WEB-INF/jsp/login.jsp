@@ -108,45 +108,62 @@
                             </c:when>
                             <c:otherwise>
                                 <c:choose>
+                                    <c:when test="${error == 'passwordExpired' || title == 'Change Password'}">
+                                        <c:if test="${error == 'passwordExpired'}">
+                                            <div class="callout callout-warning"><strong>${title}</strong></div>
+                                        </c:if>
+                                        <form id="changePassword" action="changePassword" method="post">
+                                            <div class="mb-3">
+                                                <label for="newPassword" class="form-label">New Password</label>
+                                                <input type="password" id="newPassword" name="newPassword" class="form-control" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                                                <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control"required>
+                                            </div>
+                                            
+                                            <div class="d-grid">
+                                                <c:choose>
+                                                    <c:when test="${title == 'Change Password'}">
+                                                        <!-- Both buttons present -->
+                                                        <div>
+                                                            <button type="submit" class="btn btn-primary">Change Password</button>
+                                                            <a type="button" href="javascript:history.back()" class="btn btn-secondary">Cancel</a>
+                                                        </div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <!-- Only submit button present, takes full width -->
+                                                        <button type="submit" class="btn btn-primary">Change Password</button>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            
+                                
+                                            
+                                            <input type="hidden" name="userId" value="${id}">
+                                            <input type="hidden" name="token" value="${token}" />
+                                    </c:when>
                                     <c:when test="${empty error || error == 'invalid'}">
                                         <h3 class="card-title text-center">${title}</h3>
                                         <form action="login" method="post">
-                                    <div class="mb-3">
-                                        <label for="username" class="form-label">Username</label>
-                                        <input type="text" class="form-control" id="username" name="username" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="password" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="password" name="password" required>
-                                    </div>
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary">Login</button>
-                                                <div class="row text-center pt-2"><small class="w-100"><a href="forgotPassword">forgot password?</a></small></div>
-                                    </div>
-                            </c:when>
-                                    <c:when test="${error == 'passwordExpired'}">
-                                <div class="callout callout-warning"><strong>${title}</strong></div>
-                                        <form id="changePassword" action="changePassword" method="post">
-                                    <div class="mb-3">
-                                        <label for="newPassword" class="form-label">New Password</label>
-                                        <input type="password" id="newPassword" name="newPassword" class="form-control" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
-                                                <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control"
-                                                    required>
-                                    </div>
-                                    <div class="d-grid">
-                                        <input type="hidden" name="userId" value="${id}">
-                                        <button type="submit" class="btn btn-primary">Change Password</button>
-                                    </div>
-                                            <input type="hidden" name="token" value="${token}" />
+                                        <div class="mb-3">
+                                            <label for="username" class="form-label">Username</label>
+                                            <input type="text" class="form-control" id="username" name="username" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Password</label>
+                                            <input type="password" class="form-control" id="password" name="password" required>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">Login</button>
+                                            <div class="row text-center pt-2"><small class="w-100"><a href="forgotPassword">forgot password?</a></small></div>
+                                        </div>
                                     </c:when>
                                 </c:choose>
                             </c:otherwise>
                         </c:choose>
-                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                </form>
+                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                        </form>
                     </div>
                 </div>
                 <c:if test="${error == 'invalid'}"><div class="text-danger text-center">${errorMsg}</div></c:if>

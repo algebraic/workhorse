@@ -22,6 +22,7 @@ import gov.michigan.lara.dao.PasswordResetTokenRepository;
 import gov.michigan.lara.domain.PasswordResetToken;
 import gov.michigan.lara.domain.User;
 import gov.michigan.lara.security.CustomUserDetails;
+import gov.michigan.lara.security.UserDetailsUtil;
 import gov.michigan.lara.service.PasswordResetService;
 import gov.michigan.lara.service.UserService;
 import gov.michigan.lara.util.EmailService;
@@ -57,7 +58,6 @@ public class LoginController {
             model.addAttribute("title", "Your password has expired and must be changed");
             model.addAttribute("id", userId);
         } else {
-            System.out.println("invalid username/password");
             System.err.println("invalid username/password");
             model.addAttribute("errorMsg", "invalid username/password");
             model.addAttribute("title", "Login");
@@ -66,6 +66,14 @@ public class LoginController {
         model.addAttribute("error", error);
         return "login";
     }
+
+    @GetMapping("/changePassword")
+    public String changePassword(HttpServletRequest request, Model model) {
+        model.addAttribute("title", "Change Password");
+        model.addAttribute("id", UserDetailsUtil.getCurrentUserId());
+        return "login";
+    }
+
 
     @GetMapping("/forgotPassword")
     public String forgotPassword(HttpServletRequest request, Model model) {
@@ -130,7 +138,6 @@ public class LoginController {
     @PostMapping("/changePassword")
     // public String changePassword(@RequestParam("userId") Long userId, @RequestParam("newPassword") String newPassword, Model model){
     public String changePassword(@RequestParam("userId") Long userId, @RequestParam("newPassword") String newPassword, HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "token", required = false) String token) {
-
         User user = userService.findUserById(userId);
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setPasswordExpired(false);

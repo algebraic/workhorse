@@ -63,7 +63,11 @@ public class UserController{
         }
     }
 
-    // Update operation
+    @PutMapping("/updateDisplayName/{id}")
+    public User updateDisplayName(@RequestParam String displayName,@PathVariable Long id){
+        return userService.updateDisplayName(displayName,id);
+    }
+
     @ResponseBody
     @PostMapping("/resetPassword")
     public String resetPassword(@RequestParam Long id){
