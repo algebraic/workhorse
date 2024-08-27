@@ -108,7 +108,7 @@
                             </c:when>
                             <c:otherwise>
                                 <c:choose>
-                                    <c:when test="${error == 'passwordExpired' || title == 'Change Password'}">
+                                    <c:when test="${error == 'passwordExpired' || title == 'Change Password' || not empty token}">
                                         <c:if test="${error == 'passwordExpired'}">
                                             <div class="callout callout-warning"><strong>${title}</strong></div>
                                         </c:if>

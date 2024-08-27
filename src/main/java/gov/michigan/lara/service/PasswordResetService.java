@@ -1,15 +1,11 @@
 package gov.michigan.lara.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import gov.michigan.lara.dao.PasswordResetTokenRepository;
 import gov.michigan.lara.domain.PasswordResetToken;
-import gov.michigan.lara.domain.User;
-
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,12 +14,6 @@ public class PasswordResetService {
     @Autowired
     private PasswordResetTokenRepository tokenRepository;
     
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Transactional
     public PasswordResetToken createPasswordResetToken(String email) {
         String token = UUID.randomUUID().toString();
@@ -57,19 +47,4 @@ public class PasswordResetService {
         return true;
     }
 
-    @Transactional
-    public void resetPassword(String token, String newPassword) {
-        PasswordResetToken resetToken = tokenRepository.findByToken(token)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
-    
-        // Use the service layer to fetch and update the user
-        Optional<User> user = userService.findUserByEmail(resetToken.getEmail());
-        User pwuser = user.orElseThrow(() -> new IllegalArgumentException("User not found for the provided token"));
-
-        if (pwuser != null) {
-            userService.updateUserPassword(pwuser, passwordEncoder.encode(newPassword));
-            tokenRepository.deleteByToken(token);
-        }
-    }
-    
 }

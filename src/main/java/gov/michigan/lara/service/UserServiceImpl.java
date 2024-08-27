@@ -142,13 +142,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserPassword(User user, String encodedPassword){
-        // TODO Auto-generated method stub
-        System.out.println("Unimplemented method 'updateUserPassword'");
-        throw new UnsupportedOperationException("Unimplemented method 'updateUserPassword'");
-    }
-
-    @Override
     public boolean existsByEmail(String email){
         return repository.existsByEmail(email);
     }

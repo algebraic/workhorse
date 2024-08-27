@@ -14,6 +14,5 @@ public interface UserService {
     User updateDisplayName(String displayName, Long id);
     User resetPassword(User user);
     Optional<User> findUserByEmail(String email);
-    void updateUserPassword(User user,String encodedPassword);
     boolean existsByEmail(String email);
 }
