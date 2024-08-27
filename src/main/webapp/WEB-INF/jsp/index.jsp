@@ -40,10 +40,8 @@
                 <div class="accordion" id="bureau-list"></div>
             </div>
             <div class="col-lg-11 offset-lg-1">
-                <!-- Centering spinner inside the parent container -->
-                <div class="row position-relative hidden" style="width: 747px; height: 200px;" id="loadingSpinner"> <!-- Adjust height as needed -->
-                    <!-- Spinner element -->
-                    <div class="spinner-grow text-success position-absolute top-50 start-50 translate-middle" role="status">
+                <div class="row justify-content-center align-items-center position-relative" style="min-height: 200px; left:-95px" id="loadingSpinner">
+                    <div class="spinner-grow text-success" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
@@ -1003,7 +1001,7 @@
                                 $kpiTable += row;
                             }
 
-                            $kpiTable += '<tr><td colspan=2 class="border-bottom-0 text-center"><button type="button" id="saveRecord" class="btn btn-outline-success" disabled="disabled">Save</button></td></tr></tbody></table>';
+                            $kpiTable += '<tr><td colspan=2 class="border-bottom-0 text-center px-0"><button type="button" id="saveRecord" class="btn btn-outline-success w-100" disabled="disabled">Save</button></td></tr></tbody></table>';
                             $parent.append($kpiTable);
 
                             // populate years
