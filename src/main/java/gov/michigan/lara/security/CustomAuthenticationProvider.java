@@ -19,7 +19,6 @@ import lombok.*;
 @Builder
 @ToString()
 @EqualsAndHashCode(callSuper=false)
-@Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired

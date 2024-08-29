@@ -1,6 +1,6 @@
 package gov.michigan.lara.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.*;
 import org.springframework.stereotype.Controller;

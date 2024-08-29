@@ -3,7 +3,7 @@ package gov.michigan.lara.controller;
 import gov.michigan.lara.domain.User;
 import gov.michigan.lara.security.UserDetailsUtil;
 import gov.michigan.lara.service.UserService;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.List;

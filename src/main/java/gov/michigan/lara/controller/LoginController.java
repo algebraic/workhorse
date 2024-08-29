@@ -26,9 +26,9 @@ import gov.michigan.lara.security.UserDetailsUtil;
 import gov.michigan.lara.service.PasswordResetService;
 import gov.michigan.lara.service.UserService;
 import gov.michigan.lara.util.EmailService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 @Controller
 @RequestMapping("/auth")

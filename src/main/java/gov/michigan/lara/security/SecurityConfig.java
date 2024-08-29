@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,43 +22,33 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Enable method level security annotations
+@EnableGlobalMethodSecurity(prePostEnabled = true) // Enable method level security annotations
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(requests -> requests
-                .requestMatchers("/auth/*", "/logout", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**").permitAll() // Permit access to these paths
-                .requestMatchers("/WEB-INF/jsp/**").permitAll() // Exclude JSP view paths
-                .anyRequest().authenticated()) // Require authentication for other requests
+            .authorizeRequests(requests -> requests
+                .antMatchers("/auth/*", "/logout", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**").permitAll()
+                .antMatchers("/WEB-INF/jsp/**").permitAll()
+                .anyRequest().authenticated()
+            )
             .formLogin(form -> form
                 .loginPage("/auth/login")
                 .failureHandler(new CustomAuthenticationFailureHandler())
-                .permitAll())
+                .permitAll()
+            )
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/auth/login")
-                .permitAll())
+                .permitAll()
+            )
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/auth/*", "/logout", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**")); // Exclude CSRF for these paths
+                .ignoringAntMatchers("/auth/*", "/logout", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**")
+            );
 
         return http.build();
     }
-
-    // // zj: use default spring security login/logout, comment out other bean to swap
-    // @Bean
-    // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    //     http
-    //         .authorizeHttpRequests(requests -> requests
-    //             .requestMatchers("/commitId/**", "/resources/**").permitAll()
-    //             .requestMatchers("/testlogin/**").permitAll() // Ensure this path is permitted
-    //             .anyRequest().authenticated())
-    //         .httpBasic(withDefaults())
-    //         .formLogin(withDefaults())
-    //         .csrf(csrf -> csrf.disable());
-    //     return http.build();
-    // }
 
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
@@ -73,10 +63,10 @@ public class SecurityConfig {
     @SuppressWarnings("deprecation")
     @Bean
     public PasswordEncoder passwordEncoder(){
-        Map<String,PasswordEncoder> encoders=new HashMap<>();
-        encoders.put("bcrypt",new BCryptPasswordEncoder());
-        encoders.put("noop",NoOpPasswordEncoder.getInstance());
-        return new DelegatingPasswordEncoder("bcrypt",encoders);
+        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        encoders.put("bcrypt", new BCryptPasswordEncoder());
+        encoders.put("noop", NoOpPasswordEncoder.getInstance());
+        return new DelegatingPasswordEncoder("bcrypt", encoders);
     }
 
     @Bean

@@ -3,14 +3,13 @@ package gov.michigan.lara.service;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
-@SuppressWarnings("deprecation")
 @Service
 public class FileService {
 

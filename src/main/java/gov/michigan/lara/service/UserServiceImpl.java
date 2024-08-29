@@ -6,7 +6,7 @@ import gov.michigan.lara.security.CustomUserDetails;
 import gov.michigan.lara.security.UserDetailsUtil;
 import gov.michigan.lara.util.EmailService;
 import gov.michigan.lara.util.PasswordGenerator;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
