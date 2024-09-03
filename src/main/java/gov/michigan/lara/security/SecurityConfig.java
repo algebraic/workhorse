@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true) // Enable method level security annotations
@@ -60,7 +61,6 @@ public class SecurityConfig {
         return new ProviderManager(Arrays.asList(customAuthenticationProvider));
     }
 
-    @SuppressWarnings("deprecation")
     @Bean
     public PasswordEncoder passwordEncoder(){
         Map<String, PasswordEncoder> encoders = new HashMap<>();

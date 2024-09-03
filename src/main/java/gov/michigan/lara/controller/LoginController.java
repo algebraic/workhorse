@@ -82,12 +82,15 @@ public class LoginController {
     }
 
     @PostMapping("/forgotPassword")
-    public String forgotPasswordSend(@RequestParam String email){
+    public String forgotPasswordSend(@RequestParam String email) {
         // Validate the email address
-        Optional<User> user=userService.findUserByEmail(email);
-        User pwuser = user.orElseThrow(() -> new IllegalArgumentException("User not found for the provided token"));
-
-        if(pwuser != null){
+        Optional<User> optionalUser = userService.findUserByEmail(email);
+        if (!optionalUser.isPresent()) {
+            throw new IllegalArgumentException("User not found for the provided email");
+        }
+        User pwuser = optionalUser.get();
+    
+        if (pwuser != null) {
             PasswordResetToken token = passwordResetService.createPasswordResetToken(email);
             String resetUrl = "http://127.0.0.1:8080/workhorse/auth/resetPassword?token=" + token.getToken();
             emailService.sendForgotPasswordEmail(email, resetUrl, pwuser.getDisplayName());
@@ -96,28 +99,35 @@ public class LoginController {
         return "boo";
     }
 
+    
     @GetMapping("/resetPassword")
     public String showResetPasswordPage(HttpServletRequest request, @RequestParam("token") String token, Model model) {
         // Validate the token and check its expiration
-        PasswordResetToken resetToken = tokenRepository.findByToken(token)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid or expired reset token"));
-
+        Optional<PasswordResetToken> optionalResetToken = tokenRepository.findByToken(token);
+        if (!optionalResetToken.isPresent()) {
+            throw new IllegalArgumentException("Invalid or expired reset token");
+        }
+        PasswordResetToken resetToken = optionalResetToken.get();
+    
         // Add the token to the model so it can be used in the JSP page
         model.addAttribute("token", token);
         model.addAttribute("title", "Please set a new password");
-        
-        // find user by email in token
-        Optional<User> user=userService.findUserByEmail(resetToken.getEmail());
-        User rpUser = user.orElseThrow(() -> new IllegalArgumentException("User not found for the provided token"));
-
+    
+        // Find user by email in token
+        Optional<User> user = userService.findUserByEmail(resetToken.getEmail());
+        if (!user.isPresent()) {
+            throw new IllegalArgumentException("User not found for the provided token");
+        }
+        User rpUser = user.get();
+    
         Long userId = rpUser.getId();
         System.out.println("resetting pw for user id " + userId);
         model.addAttribute("id", userId);
-
+    
         // Return the login view
         return "login";
     }
-
+    
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
