@@ -4,13 +4,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
+
 import java.io.File;
 
 import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletContext;
 
 @Service
 public class EmailService {
@@ -81,7 +85,9 @@ public class EmailService {
                 "</html>";
 
             helper.setText(htmlContent, true);
-            helper.addInline("logoImage", new File("src/main/resources/static/img/small-light2.png"));
+            File logoImage = ResourceUtils.getFile("classpath:static/img/small-light2.png");
+            helper.addInline("logoImage", logoImage);
+
             mailSender.send(message);
             log.info("Email sent to {}", to);
         } catch (Exception e) {
@@ -131,10 +137,10 @@ public class EmailService {
                 "</body>" +
                 "</html>";
 
-
-
             helper.setText(htmlContent, true);
-            helper.addInline("logoImage", new File("src/main/resources/static/img/small-light2.png"));
+            File logoImage = ResourceUtils.getFile("classpath:static/img/small-light2.png");
+            helper.addInline("logoImage", logoImage);
+
             mailSender.send(message);
             log.info("Email sent to {}", to);
         } catch (Exception e) {
@@ -181,7 +187,9 @@ public class EmailService {
             "</html>";
 
             helper.setText(htmlContent, true);
-            helper.addInline("logoImage", new File("src/main/resources/static/img/small-light2.png"));
+            File logoImage = ResourceUtils.getFile("classpath:static/img/small-light2.png");
+            helper.addInline("logoImage", logoImage);
+
             mailSender.send(message);
             log.info("Forgot password email sent to {}", email);
         } catch (Exception e) {
