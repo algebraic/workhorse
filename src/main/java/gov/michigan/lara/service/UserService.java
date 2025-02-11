@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface UserService {
     List<User> getAllUsers();
     User findUserById(Long id);
-    User saveUser(User user);
+    User saveUser(User user, String serverUrl);
     User updateUser(User user, Long id);
     User updateOwnUser(User user, Long id);
     User updateDisplayName(String displayName, Long id);

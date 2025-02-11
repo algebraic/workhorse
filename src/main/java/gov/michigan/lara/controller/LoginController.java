@@ -82,7 +82,7 @@ public class LoginController {
     }
 
     @PostMapping("/forgotPassword")
-    public String forgotPasswordSend(@RequestParam String email) {
+    public String forgotPasswordSend(@RequestParam String email, HttpServletRequest request) {
         // Validate the email address
         Optional<User> optionalUser = userService.findUserByEmail(email);
         if (!optionalUser.isPresent()) {
@@ -92,7 +92,9 @@ public class LoginController {
     
         if (pwuser != null) {
             PasswordResetToken token = passwordResetService.createPasswordResetToken(email);
-            String resetUrl = "http://127.0.0.1:8080/workhorse/auth/resetPassword?token=" + token.getToken();
+    
+            String serverUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+            String resetUrl = serverUrl + "/auth/resetPassword?token=" + token.getToken();
             emailService.sendForgotPasswordEmail(email, resetUrl, pwuser.getDisplayName());
             return "yay";
         }

@@ -4,17 +4,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
-
-import java.io.File;
+import org.springframework.util.StreamUtils;
 
 import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletContext;
 
 @Service
 public class EmailService {
@@ -85,8 +83,13 @@ public class EmailService {
                 "</html>";
 
             helper.setText(htmlContent, true);
-            File logoImage = ResourceUtils.getFile("classpath:static/img/small-light2.png");
-            helper.addInline("logoImage", logoImage);
+
+            try {
+                ClassPathResource logoImage = new ClassPathResource("img/small-light2.png");
+                helper.addInline("logoImage", new ByteArrayResource(StreamUtils.copyToByteArray(logoImage.getInputStream())), "image/png");
+            } catch (Exception imgEx) {
+                log.warn("Failed to attach inline image for email, proceeding without it", imgEx);
+            }
 
             mailSender.send(message);
             log.info("Email sent to {}", to);
@@ -138,8 +141,13 @@ public class EmailService {
                 "</html>";
 
             helper.setText(htmlContent, true);
-            File logoImage = ResourceUtils.getFile("classpath:static/img/small-light2.png");
-            helper.addInline("logoImage", logoImage);
+
+            try {
+                ClassPathResource logoImage = new ClassPathResource("img/small-light2.png");
+                helper.addInline("logoImage", new ByteArrayResource(StreamUtils.copyToByteArray(logoImage.getInputStream())), "image/png");
+            } catch (Exception imgEx) {
+                log.warn("Failed to attach inline image for email, proceeding without it", imgEx);
+            }
 
             mailSender.send(message);
             log.info("Email sent to {}", to);
@@ -187,8 +195,13 @@ public class EmailService {
             "</html>";
 
             helper.setText(htmlContent, true);
-            File logoImage = ResourceUtils.getFile("classpath:static/img/small-light2.png");
-            helper.addInline("logoImage", logoImage);
+
+            try {
+                ClassPathResource logoImage = new ClassPathResource("img/small-light2.png");
+                helper.addInline("logoImage", new ByteArrayResource(StreamUtils.copyToByteArray(logoImage.getInputStream())), "image/png");
+            } catch (Exception imgEx) {
+                log.warn("Failed to attach inline image for email, proceeding without it", imgEx);
+            }
 
             mailSender.send(message);
             log.info("Forgot password email sent to {}", email);

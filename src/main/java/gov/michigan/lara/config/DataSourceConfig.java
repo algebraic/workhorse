@@ -1,24 +1,15 @@
 package gov.michigan.lara.config;
 
 import org.apache.logging.log4j.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jndi.JndiObjectFactoryBean;
-import org.springframework.util.ResourceUtils;
-
 import gov.michigan.lara.WorkhorseApplication;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import javax.naming.NamingException;
-import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
 @Configuration
@@ -41,7 +32,6 @@ public class DataSourceConfig {
         try {
             jndiFactory.afterPropertiesSet();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             System.out.println("### error ###");
             e.printStackTrace();
         }
@@ -54,24 +44,6 @@ public class DataSourceConfig {
     @Profile("local")
     public DataSource dataSource() {
         log.info("running locally, directly connect to db");
-
-        // Use ServletContext to load the image from resources/static
-        // String imagePath = servletContext.getRealPath("/static/img/small-light2.png");
-        File logoImage = null;
-        try {
-            logoImage = ResourceUtils.getFile("classpath:static/img/small-light2.png");
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        // ClassPathResource logoImage = new ClassPathResource("/img/small-light2.png");
-        if (!logoImage.exists()) {
-            System.err.println("### File NOT FOUND: " + logoImage.getPath());
-        } else {
-            System.out.println("### File FOUND: " + logoImage.getPath());
-        }
-
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         dataSource.setUrl("jdbc:sqlserver://HCV641SQLSDDA01.ngds.state.mi.us:7733;databaseName=D_LARA_ANALYTICS;encrypt=false;trustServerCertificate=true");

@@ -150,7 +150,7 @@
             <button type="button" class="btn btn-outline-primary">Data</button>
             <button type="button" class="btn btn-outline-primary">RAW_Data</button>
             <button type="button" class="btn btn-outline-primary">users</button>
-            <button type="button" class="btn btn-outline-danger" id="sqlEditorBtn">SQL Editor</button>
+            <button type="button" disabled class="btn btn-outline-danger" id="sqlEditorBtn">SQL Editor</button>
             <div id="tableOutput"></div>
         </div>
 
@@ -1454,6 +1454,8 @@
                 var query = $input.val();
                 var encodedQuery = encodeURIComponent(query);
                 var url = 'http://127.0.0.1:8080/workhorse/sql/execute?query=' + encodedQuery;
+                $($output).val("Access denied. You do not have permission to execute this query.");
+                /*
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', url, true);
                 xhr.onreadystatechange = function() {
@@ -1468,6 +1470,7 @@
                     }
                 };
                 xhr.send();
+                */
             }
 
             <!-- // zj: modal-stuff -->
@@ -1639,14 +1642,8 @@
 
                         return replaceValue;
                     }.bind(this));
-                    // $dt.attr("title", "example " + attributeName + " = " + $dt.attr('data-' + attributeName));
                     console.info(dtText);
-
-                    var baseUrl = "http://127.0.0.1:8080/workhorse"; http://127.0.0.1:8080/workhorse/records/BCC_APP_02/2023
-                    var href = baseUrl + dtText;
-                    $dt.wrapInner('<a href="' + href + '" target="_blank"></a>');
-
-
+                    $dt.wrapInner('<a href=".' + dtText + '" target="_blank"></a>');
                 });
 
             }

@@ -3,6 +3,8 @@ package gov.michigan.lara.controller;
 import gov.michigan.lara.domain.User;
 import gov.michigan.lara.security.UserDetailsUtil;
 import gov.michigan.lara.service.UserService;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import java.util.ArrayList;
@@ -46,8 +48,9 @@ public class UserController{
 
     // Save operation
     @PostMapping("/user")
-    public User saveUser(@Valid @RequestBody User user){
-        return userService.saveUser(user);
+    public User saveUser(@Valid @RequestBody User user, HttpServletRequest request){
+        String serverUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        return userService.saveUser(user, serverUrl);
     }
 
     // Update operation

@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User saveUser(User user) {
+    public User saveUser(User user, String serverUrl) {
         // check if email already exists before saving
         if (repository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already in use");
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
             user.getUsername(),
             user.getDisplayName(),
             randomPassword,
-            "http://127.0.0.1:8080/workhorse"
+            serverUrl
         );
 
         return repository.save(user);
