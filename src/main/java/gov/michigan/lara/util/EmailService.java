@@ -188,7 +188,7 @@ public class EmailService {
             "<img src='cid:logoImage' alt='WORKHORSE Logo' style='width: 150px;'>" +
             "</div>" +
             "<div style='text-align: center; margin-top: 20px; color: #6c757d;'>" +
-            "<p>Warmest regards,<br>the DTMB team</p>" +
+            "<p>Kindest regards,<br>the DTMB team</p>" +
             "</div>" +
             "</div>" +
             "</body>" +

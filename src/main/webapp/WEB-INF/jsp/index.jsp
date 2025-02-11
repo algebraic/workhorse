@@ -888,8 +888,8 @@
                                                     xhr.setRequestHeader(header, token);
                                                 },
                                                 success: function(response) {
-                                                    console.log('user added successfully:', response.toString());
-                                                    showSuccess('user added successfully: ' + response.toString());
+                                                    console.log('user added successfully, email sent to', response.email);
+                                                    showSuccess('user added successfully, email sent to ' + response.email);
                                                     // Handle success, e.g., show a success message
                                                 },
                                                 error: function(error) {
