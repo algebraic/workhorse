@@ -27,35 +27,26 @@
 
     <profiles>
         <profile>
-            <id>war</id>
+            <id>local</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
             <properties>
-                <packaging.type>war</packaging.type>
+                <spring.profiles.active>local</spring.profiles.active>
             </properties>
         </profile>
-
+        <!-- WebLogic profile, activated when '-Pweblogic' is passed:
+            mvn clean compile package -Pweblogic
+        -->
         <profile>
-            <id>jar</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
+            <id>weblogic</id>
+            <activation>
+                <property>
+                    <name>weblogic</name>
+                </property>
+            </activation>
             <properties>
-                <packaging.type>jar</packaging.type>
+                <spring.profiles.active>weblogic</spring.profiles.active>
             </properties>
         </profile>
     </profiles>
@@ -260,6 +251,13 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
