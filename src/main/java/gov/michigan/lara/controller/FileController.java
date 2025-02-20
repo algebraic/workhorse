@@ -1,8 +1,14 @@
 package gov.michigan.lara.controller;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.DataSource;
 
 import org.apache.logging.log4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,6 +30,9 @@ public class FileController {
 
     public FileService fileService = new FileService();
 
+    @Autowired
+    private DataSource dataSource;
+
     @ModelAttribute
     @GetMapping(value = "/")
     public ModelAndView test(HttpServletRequest request) {
@@ -35,6 +44,20 @@ public class FileController {
 
         CustomUserDetails userDetails = UserDetailsUtil.getCurrentUserDetails();
 
+        ///////
+       try (Connection connection = dataSource.getConnection()) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            System.out.println("DB Product Name: " + metaData.getDatabaseProductName());
+            System.out.println("DB Product Version: " + metaData.getDatabaseProductVersion());
+            System.out.println("DB Driver Name: " + metaData.getDriverName());
+            System.out.println("DB Driver Version: " + metaData.getDriverVersion());
+            System.out.println("DB URL: " + metaData.getURL());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        ///////
+
+        
         ModelAndView mav = new ModelAndView("index");
         this.size = 0;
         this.count = 0;

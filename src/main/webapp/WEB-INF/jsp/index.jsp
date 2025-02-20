@@ -1190,6 +1190,7 @@
                             dataType: 'json',
                             success: function(response) {
                                 console.info(response);
+                                console.info("!!!");
                                 $.each(response, function(index, record) {
                                     var value = record["prct_VAL"] !== null ? record["prct_VAL"] : record["count_VAL"];
                                     $("#" + record["entryDate"]).val(value).attr("data-ogvalue", value);

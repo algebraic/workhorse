@@ -30,7 +30,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeRequests(requests -> requests
-                .antMatchers("/auth/*", "/logout", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**").permitAll()
+                .antMatchers("/auth/*", "/logout", "/img/**", "/css/**", "/js/**", "/resources/**", "/commitId/**", "/kpi").permitAll()
                 .antMatchers("/WEB-INF/jsp/**").permitAll()
                 .anyRequest().authenticated()
             )
