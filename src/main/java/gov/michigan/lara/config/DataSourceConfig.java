@@ -38,6 +38,27 @@ public class DataSourceConfig {
         return (DataSource) jndiFactory.getObject();
     }
 
+    @Bean
+    @Primary
+    @Profile("tomcat")
+    public DataSource jndiDataSourceTomcat() {
+        // Using JNDI DataSource lookup for Tomcat environment
+        log.info("Using JNDI DataSource lookup for Tomcat environment");
+        JndiObjectFactoryBean jndiFactory = new JndiObjectFactoryBean();
+        jndiFactory.setJndiName("java:comp/env/jdbc/dashboards");
+        jndiFactory.setResourceRef(true);
+        jndiFactory.setProxyInterface(DataSource.class);
+
+        // After initializing the JNDI lookup bean, return the DataSource it finds
+        try {
+            jndiFactory.afterPropertiesSet();
+        } catch (Exception e) {
+            System.out.println("### error ###");
+            e.printStackTrace();
+        }
+        return (DataSource) jndiFactory.getObject();
+    }
+
     // local datasource
     @Bean
     @Primary

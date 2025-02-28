@@ -22,24 +22,68 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <maven-war-plugin.version>3.2.2</maven-war-plugin.version>
     </properties>
 
     <profiles>
         <profile>
-            <id>local</id>
+            <id>local</id> 
+            <!-- running locally using direct db connection: mvn spring-boot:run -->
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <spring.profiles.active>local</spring.profiles.active>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>3.4.0</version>
+                        <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <includeContextXml>false</includeContextXml>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
-        <!-- WebLogic profile, activated when '-Pweblogic' is passed:
-            mvn clean compile package -Pweblogic
-        -->
+        <profile>
+            <id>tomcat</id>
+            <!-- building a war for tomcat (using tomcat's jndi datasource): mvn clean compile package -Ptomcat -->
+            <activation>
+                <property>
+                    <name>tomcat</name>
+                </property>
+            </activation>
+            <properties>
+                <spring.profiles.active>tomcat</spring.profiles.active>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>3.4.0</version>
+                        <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                        </configuration>
+                    </plugin>
+                </plugins>
+                <resources>
+                    <!-- Include context.xml for Tomcat -->
+                    <resource>
+                        <directory>src/main/resources/META-INF</directory>
+                        <includes>
+                            <include>context.xml</include>
+                        </includes>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
         <profile>
             <id>weblogic</id>
+            <!-- building a war for weblogic (using weblogic's jndi datasource): mvn clean compile package -Pweblogic -->
             <activation>
                 <property>
                     <name>weblogic</name>
@@ -48,12 +92,32 @@
             <properties>
                 <spring.profiles.active>weblogic</spring.profiles.active>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>3.4.0</version>
+                        <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                        </configuration>
+                    </plugin>
+                </plugins>
+                <resources>
+                    <!-- Do not include context.xml for WebLogic -->
+                    <resource>
+                        <directory>src/main/resources/META-INF</directory>
+                        <excludes>
+                            <exclude>context.xml</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+            </build>
         </profile>
     </profiles>
 
 <dependencies>
 
-    <!-- zj: my stuff below here -->
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-mail</artifactId>
@@ -74,7 +138,7 @@
                 <artifactId>spring-boot-starter-logging</artifactId>
             </exclusion>
             <!-- 
-                exclude spring-boot-starter-tomcat or Weblogic 12C will crash with "cvc-enumeration-valid: string value '4.0' ..." 
+                zj: exclude spring-boot-starter-tomcat or Weblogic 12C will crash with "cvc-enumeration-valid: string value '4.0' ..." 
                 prevents tomcat-embed-el-9.0.55.jar from landing in WEB-INF/lib
             -->
             <exclusion>
@@ -123,7 +187,7 @@
     <dependency>
         <groupId>com.microsoft.sqlserver</groupId>
         <artifactId>mssql-jdbc</artifactId>
-        <version>12.4.2.jre8</version> <!-- or 12.2.0.jre8 -->
+        <version>12.4.2.jre8</version>
     </dependency>
 
     <dependency>
@@ -144,11 +208,6 @@
     </dependency>
 
     <!-- Updated Jakarta JSTL dependencies -->
-    <!-- <dependency>
-        <groupId>jakarta.servlet.jsp.jstl</groupId>
-        <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-        <version>2.0.0</version>
-    </dependency> -->
     <dependency>
         <groupId>org.glassfish.web</groupId>
         <artifactId>jakarta.servlet.jsp.jstl</artifactId>
@@ -261,15 +320,6 @@
 
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.4.0</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-
-            <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
                 <executions>
@@ -292,9 +342,6 @@
                     <execution>
                         <goals>
                             <goal>repackage</goal>
-                            <!-- 
-                                zj: for the jar build, both are working now :)
-                            -->
                         </goals>
                     </execution>
                 </executions>
@@ -308,9 +355,6 @@
                         <groupId>org.junit.jupiter</groupId>
                         <artifactId>junit-jupiter-api</artifactId>
                         <version>5.10.2</version>
-                        <!-- <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>1.1.0</version> -->
                     </dependency>
                 </dependencies>
             </plugin>

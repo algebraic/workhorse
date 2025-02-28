@@ -3,6 +3,8 @@ package gov.michigan.lara.domain;
 import java.sql.Timestamp;
 
 import javax.persistence.*;
+
+import gov.michigan.lara.util.BooleanConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,9 +35,11 @@ public class User {
     private String bureau;
 
     @Column(nullable = false)
+    @Convert(converter = BooleanConverter.class)
     private boolean disabled;
 
     @Column(nullable = false, name="passwordExpired")
+    @Convert(converter = BooleanConverter.class)
     private boolean passwordExpired;
 
     private Timestamp createdOn;

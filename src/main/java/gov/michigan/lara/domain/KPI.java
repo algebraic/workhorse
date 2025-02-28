@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import gov.michigan.lara.util.BooleanConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -56,12 +58,12 @@ public class KPI implements Serializable {
     private String dataStoreType;
 
     @Column(name = "Denominator for % Calculation")
-    private Integer calcDenominator;
+    private Float calcDenominator;
 
     private String target;
 
-    // @Column(name = "12 Month Rolling Avg#")
     @Column(name = "[12 Month Rolling Avg#]")
+    @Convert(converter = BooleanConverter.class)
     private Boolean rollingAvg;
 
     private String access;
